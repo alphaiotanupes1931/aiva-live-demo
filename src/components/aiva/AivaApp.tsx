@@ -51,10 +51,7 @@ export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
     if (typeof window === "undefined") return "consent";
     const consented = localStorage.getItem("aiva-consent") === "1";
-    const hasLoc = !!localStorage.getItem("aiva-location");
-    if (!consented) return "consent";
-    if (!hasLoc) return "locationPermission";
-    return "qr";
+    return consented ? "qr" : "consent";
   });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
@@ -114,7 +111,7 @@ export const AivaApp = () => {
           <ConsentScreen
             onAgree={() => {
               try { localStorage.setItem("aiva-consent", "1"); } catch {}
-              setScreen("locationPermission");
+              setScreen("qr");
               setHistory([]);
             }}
           />
@@ -123,7 +120,7 @@ export const AivaApp = () => {
           <LocationPermission
             onGranted={(addr) => {
               persistLocation(addr);
-              setScreen("qr");
+              setScreen("greeting");
               setHistory([]);
             }}
             onDenied={() => {
@@ -136,12 +133,19 @@ export const AivaApp = () => {
           <AddressEntry
             onSubmit={(addr) => {
               persistLocation(addr);
-              setScreen("qr");
+              setScreen("greeting");
               setHistory([]);
             }}
           />
         )}
-        {screen === "qr" && <QrLanding onScan={() => goto("greeting")} />}
+        {screen === "qr" && (
+          <QrLanding
+            onScan={() => {
+              const hasLoc = !!userLocation;
+              goto(hasLoc ? "greeting" : "locationPermission");
+            }}
+          />
+        )}
         {screen === "greeting" && (
           <Greeting
             onWayfinding={() => goto("wayfinding")}
@@ -301,12 +305,12 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
 };
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
-  <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
-    <div className="flex flex-col items-center gap-8 text-center">
+  <div className="flex-1 flex flex-col bg-white text-aiva-navy anim-fade-up">
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-8 gap-7">
       <img
         src={uspsLogo}
         alt="USPS logo"
-        className="w-56 h-auto object-contain animate-[fade-up_0.7s_ease-out]"
+        className="w-44 h-auto object-contain animate-[fade-up_0.7s_ease-out]"
         style={{ animationDelay: "0.05s", animationFillMode: "both" }}
       />
       <div className="space-y-3 max-w-[280px]">
@@ -332,7 +336,7 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
       </button>
     </div>
-    <p className="text-[10px] text-muted-foreground tracking-wide">
+    <p className="text-[10px] text-muted-foreground tracking-wide text-center pb-5">
       Demo · No real account or data needed
     </p>
   </div>
