@@ -727,25 +727,61 @@ const Directions = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) =>
   );
 };
 
-const Nearest = ({ onNext }: { onNext: () => void }) => (
-  <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
-    <BotBubble>Here's the nearest staffed location.</BotBubble>
-    <Card>
-      <div className="flex gap-3">
-        <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
-          <MapPin className="w-7 h-7 text-white" fill="white" />
+const Nearest = ({ onNext }: { onNext: () => void }) => {
+  // Hard-coded nearest post office
+  const PO = {
+    name: "Merrifield Post Office",
+    address: "8409 Lee Hwy",
+    city: "Merrifield, VA 22116",
+    lat: 38.8645,
+    lng: -77.2238,
+    hours: "9 AM – 8 PM",
+    driveMinutes: 8,
+    miles: 3.2,
+  };
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    `${PO.address}, ${PO.city}`
+  )}`;
+  return (
+    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+      <BotBubble>Here's the nearest staffed post office.</BotBubble>
+      <Card>
+        <div className="flex gap-3">
+          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
+            <MapPin className="w-6 h-6 text-white" fill="white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm">{PO.name}</div>
+            <div className="text-xs text-muted-foreground">{PO.address}</div>
+            <div className="text-xs text-muted-foreground">{PO.city}</div>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-sm">McLean Post Office</div>
-          <div className="text-xs text-muted-foreground">1544 Spring Hill Rd</div>
-          <div className="text-xs text-muted-foreground">McLean, VA · 2 mi away</div>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+          <div className="rounded-lg bg-aiva-bot-bg px-2.5 py-2">
+            <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Drive</div>
+            <div className="font-semibold text-foreground mt-0.5">{PO.driveMinutes} min · {PO.miles} mi</div>
+          </div>
+          <div className="rounded-lg bg-aiva-bot-bg px-2.5 py-2">
+            <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Open today</div>
+            <div className="font-semibold text-aiva-success mt-0.5">{PO.hours}</div>
+          </div>
         </div>
-      </div>
-    </Card>
-    <ChoiceButton variant="primary" onClick={onNext}>Text me the address</ChoiceButton>
-    <ChoiceButton onClick={onNext}>Skip</ChoiceButton>
-  </div>
-);
+        <div className="mt-3">
+          <MapView label={`${PO.address}, ${PO.city}`} lat={PO.lat} lng={PO.lng} height={160} />
+        </div>
+      </Card>
+      <a
+        href={mapsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-4 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl active:scale-[0.98] transition-all"
+      >
+        <Navigation className="w-4 h-4" /> Get directions
+      </a>
+      <ChoiceButton onClick={onNext}>Skip</ChoiceButton>
+    </div>
+  );
+};
 
 const AnythingElse = ({ onAnother, onDone }: { onAnother: () => void; onDone: () => void }) => {
   const ready = useTypingDelay(450);
