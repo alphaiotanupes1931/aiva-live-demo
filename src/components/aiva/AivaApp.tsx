@@ -233,9 +233,6 @@ const Greeting = ({
               <ChoiceButton onClick={onReport}>
                 <span className="inline-flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report a problem</span>
               </ChoiceButton>
-              <ChoiceButton onClick={onVoice}>
-                <span className="inline-flex items-center gap-2"><Mic className="w-4 h-4" /> Use voice instead</span>
-              </ChoiceButton>
             </div>
           </>
         )}
