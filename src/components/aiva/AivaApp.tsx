@@ -40,7 +40,12 @@ interface ChatMsg {
 }
 
 export const AivaApp = () => {
-  const [screen, setScreen] = useState<Screen>("qr");
+  const [screen, setScreen] = useState<Screen>(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("aiva-consent") === "1") {
+      return "qr";
+    }
+    return "consent";
+  });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
   const [problemDetail, setProblemDetail] = useState<string>("");
