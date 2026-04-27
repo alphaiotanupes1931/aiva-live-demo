@@ -146,7 +146,7 @@ export const VoiceTextInput = ({
         {supported && (
           <button
             type="button"
-            onClick={listening ? stop : start}
+            onClick={onMicClick}
             aria-label={listening ? "Stop dictation" : "Start dictation"}
             aria-pressed={listening}
             className={`relative w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition active:scale-95 ${
