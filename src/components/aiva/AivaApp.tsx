@@ -1165,8 +1165,14 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
             onClick={() => {
               try { recRef.current?.stop(); } catch {}
               setListening(false);
-              const final = (finalRef.current + " " + interim).trim();
-              setManualText((prev) => (prev ? prev + " " : "") + (final || transcript));
+              const final = (finalRef.current + " " + interimRef.current).trim();
+              if (final) {
+                setManualText((prev) => (prev ? prev.trimEnd() + " " : "") + final);
+                finalRef.current = "";
+                interimRef.current = "";
+                setTranscript("");
+                setInterim("");
+              }
             }}
             className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow active:scale-95 transition shrink-0"
             aria-label="Stop recording"
