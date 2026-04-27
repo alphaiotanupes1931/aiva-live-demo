@@ -96,7 +96,12 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr" && screen !== "consent" && screen !== "locationPermission" && screen !== "addressEntry";
+  const showHeader =
+    screen !== "qr" &&
+    screen !== "consent" &&
+    screen !== "locationPermission" &&
+    screen !== "confirmInitialLocation" &&
+    screen !== "addressEntry";
 
   return (
     <PhoneFrame>
