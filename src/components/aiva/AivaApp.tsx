@@ -797,12 +797,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
       </a>
 
       {step === "info" && (
-        <button
-          onClick={() => setStep("askText")}
-          className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
-        >
-          Skip
-        </button>
+        <ChoiceButton variant="primary" onClick={() => setStep("askText")}>Continue</ChoiceButton>
       )}
 
       {step === "askText" && (
