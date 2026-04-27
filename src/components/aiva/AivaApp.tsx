@@ -1018,34 +1018,78 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
   const liveText = (transcript + (interim ? " " + interim : "")).trim();
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 bg-gradient-to-b from-white to-aiva-page anim-fade-up">
-      <div className="relative">
-        <div className={`relative w-32 h-32 rounded-full bg-aiva-blue text-white flex items-center justify-center shadow-xl ${listening ? "pulse-ring" : ""}`}>
-          <Mic className="w-12 h-12" />
-        </div>
+    <div className="flex-1 flex flex-col gap-4 p-5 bg-gradient-to-b from-white to-aiva-page anim-fade-up overflow-y-auto">
+      {prompt && (
+        <div className="text-sm font-semibold text-foreground px-1">{prompt}</div>
+      )}
+
+      {/* Primary: type your problem */}
+      <div className="w-full space-y-2">
+        <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          Describe the problem
+        </label>
+        <textarea
+          value={manualText}
+          onChange={(e) => setManualText(e.target.value)}
+          rows={5}
+          placeholder="Type your problem here…"
+          className="w-full border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none bg-white"
+        />
+        <ChoiceButton
+          variant="primary"
+          onClick={() => {
+            const text = manualText.trim() || transcript.trim();
+            if (!text) return;
+            onStop(text, 1);
+          }}
+        >
+          Submit
+        </ChoiceButton>
       </div>
-      <div className="text-center">
-        {prompt && (
-          <div className="text-sm font-semibold text-foreground mb-2 px-2">{prompt}</div>
+
+      {/* Secondary: voice to text */}
+      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground pt-1">
+        <div className="flex-1 h-px bg-border" />
+        <span>or use voice to text</span>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+
+      <div className="flex items-center gap-3">
+        {!listening ? (
+          <button
+            onClick={onMicTap}
+            className="w-12 h-12 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shadow active:scale-95 transition shrink-0"
+            aria-label="Start recording"
+          >
+            <Mic className="w-5 h-5" />
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              try { recRef.current?.stop(); } catch {}
+              setListening(false);
+              const final = (finalRef.current + " " + interim).trim();
+              setManualText((prev) => (prev ? prev + " " : "") + (final || transcript));
+            }}
+            className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow active:scale-95 transition shrink-0"
+            aria-label="Stop recording"
+          >
+            <Square className="w-5 h-5" fill="white" />
+          </button>
         )}
-        <div className="font-semibold">
-          {listening ? "Listening…" : transcript ? "Tap stop when done" : "Tap the mic to start"}
-        </div>
-        <div className="text-xs text-muted-foreground mt-1">
-          {listening ? "Speak naturally — your words appear live below." : "We'll transcribe what you say in real time."}
+        <div className="flex-1 text-xs text-muted-foreground">
+          {listening
+            ? "Listening… tap stop to insert your speech into the text box."
+            : "Tap the mic to dictate. Your words will fill the text box above."}
         </div>
       </div>
 
-      <div className="w-full bg-aiva-bot-bg rounded-xl p-4 min-h-[90px] text-sm">
-        {liveText ? (
-          <span>
-            <span className="text-foreground">{transcript}</span>
-            {interim && <span className="text-muted-foreground italic"> {interim}</span>}
-          </span>
-        ) : (
-          <span className="text-muted-foreground">Your words will appear here…</span>
-        )}
-      </div>
+      {listening && liveText && (
+        <div className="w-full bg-aiva-bot-bg rounded-xl p-3 text-sm">
+          <span className="text-foreground">{transcript}</span>
+          {interim && <span className="text-muted-foreground italic"> {interim}</span>}
+        </div>
+      )}
 
       <div className="w-full flex items-start gap-2 text-[11px] text-muted-foreground bg-aiva-bot-bg/60 border border-border rounded-lg px-3 py-2">
         <Lock aria-hidden className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
@@ -1056,50 +1100,6 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
 
       {error && (
         <div className="w-full bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
-      )}
-
-      {!listening ? (
-        <button
-          onClick={onMicTap}
-          className="w-16 h-16 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shadow-lg active:scale-95 transition"
-          aria-label="Start recording"
-        >
-          <Mic className="w-7 h-7" />
-        </button>
-      ) : (
-        <button
-          onClick={stopAndContinue}
-          className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg active:scale-95 transition"
-          aria-label="Stop recording"
-        >
-          <Square className="w-6 h-6" fill="white" />
-        </button>
-      )}
-
-      {!listening && transcript && (
-        <ChoiceButton variant="primary" onClick={stopAndContinue}>Continue</ChoiceButton>
-      )}
-
-      {!listening && (
-        <div className="w-full space-y-2">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground">
-            <div className="flex-1 h-px bg-border" />
-            <span>or type it</span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-          <textarea
-            value={manualText}
-            onChange={(e) => setManualText(e.target.value)}
-            rows={3}
-            placeholder="Type your problem here…"
-            className="w-full border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
-          />
-          {manualText.trim() && (
-            <ChoiceButton variant="primary" onClick={() => onStop(manualText.trim(), 1)}>
-              Submit
-            </ChoiceButton>
-          )}
-        </div>
       )}
 
       <MicPermissionExplainer
