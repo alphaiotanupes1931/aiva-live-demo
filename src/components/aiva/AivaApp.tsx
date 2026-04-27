@@ -201,9 +201,6 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
   const [agreed, setAgreed] = useState(false);
   return (
     <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
-      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground pt-2 text-center">
-        USPS · Self-Operating Post Office
-      </div>
       <div className="flex-1 flex flex-col justify-center gap-5 py-6">
         <img src={uspsLogo} alt="USPS" className="w-32 h-auto object-contain mx-auto" />
         <div className="text-center space-y-2">
@@ -259,9 +256,6 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
   <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
-    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground pt-4">
-      USPS · Self-Operating Post Office
-    </div>
     <div className="flex flex-col items-center gap-8 text-center">
       <img
         src={uspsLogo}
