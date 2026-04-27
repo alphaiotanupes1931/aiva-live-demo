@@ -890,7 +890,7 @@ const VoiceUnclear = ({
 };
 
 
-const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) => void }) => {
+const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: number) => void; prompt?: string }) => {
   const [supported, setSupported] = useState<boolean>(true);
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
