@@ -19,6 +19,7 @@ import uspsLogo from "@/assets/usps-logo.png";
 type Screen =
   | "consent"
   | "locationPermission"
+  | "confirmInitialLocation"
   | "addressEntry"
   | "qr"
   | "greeting"
@@ -95,7 +96,12 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr" && screen !== "consent" && screen !== "locationPermission" && screen !== "addressEntry";
+  const showHeader =
+    screen !== "qr" &&
+    screen !== "consent" &&
+    screen !== "locationPermission" &&
+    screen !== "confirmInitialLocation" &&
+    screen !== "addressEntry";
 
   return (
     <PhoneFrame>
@@ -120,10 +126,23 @@ export const AivaApp = () => {
           <LocationPermission
             onGranted={(addr) => {
               persistLocation(addr);
-              setScreen("greeting");
+              setScreen("confirmInitialLocation");
               setHistory([]);
             }}
             onDenied={() => {
+              setScreen("addressEntry");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "confirmInitialLocation" && (
+          <ConfirmInitialLocation
+            address={userLocation}
+            onConfirm={() => {
+              setScreen("greeting");
+              setHistory([]);
+            }}
+            onChange={() => {
               setScreen("addressEntry");
               setHistory([]);
             }}
@@ -1156,6 +1175,63 @@ const AddressEntry = ({ onSubmit }: { onSubmit: (address: string) => void }) => 
         >
           Continue
         </button>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
+  );
+};
+
+const ConfirmInitialLocation = ({
+  address, onConfirm, onChange,
+}: { address: string; onConfirm: () => void; onChange: () => void }) => {
+  const lines = (address || "").split(",").map((s) => s.trim()).filter(Boolean);
+  const line1 = lines[0] || address || "Detected location";
+  const line2 = lines.slice(1).join(", ");
+
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Confirm your location</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
+            We detected the location below. Is this where you are right now?
+          </p>
+        </div>
+
+        <Card>
+          <MapView label={line1} height={170} />
+          <div className="flex items-start gap-3 pt-3">
+            <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
+              <MapPin className="w-5 h-5 text-aiva-blue-deep" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-sm leading-tight break-words">{line1}</div>
+              {line2 && (
+                <div className="text-xs text-muted-foreground mt-0.5">{line2}</div>
+              )}
+              <div className="text-[11px] text-aiva-success font-medium mt-1 inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-aiva-success" /> Location detected
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <div className="space-y-2 pt-1">
+          <button
+            onClick={onConfirm}
+            className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          >
+            Yes, that's right
+          </button>
+          <button
+            onClick={onChange}
+            className="w-full bg-white border border-border text-foreground px-6 py-3 rounded-full font-medium text-sm hover:bg-aiva-bot-bg transition"
+          >
+            No, enter address manually
+          </button>
+        </div>
       </div>
       <p className="text-[10px] text-muted-foreground tracking-wide text-center">
         Demo only · Not a real USPS service
