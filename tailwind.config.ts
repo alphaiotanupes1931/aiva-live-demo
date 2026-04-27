@@ -13,7 +13,20 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
+        aiva: {
+          navy: "hsl(var(--aiva-navy))",
+          blue: "hsl(var(--aiva-blue))",
+          "blue-deep": "hsl(var(--aiva-blue-deep))",
+          "bot-bg": "hsl(var(--aiva-bot-bg))",
+          avatar: "hsl(var(--aiva-avatar))",
+          page: "hsl(var(--aiva-page))",
+          success: "hsl(var(--aiva-success))",
+          "success-bg": "hsl(var(--aiva-success-bg))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
