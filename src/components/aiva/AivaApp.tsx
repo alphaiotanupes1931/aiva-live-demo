@@ -30,7 +30,8 @@ type Screen =
   | "anythingElse"
   | "csat"
   | "voiceListen"
-  | "voiceConfirm";
+  | "voiceConfirm"
+  | "voiceUnclear";
 
 interface ChatMsg {
   who: "bot" | "user";
