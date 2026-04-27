@@ -872,6 +872,13 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
         )}
       </div>
 
+      <div className="w-full flex items-start gap-2 text-[11px] text-muted-foreground bg-aiva-bot-bg/60 border border-border rounded-lg px-3 py-2">
+        <span aria-hidden className="mt-0.5">🔒</span>
+        <span>
+          Voice is transcribed by your browser. Audio isn't recorded or sent to USPS — only the text you confirm is shared.
+        </span>
+      </div>
+
       {error && (
         <div className="w-full bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
       )}
