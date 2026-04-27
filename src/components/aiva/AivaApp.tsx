@@ -109,7 +109,7 @@ export const AivaApp = () => {
           showBack={history.length > 0}
         />
       )}
-      <div className="flex-1 overflow-hidden flex flex-col bg-white">
+      <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
         {screen === "consent" && (
           <ConsentScreen
             onAgree={() => {
