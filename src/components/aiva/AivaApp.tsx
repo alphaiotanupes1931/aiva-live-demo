@@ -19,6 +19,7 @@ import uspsLogo from "@/assets/usps-logo.png";
 type Screen =
   | "consent"
   | "locationPermission"
+  | "confirmInitialLocation"
   | "addressEntry"
   | "qr"
   | "greeting"
