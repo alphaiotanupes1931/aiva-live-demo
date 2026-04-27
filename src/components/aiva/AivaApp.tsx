@@ -4,7 +4,7 @@ import { Header } from "./Header";
 import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
-import { MapView } from "./MapView";
+
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
 import { StateCityPicker } from "./StateCityPicker";
