@@ -593,20 +593,90 @@ const Csat = ({
 /* ------- Voice ------- */
 
 const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) => void }) => {
-  const speech = useSpeech();
+  const [supported, setSupported] = useState<boolean>(true);
+  const [listening, setListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [interim, setInterim] = useState("");
+  const [confidence, setConfidence] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const [manualText, setManualText] = useState("");
+  const recRef = useRef<any>(null);
+  const finalRef = useRef<string>("");
 
+  // Detect support on mount but DO NOT auto-start (gesture required)
   useEffect(() => {
-    if (speech.supported) speech.start();
-    return () => speech.stop();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speech.supported]);
+    const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    setSupported(!!Ctor);
+    return () => {
+      try { recRef.current?.stop(); } catch {}
+    };
+  }, []);
 
-  if (!speech.supported) {
+  // Synchronous start inside the click handler — preserves the gesture chain
+  const startListening = () => {
+    setError(null);
+    const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!Ctor) { setSupported(false); return; }
+    if (listening) return;
+
+    try {
+      const rec = new Ctor();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = "en-US";
+
+      rec.onresult = (e: any) => {
+        let interimText = "";
+        let conf = 0;
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const r = e.results[i];
+          if (r.isFinal) {
+            finalRef.current += r[0].transcript + " ";
+            conf = Math.max(conf, r[0].confidence || 0.9);
+          } else {
+            interimText += r[0].transcript;
+          }
+        }
+        setTranscript(finalRef.current.trim());
+        setInterim(interimText);
+        if (conf) setConfidence(conf);
+      };
+      rec.onerror = (e: any) => {
+        if (e.error === "no-speech") return; // keep listening
+        if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+          setError("Microphone permission was denied. Please allow access in your browser.");
+        } else {
+          setError(`Mic error: ${e.error}`);
+        }
+        setListening(false);
+      };
+      rec.onend = () => setListening(false);
+
+      finalRef.current = "";
+      setTranscript("");
+      setInterim("");
+      setConfidence(0);
+      recRef.current = rec;
+      rec.start();
+      setListening(true);
+    } catch (err: any) {
+      setError(err?.message || "Could not start microphone.");
+      setListening(false);
+    }
+  };
+
+  const stopAndContinue = () => {
+    try { recRef.current?.stop(); } catch {}
+    setListening(false);
+    const final = (finalRef.current + " " + interim).trim();
+    onStop(final || transcript || "I'd like to report a problem", confidence || 0.92);
+  };
+
+  if (!supported) {
     return (
       <div className="flex-1 flex flex-col p-5 gap-4 anim-fade-up">
         <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 text-sm">
-          Voice input isn't supported in this browser. Try Chrome or Safari, or use the keyboard.
+          Voice input isn't supported in this browser. Try Chrome or Safari, or type below.
         </div>
         <textarea
           value={manualText}
@@ -622,30 +692,60 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
     );
   }
 
+  const liveText = (transcript + (interim ? " " + interim : "")).trim();
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 bg-gradient-to-b from-white to-aiva-page anim-fade-up">
       <div className="relative">
-        <div className={`relative w-32 h-32 rounded-full bg-aiva-blue text-white flex items-center justify-center shadow-xl ${speech.listening ? "pulse-ring" : ""}`}>
+        <div className={`relative w-32 h-32 rounded-full bg-aiva-blue text-white flex items-center justify-center shadow-xl ${listening ? "pulse-ring" : ""}`}>
           <Mic className="w-12 h-12" />
         </div>
       </div>
       <div className="text-center">
-        <div className="font-semibold">{speech.listening ? "Listening…" : "Tap stop when done"}</div>
-        <div className="text-xs text-muted-foreground mt-1">Speak naturally — describe your issue.</div>
+        <div className="font-semibold">
+          {listening ? "Listening…" : transcript ? "Tap stop when done" : "Tap the mic to start"}
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          {listening ? "Speak naturally — your words appear live below." : "We'll transcribe what you say in real time."}
+        </div>
       </div>
-      <div className="w-full bg-aiva-bot-bg rounded-xl p-4 min-h-[80px] text-sm">
-        {speech.transcript ? speech.transcript : <span className="text-muted-foreground">Your words will appear here…</span>}
+
+      <div className="w-full bg-aiva-bot-bg rounded-xl p-4 min-h-[90px] text-sm">
+        {liveText ? (
+          <span>
+            <span className="text-foreground">{transcript}</span>
+            {interim && <span className="text-muted-foreground italic"> {interim}</span>}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">Your words will appear here…</span>
+        )}
       </div>
-      <button
-        onClick={() => {
-          speech.stop();
-          onStop(speech.transcript || "I'd like to report a problem", speech.confidence || 0.92);
-        }}
-        className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg active:scale-95 transition"
-        aria-label="Stop recording"
-      >
-        <Square className="w-6 h-6" fill="white" />
-      </button>
+
+      {error && (
+        <div className="w-full bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
+      )}
+
+      {!listening ? (
+        <button
+          onClick={startListening}
+          className="w-16 h-16 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shadow-lg active:scale-95 transition"
+          aria-label="Start recording"
+        >
+          <Mic className="w-7 h-7" />
+        </button>
+      ) : (
+        <button
+          onClick={stopAndContinue}
+          className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg active:scale-95 transition"
+          aria-label="Stop recording"
+        >
+          <Square className="w-6 h-6" fill="white" />
+        </button>
+      )}
+
+      {!listening && transcript && (
+        <ChoiceButton variant="primary" onClick={stopAndContinue}>Continue</ChoiceButton>
+      )}
     </div>
   );
 };
