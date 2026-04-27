@@ -718,14 +718,16 @@ const Csat = ({
       <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         Add a comment (optional)
       </label>
-      <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        rows={3}
-        placeholder="Tell us more…"
-        className="w-full mt-2 border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
-      />
-    </div>
+      <div className="mt-2">
+        <VoiceTextInput
+          value={comment}
+          onChange={setComment}
+          placeholder="Tell us more — type or dictate…"
+          ariaLabel="Comment"
+          multiline
+          rows={3}
+        />
+      </div>
     <ChoiceButton variant="primary" onClick={onSubmit}>Submit feedback</ChoiceButton>
   </div>
 );
