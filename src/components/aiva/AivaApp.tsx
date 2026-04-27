@@ -301,12 +301,12 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
 };
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
-  <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
-    <div className="flex flex-col items-center gap-8 text-center">
+  <div className="flex-1 flex flex-col bg-white text-aiva-navy anim-fade-up">
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-8 gap-7">
       <img
         src={uspsLogo}
         alt="USPS logo"
-        className="w-56 h-auto object-contain animate-[fade-up_0.7s_ease-out]"
+        className="w-44 h-auto object-contain animate-[fade-up_0.7s_ease-out]"
         style={{ animationDelay: "0.05s", animationFillMode: "both" }}
       />
       <div className="space-y-3 max-w-[280px]">
@@ -332,7 +332,7 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
       </button>
     </div>
-    <p className="text-[10px] text-muted-foreground tracking-wide">
+    <p className="text-[10px] text-muted-foreground tracking-wide text-center pb-5">
       Demo · No real account or data needed
     </p>
   </div>
