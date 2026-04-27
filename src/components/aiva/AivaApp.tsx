@@ -46,10 +46,12 @@ interface ChatMsg {
 
 export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("aiva-consent") === "1") {
-      return "qr";
-    }
-    return "consent";
+    if (typeof window === "undefined") return "consent";
+    const consented = localStorage.getItem("aiva-consent") === "1";
+    const hasLoc = !!localStorage.getItem("aiva-location");
+    if (!consented) return "consent";
+    if (!hasLoc) return "locationPermission";
+    return "qr";
   });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
@@ -59,6 +61,15 @@ export const AivaApp = () => {
   const [comment, setComment] = useState("");
   const [voiceTranscript, setVoiceTranscript] = useState("");
   const [voiceConf, setVoiceConf] = useState(0);
+  const [userLocation, setUserLocation] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("aiva-location") || "";
+  });
+
+  const persistLocation = (loc: string) => {
+    setUserLocation(loc);
+    try { localStorage.setItem("aiva-location", loc); } catch {}
+  };
 
   const goto = (s: Screen) => {
     setHistory((h) => [...h, screen]);
@@ -84,7 +95,7 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr" && screen !== "consent";
+  const showHeader = screen !== "qr" && screen !== "consent" && screen !== "locationPermission" && screen !== "addressEntry";
 
   return (
     <PhoneFrame>
