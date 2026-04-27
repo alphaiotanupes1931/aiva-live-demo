@@ -499,7 +499,17 @@ const ConfirmLocation = ({
       {!ready ? <Typing /> : (
         <>
           <Card>
-            <MapView label={`${line1}${line2 ? ", " + line2 : ""}`} height={170} />
+            <div className="rounded-xl overflow-hidden border border-border">
+              <iframe
+                title="Your location"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(`${line1}${line2 ? ", " + line2 : ""}`)}&output=embed`}
+                width="100%"
+                height="170"
+                style={{ border: 0, display: "block" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
             <div className="flex items-start gap-3 pt-3">
               <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5 text-aiva-blue-deep" />
