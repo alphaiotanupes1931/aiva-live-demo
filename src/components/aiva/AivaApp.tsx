@@ -543,19 +543,24 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
         <Card>
           <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment list</div>
           <ul className="space-y-2">
-            {EQUIP_STATUS.map((e) => (
-              <li key={e.name}>
-                <button
-                  onClick={() => onNext(e.name)}
-                  className="w-full flex items-center justify-between text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
-                >
-                  <span>{e.name}</span>
-                  <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
-                  </span>
-                </button>
-              </li>
-            ))}
+            {EQUIP_STATUS.map((e) => {
+              const isSSK = e.name.includes("SSK");
+              return (
+                <li key={e.name}>
+                  <button
+                    onClick={() => onNext(e.name)}
+                    className="w-full flex items-center justify-between text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                  >
+                    <span>{e.name}</span>
+                    {isSSK && (
+                      <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
+                        <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
+                      </span>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </Card>
       )}
