@@ -206,7 +206,30 @@ export const AivaApp = () => {
           />
         )}
         {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
-        {screen === "status" && <StatusScreen onNext={() => goto("services")} />}
+        {screen === "status" && (
+          <StatusScreen
+            onNext={(equipment) => {
+              if (!equipment) { goto("services"); return; }
+              setProblem(equipment);
+              if (equipment.includes("Drum Chute")) goto("drumChute");
+              else goto("voiceProblem");
+            }}
+          />
+        )}
+        {screen === "voiceProblem" && (
+          <VoiceListen
+            prompt={
+              problem.includes("SSK")
+                ? "What's the problem with the Self-Service Kiosk? Type or speak into the mic."
+                : "What's the problem? Type or speak into the mic."
+            }
+            onStop={(t, c) => {
+              setProblemDetail(t);
+              setVoiceConf(c);
+              goto("submitting");
+            }}
+          />
+        )}
         {screen === "services" && <Services onReport={() => goto("problemType")} />}
         {screen === "problemType" && (
           <ProblemType
