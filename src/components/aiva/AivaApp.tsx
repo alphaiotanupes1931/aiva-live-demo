@@ -1,0 +1,667 @@
+import { useEffect, useRef, useState } from "react";
+import { PhoneFrame } from "./PhoneFrame";
+import { Header } from "./Header";
+import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
+import { Wayfinding } from "./Wayfinding";
+import { useSpeech } from "./useSpeech";
+import {
+  QrCode, MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
+  ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon,
+} from "lucide-react";
+
+type Screen =
+  | "qr"
+  | "greeting"
+  | "wayfinding"
+  | "confirmLocation"
+  | "thanks"
+  | "status"
+  | "services"
+  | "problemType"
+  | "drumChute"
+  | "submitting"
+  | "submitted"
+  | "notify"
+  | "sms"
+  | "smsSent"
+  | "directions"
+  | "nearest"
+  | "anythingElse"
+  | "csat"
+  | "voiceListen"
+  | "voiceConfirm";
+
+interface ChatMsg {
+  who: "bot" | "user";
+  text: string;
+}
+
+export const AivaApp = () => {
+  const [screen, setScreen] = useState<Screen>("qr");
+  const [history, setHistory] = useState<Screen[]>([]);
+  const [problem, setProblem] = useState<string>("");
+  const [problemDetail, setProblemDetail] = useState<string>("");
+  const [phone, setPhone] = useState("");
+  const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
+  const [comment, setComment] = useState("");
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [voiceConf, setVoiceConf] = useState(0);
+
+  const goto = (s: Screen) => {
+    setHistory((h) => [...h, screen]);
+    setScreen(s);
+  };
+  const back = () => {
+    setHistory((h) => {
+      if (h.length === 0) return h;
+      const prev = h[h.length - 1];
+      setScreen(prev);
+      return h.slice(0, -1);
+    });
+  };
+  const restart = () => {
+    setHistory([]);
+    setScreen("qr");
+    setProblem("");
+    setProblemDetail("");
+    setPhone("");
+    setFeedback(null);
+    setComment("");
+    setVoiceTranscript("");
+    setVoiceConf(0);
+  };
+
+  const showHeader = screen !== "qr";
+
+  return (
+    <PhoneFrame>
+      {showHeader && (
+        <Header
+          onBack={history.length > 0 ? back : undefined}
+          onRestart={restart}
+          showBack={history.length > 0}
+        />
+      )}
+      <div className="flex-1 overflow-hidden flex flex-col bg-white">
+        {screen === "qr" && <QrLanding onScan={() => goto("greeting")} />}
+        {screen === "greeting" && (
+          <Greeting
+            onWayfinding={() => goto("wayfinding")}
+            onReport={() => goto("confirmLocation")}
+            onVoice={() => goto("voiceListen")}
+          />
+        )}
+        {screen === "wayfinding" && <Wayfinding />}
+        {screen === "confirmLocation" && (
+          <ConfirmLocation onConfirm={() => goto("thanks")} onDeny={() => goto("thanks")} />
+        )}
+        {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
+        {screen === "status" && <StatusScreen onNext={() => goto("services")} />}
+        {screen === "services" && <Services onReport={() => goto("problemType")} />}
+        {screen === "problemType" && (
+          <ProblemType
+            onPick={(p) => {
+              setProblem(p);
+              if (p === "Drum Chute") goto("drumChute");
+              else goto("submitting");
+            }}
+          />
+        )}
+        {screen === "drumChute" && (
+          <DrumChute
+            onPick={(d) => {
+              setProblemDetail(d);
+              goto("submitting");
+            }}
+          />
+        )}
+        {screen === "submitting" && (
+          <Submitting onDone={() => goto("submitted")} problem={problem} detail={problemDetail} />
+        )}
+        {screen === "submitted" && <Submitted onNext={() => goto("notify")} />}
+        {screen === "notify" && (
+          <Notify onYes={() => goto("sms")} onNo={() => goto("directions")} />
+        )}
+        {screen === "sms" && (
+          <SmsOptIn
+            phone={phone}
+            setPhone={setPhone}
+            onSend={() => goto("smsSent")}
+          />
+        )}
+        {screen === "smsSent" && <SmsSent onNext={() => goto("directions")} />}
+        {screen === "directions" && (
+          <Directions onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
+        )}
+        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
+        {screen === "anythingElse" && (
+          <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => goto("csat")} />
+        )}
+        {screen === "csat" && (
+          <Csat
+            feedback={feedback}
+            setFeedback={setFeedback}
+            comment={comment}
+            setComment={setComment}
+            onSubmit={restart}
+          />
+        )}
+        {screen === "voiceListen" && (
+          <VoiceListen
+            onStop={(t, c) => {
+              setVoiceTranscript(t);
+              setVoiceConf(c);
+              goto("voiceConfirm");
+            }}
+          />
+        )}
+        {screen === "voiceConfirm" && (
+          <VoiceConfirm
+            transcript={voiceTranscript}
+            confidence={voiceConf}
+            onConfirm={() => goto("confirmLocation")}
+            onRetry={() => goto("voiceListen")}
+          />
+        )}
+      </div>
+    </PhoneFrame>
+  );
+};
+
+/* ---------- Screens ---------- */
+
+const QrLanding = ({ onScan }: { onScan: () => void }) => (
+  <div className="flex-1 flex flex-col items-center justify-between p-8 bg-gradient-to-b from-aiva-navy to-[#1c1c4a] text-white anim-fade-up">
+    <div />
+    <div className="flex flex-col items-center gap-6 text-center">
+      <div className="text-xs uppercase tracking-[0.3em] opacity-70">USPS · SOPO</div>
+      <button
+        onClick={onScan}
+        className="bg-white text-aiva-navy w-56 h-56 rounded-2xl flex flex-col items-center justify-center gap-3 shadow-xl active:scale-95 transition"
+        aria-label="Scan QR code"
+      >
+        <QrCode className="w-32 h-32" strokeWidth={1.2} />
+        <span className="text-xs font-semibold tracking-wide">TAP TO SCAN</span>
+      </button>
+      <div className="space-y-1 max-w-xs">
+        <h1 className="text-2xl font-bold">Welcome to AIVA</h1>
+        <p className="text-sm opacity-80">
+          Your AI Virtual Assistant for this Self-Operating Post Office.
+        </p>
+      </div>
+    </div>
+    <p className="text-[11px] opacity-60">Demo · No real account or data needed</p>
+  </div>
+);
+
+const Greeting = ({
+  onWayfinding, onReport, onVoice,
+}: { onWayfinding: () => void; onReport: () => void; onVoice: () => void }) => {
+  const [showButtons, setShowButtons] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShowButtons(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="flex-1 flex flex-col anim-slide-right">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
+        {!showButtons ? <Typing /> : (
+          <>
+            <BotBubble>Hi, I'm AIVA. How can I help you today?</BotBubble>
+            <div className="space-y-2 pt-2">
+              <ChoiceButton onClick={onWayfinding}>
+                <span className="inline-flex items-center gap-2"><MapIcon className="w-4 h-4" /> Help me find something</span>
+              </ChoiceButton>
+              <ChoiceButton onClick={onReport}>
+                <span className="inline-flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report a problem</span>
+              </ChoiceButton>
+              <ChoiceButton onClick={onVoice}>
+                <span className="inline-flex items-center gap-2"><Mic className="w-4 h-4" /> Use voice instead</span>
+              </ChoiceButton>
+            </div>
+          </>
+        )}
+      </div>
+      <ComposerBar onMic={onVoice} />
+    </div>
+  );
+};
+
+const ComposerBar = ({ onMic }: { onMic: () => void }) => (
+  <div className="border-t border-border bg-white p-2 flex items-center gap-2 shrink-0">
+    <input
+      placeholder="Type a message…"
+      className="flex-1 bg-aiva-bot-bg rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40"
+    />
+    <button
+      onClick={onMic}
+      aria-label="Voice input"
+      className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center active:scale-95 transition"
+    >
+      <Mic className="w-5 h-5" />
+    </button>
+    <button aria-label="Send" className="w-10 h-10 rounded-full bg-aiva-bot-bg text-muted-foreground flex items-center justify-center">
+      <Send className="w-4 h-4" />
+    </button>
+  </div>
+);
+
+const ConvoLayout = ({ messages, children }: { messages: ChatMsg[]; children?: React.ReactNode }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: "smooth" });
+  }, [messages, children]);
+  return (
+    <div ref={ref} className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+      {messages.map((m, i) =>
+        m.who === "bot" ? <BotBubble key={i}>{m.text}</BotBubble> : <UserBubble key={i}>{m.text}</UserBubble>
+      )}
+      {children}
+    </div>
+  );
+};
+
+const useTypingDelay = (ms = 500) => {
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setDone(true), ms);
+    return () => clearTimeout(t);
+  }, [ms]);
+  return done;
+};
+
+const ConfirmLocation = ({ onConfirm, onDeny }: { onConfirm: () => void; onDeny: () => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "Is this your current location?" }]}>
+      {!ready ? <Typing /> : (
+        <>
+          <Card>
+            <div className="flex gap-3">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
+                <MapPin className="w-7 h-7 text-white" fill="white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm">Self-Operating Post Office</div>
+                <div className="text-xs text-muted-foreground">8150 Leesburg Pike</div>
+                <div className="text-xs text-muted-foreground">Vienna, VA 22182</div>
+              </div>
+            </div>
+          </Card>
+          <div className="space-y-2 pt-1">
+            <ChoiceButton variant="primary" onClick={onConfirm}>Yes, confirm location</ChoiceButton>
+            <ChoiceButton onClick={onDeny}>No, I'm at another location</ChoiceButton>
+          </div>
+        </>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const Thanks = ({ onNext }: { onNext: () => void }) => {
+  const ready = useTypingDelay(450);
+  useEffect(() => { if (ready) { const t = setTimeout(onNext, 700); return () => clearTimeout(t); } }, [ready, onNext]);
+  return (
+    <ConvoLayout
+      messages={[
+        { who: "user", text: "Yes, confirm location" },
+        ...(ready ? [{ who: "bot" as const, text: "Thanks for confirming." }] : []),
+      ]}
+    >
+      {!ready && <Typing />}
+    </ConvoLayout>
+  );
+};
+
+const EQUIP_STATUS = [
+  { name: "Self-Service Kiosk (SSK)", ok: true },
+  { name: "Drum Chute", ok: true },
+  { name: "Automated Parcel Drop (APD)", ok: true },
+  { name: "Parcel Lockers", ok: true },
+  { name: "Mail Chute", ok: true },
+];
+
+const StatusScreen = ({ onNext }: { onNext: () => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location." }]}>
+      {!ready ? <Typing /> : (
+        <>
+          <Card>
+            <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment</div>
+            <ul className="space-y-2">
+              {EQUIP_STATUS.map((e) => (
+                <li key={e.name} className="flex items-center justify-between text-sm">
+                  <span>{e.name}</span>
+                  <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+          <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
+        </>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const Services = ({ onReport }: { onReport: () => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "What services can I help with today?" }]}>
+      {!ready ? <Typing /> : <ChoiceButton variant="primary" onClick={onReport}>Report a Problem</ChoiceButton>}
+    </ConvoLayout>
+  );
+};
+
+const PROBLEMS = ["Self-Service Kiosk (SSK)", "Drum Chute", "Automated Parcel Drop (APD)", "Parcel Lockers", "Mail Chute", "Something else"];
+const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "What kind of problem are you having?" }]}>
+      {!ready ? <Typing /> : (
+        <div className="space-y-2">
+          {PROBLEMS.map((p) => (
+            <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>
+          ))}
+        </div>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const DRUM = ["It's full", "It's jammed", "Won't open", "Something else"];
+const DrumChute = ({ onPick }: { onPick: (d: string) => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout
+      messages={[
+        { who: "user", text: "Drum Chute" },
+        ...(ready ? [{ who: "bot" as const, text: "Got it, the Drum Chute. What's happening with it?" }] : []),
+      ]}
+    >
+      {!ready ? <Typing /> : (
+        <div className="space-y-2">
+          {DRUM.map((d) => (
+            <ChoiceButton key={d} onClick={() => onPick(d)}>{d}</ChoiceButton>
+          ))}
+        </div>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: string; detail: string }) => {
+  useEffect(() => { const t = setTimeout(onDone, 1800); return () => clearTimeout(t); }, [onDone]);
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8 anim-fade-up">
+      <Loader2 className="w-12 h-12 text-aiva-blue animate-spin" />
+      <div className="text-base font-semibold">Submitting your report…</div>
+      <div className="text-xs text-muted-foreground text-center">
+        {problem}{detail ? ` · ${detail}` : ""}
+      </div>
+    </div>
+  );
+};
+
+const Submitted = ({ onNext }: { onNext: () => void }) => {
+  const ready = useTypingDelay(700);
+  return (
+    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+      <div className="flex flex-col items-center gap-2 pt-4 anim-fade-up">
+        <div className="w-16 h-16 rounded-full bg-aiva-success-bg flex items-center justify-center">
+          <CheckCircle2 className="w-10 h-10 text-aiva-success" />
+        </div>
+        <div className="font-semibold text-base">Report submitted</div>
+      </div>
+      <div className="bg-aiva-success-bg border border-aiva-success/30 text-aiva-success rounded-xl p-3 text-sm font-medium anim-fade-up">
+        Thank you for reporting this issue. The local post office has been notified and will investigate shortly.
+      </div>
+      <Card>
+        <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
+        <p className="text-sm text-foreground/80 leading-relaxed">
+          The local post office will dispatch staff to investigate the Drum Chute. You don't need to do anything else — your report is in the queue.
+        </p>
+      </Card>
+      {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
+      {!ready && <Typing />}
+    </div>
+  );
+};
+
+const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
+  const ready = useTypingDelay(450);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "Want a text when it's resolved?" }]}>
+      {!ready ? <Typing /> : (
+        <div className="space-y-2">
+          <ChoiceButton variant="primary" onClick={onYes}>Yes, notify me</ChoiceButton>
+          <ChoiceButton onClick={onNo}>No thanks</ChoiceButton>
+        </div>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const SmsOptIn = ({ phone, setPhone, onSend }: { phone: string; setPhone: (s: string) => void; onSend: () => void }) => (
+  <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <BotBubble>Enter a mobile number and we'll text you when it's fixed.</BotBubble>
+    <Card>
+      <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
+      <div className="flex items-center gap-2 mt-2 border border-border rounded-lg px-3 py-2">
+        <Smartphone className="w-4 h-4 text-muted-foreground" />
+        <input
+          type="tel"
+          inputMode="tel"
+          placeholder="(555) 123-4567"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="flex-1 outline-none text-sm bg-transparent"
+        />
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-2">Number used once, not stored.</p>
+    </Card>
+    <ChoiceButton variant="primary" onClick={onSend}>Send</ChoiceButton>
+  </div>
+);
+
+const SmsSent = ({ onNext }: { onNext: () => void }) => {
+  const ready = useTypingDelay(700);
+  useEffect(() => { if (ready) { const t = setTimeout(onNext, 900); return () => clearTimeout(t); } }, [ready, onNext]);
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-3 p-8 anim-fade-up">
+      <CheckCircle2 className="w-12 h-12 text-aiva-success" />
+      <div className="font-semibold">You're all set</div>
+      <div className="text-sm text-muted-foreground text-center">We'll text you when the issue is resolved.</div>
+    </div>
+  );
+};
+
+const Directions = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "Want directions to the nearest staffed post office?" }]}>
+      {!ready ? <Typing /> : (
+        <div className="space-y-2">
+          <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
+          <ChoiceButton onClick={onNo}>No</ChoiceButton>
+        </div>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const Nearest = ({ onNext }: { onNext: () => void }) => (
+  <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <BotBubble>Here's the nearest staffed location.</BotBubble>
+    <Card>
+      <div className="flex gap-3">
+        <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
+          <MapPin className="w-7 h-7 text-white" fill="white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-sm">McLean Post Office</div>
+          <div className="text-xs text-muted-foreground">1544 Spring Hill Rd</div>
+          <div className="text-xs text-muted-foreground">McLean, VA · 2 mi away</div>
+        </div>
+      </div>
+    </Card>
+    <ChoiceButton variant="primary" onClick={onNext}>Text me the address</ChoiceButton>
+    <ChoiceButton onClick={onNext}>Skip</ChoiceButton>
+  </div>
+);
+
+const AnythingElse = ({ onAnother, onDone }: { onAnother: () => void; onDone: () => void }) => {
+  const ready = useTypingDelay(450);
+  return (
+    <ConvoLayout messages={[{ who: "bot", text: "Anything else before you go?" }]}>
+      {!ready ? <Typing /> : (
+        <div className="space-y-2">
+          <ChoiceButton onClick={onAnother}>Yes, another question</ChoiceButton>
+          <ChoiceButton variant="primary" onClick={onDone}>No, I'm done</ChoiceButton>
+        </div>
+      )}
+    </ConvoLayout>
+  );
+};
+
+const Csat = ({
+  feedback, setFeedback, comment, setComment, onSubmit,
+}: {
+  feedback: "up" | "down" | null;
+  setFeedback: (f: "up" | "down") => void;
+  comment: string;
+  setComment: (s: string) => void;
+  onSubmit: () => void;
+}) => (
+  <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-hide anim-slide-right">
+    <div className="text-center pt-2">
+      <h2 className="font-semibold text-lg">How was this experience?</h2>
+      <p className="text-sm text-muted-foreground mt-1">Your feedback helps us improve AIVA.</p>
+    </div>
+    <div className="flex gap-3 justify-center pt-2">
+      {(["up", "down"] as const).map((v) => {
+        const Icon = v === "up" ? ThumbsUp : ThumbsDown;
+        const active = feedback === v;
+        return (
+          <button
+            key={v}
+            onClick={() => setFeedback(v)}
+            className={`w-20 h-20 rounded-2xl border-2 flex items-center justify-center transition ${
+              active ? "border-aiva-blue-deep bg-aiva-blue-deep/10 text-aiva-blue-deep" : "border-border text-muted-foreground"
+            }`}
+            aria-label={v === "up" ? "Thumbs up" : "Thumbs down"}
+          >
+            <Icon className="w-8 h-8" />
+          </button>
+        );
+      })}
+    </div>
+    <div>
+      <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        Add a comment (optional)
+      </label>
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        rows={3}
+        placeholder="Tell us more…"
+        className="w-full mt-2 border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
+      />
+    </div>
+    <ChoiceButton variant="primary" onClick={onSubmit}>Submit feedback</ChoiceButton>
+  </div>
+);
+
+/* ------- Voice ------- */
+
+const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) => void }) => {
+  const speech = useSpeech();
+  const [manualText, setManualText] = useState("");
+
+  useEffect(() => {
+    if (speech.supported) speech.start();
+    return () => speech.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [speech.supported]);
+
+  if (!speech.supported) {
+    return (
+      <div className="flex-1 flex flex-col p-5 gap-4 anim-fade-up">
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 text-sm">
+          Voice input isn't supported in this browser. Try Chrome or Safari, or use the keyboard.
+        </div>
+        <textarea
+          value={manualText}
+          onChange={(e) => setManualText(e.target.value)}
+          rows={4}
+          placeholder="Type your problem here…"
+          className="w-full border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
+        />
+        <ChoiceButton variant="primary" onClick={() => onStop(manualText || "I'd like to report a problem", 1)}>
+          Continue
+        </ChoiceButton>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 bg-gradient-to-b from-white to-aiva-page anim-fade-up">
+      <div className="relative">
+        <div className={`relative w-32 h-32 rounded-full bg-aiva-blue text-white flex items-center justify-center shadow-xl ${speech.listening ? "pulse-ring" : ""}`}>
+          <Mic className="w-12 h-12" />
+        </div>
+      </div>
+      <div className="text-center">
+        <div className="font-semibold">{speech.listening ? "Listening…" : "Tap stop when done"}</div>
+        <div className="text-xs text-muted-foreground mt-1">Speak naturally — describe your issue.</div>
+      </div>
+      <div className="w-full bg-aiva-bot-bg rounded-xl p-4 min-h-[80px] text-sm">
+        {speech.transcript ? speech.transcript : <span className="text-muted-foreground">Your words will appear here…</span>}
+      </div>
+      <button
+        onClick={() => {
+          speech.stop();
+          onStop(speech.transcript || "I'd like to report a problem", speech.confidence || 0.92);
+        }}
+        className="w-16 h-16 rounded-full bg-red-600 text-white flex items-center justify-center shadow-lg active:scale-95 transition"
+        aria-label="Stop recording"
+      >
+        <Square className="w-6 h-6" fill="white" />
+      </button>
+    </div>
+  );
+};
+
+const VoiceConfirm = ({
+  transcript, confidence, onConfirm, onRetry,
+}: { transcript: string; confidence: number; onConfirm: () => void; onRetry: () => void }) => {
+  const ready = useTypingDelay(500);
+  const pct = Math.round((confidence || 0.92) * 100);
+  return (
+    <ConvoLayout
+      messages={[
+        { who: "user", text: transcript || "(no audio)" },
+        ...(ready ? [{ who: "bot" as const, text: `I heard: "${transcript}" — does that sound right?` }] : []),
+      ]}
+    >
+      {!ready ? <Typing /> : (
+        <>
+          <Card>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground inline-flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5" /> Confidence</span>
+              <span className="font-semibold text-aiva-blue-deep">{pct}%</span>
+            </div>
+            <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-aiva-blue-deep rounded-full" style={{ width: `${pct}%` }} />
+            </div>
+          </Card>
+          <ChoiceButton variant="primary" onClick={onConfirm}>Yes, that's right</ChoiceButton>
+          <ChoiceButton onClick={onRetry}>Let me try again</ChoiceButton>
+        </>
+      )}
+    </ConvoLayout>
+  );
+};
