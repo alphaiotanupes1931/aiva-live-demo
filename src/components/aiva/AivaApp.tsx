@@ -1038,10 +1038,11 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
       };
       rec.onend = () => {
         setListening(false);
-        const final = (finalRef.current + " " + interim).trim();
+        const final = (finalRef.current + " " + interimRef.current).trim();
         if (final) {
           setManualText((prev) => (prev ? prev.trimEnd() + " " : "") + final);
           finalRef.current = "";
+          interimRef.current = "";
           setTranscript("");
           setInterim("");
         }
