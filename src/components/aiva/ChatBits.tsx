@@ -1,11 +1,39 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import uspsLogo from "@/assets/usps-logo.png";
 
-const BotAvatar = () => (
-  <div className="w-7 h-7 rounded-full bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden p-0.5">
-    <img src={uspsLogo} alt="USPS" className="w-full h-full object-contain" />
-  </div>
-);
+// Preload the logo once so avatars render instantly without layout shift
+let logoPreloaded = false;
+const preloadLogo = () => {
+  if (logoPreloaded || typeof window === "undefined") return;
+  logoPreloaded = true;
+  const img = new Image();
+  img.src = uspsLogo;
+};
+
+const BotAvatar = () => {
+  useEffect(() => {
+    preloadLogo();
+  }, []);
+  return (
+    <div
+      className="w-7 h-7 rounded-full bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden p-0.5"
+      aria-label="USPS"
+    >
+      <img
+        src={uspsLogo}
+        alt="USPS"
+        width={28}
+        height={28}
+        loading="eager"
+        decoding="sync"
+        className="w-full h-full object-contain"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+        }}
+      />
+    </div>
+  );
+};
 
 export const BotBubble = ({ children }: { children: ReactNode }) => (
   <div className="flex items-end gap-2 max-w-[85%] anim-fade-up">
