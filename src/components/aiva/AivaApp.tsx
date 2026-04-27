@@ -381,7 +381,11 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
     </div>
     <div className="text-center pb-5 space-y-1.5">
       <div className="inline-flex items-center gap-1.5 text-[11px] font-medium text-foreground/70 bg-aiva-bot-bg px-2.5 py-1 rounded-full">
-        <span>US</span>
+        <img
+          src="https://cdn.britannica.com/79/4479-050-6EF87027/flag-Stars-and-Stripes-May-1-1795.jpg"
+          alt="US flag"
+          className="h-3 w-auto rounded-[1px] object-cover"
+        />
       </div>
       <p className="text-[10px] text-muted-foreground tracking-wide">
         Demo · No real account or data needed
