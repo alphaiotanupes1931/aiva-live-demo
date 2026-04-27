@@ -1,11 +1,15 @@
 import { ReactNode } from "react";
-import { User } from "lucide-react";
+import uspsLogo from "@/assets/usps-logo.png";
+
+const BotAvatar = () => (
+  <div className="w-7 h-7 rounded-full bg-white border border-border flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+    <img src={uspsLogo} alt="USPS" className="w-full h-full object-contain" />
+  </div>
+);
 
 export const BotBubble = ({ children }: { children: ReactNode }) => (
   <div className="flex items-end gap-2 max-w-[85%] anim-fade-up">
-    <div className="w-7 h-7 rounded-full bg-aiva-avatar flex items-center justify-center shrink-0 text-white">
-      <span className="text-[10px] font-semibold">AI</span>
-    </div>
+    <BotAvatar />
     <div className="bg-aiva-bot-bg text-foreground rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm leading-relaxed">
       {children}
     </div>
@@ -22,9 +26,7 @@ export const UserBubble = ({ children }: { children: ReactNode }) => (
 
 export const Typing = () => (
   <div className="flex items-end gap-2 anim-fade-up">
-    <div className="w-7 h-7 rounded-full bg-aiva-avatar flex items-center justify-center shrink-0 text-white">
-      <User className="w-3.5 h-3.5" />
-    </div>
+    <BotAvatar />
     <div className="bg-aiva-bot-bg rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1 items-center">
       <span className="typing-dot" />
       <span className="typing-dot" />
