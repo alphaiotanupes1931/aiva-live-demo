@@ -31,6 +31,7 @@ export const VoiceTextInput = ({
   const [supported, setSupported] = useState(true);
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const baseRef = useRef<string>("");
 
@@ -41,6 +42,9 @@ export const VoiceTextInput = ({
       try { recRef.current?.stop(); } catch {}
     };
   }, []);
+
+  // Real start logic — only called after permission has been granted.
+  const beginRecognition = () => {
 
   const start = () => {
     setError(null);
