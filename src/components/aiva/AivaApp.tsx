@@ -253,18 +253,7 @@ export const AivaApp = () => {
         )}
         {screen === "submitted" && <Submitted onNext={() => goto("notify")} />}
         {screen === "notify" && (
-          <Notify onYes={() => goto("sms")} onNo={() => goto("directions")} />
-        )}
-        {screen === "sms" && (
-          <SmsOptIn
-            phone={phone}
-            setPhone={setPhone}
-            onSend={() => goto("smsSent")}
-          />
-        )}
-        {screen === "smsSent" && <SmsSent onNext={() => goto("directions")} />}
-        {screen === "directions" && (
-          <Directions onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
+          <Notify onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
         )}
         {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
         {screen === "anythingElse" && (
