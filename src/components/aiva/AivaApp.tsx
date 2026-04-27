@@ -1025,6 +1025,9 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
         </div>
       </div>
       <div className="text-center">
+        {prompt && (
+          <div className="text-sm font-semibold text-foreground mb-2 px-2">{prompt}</div>
+        )}
         <div className="font-semibold">
           {listening ? "Listening…" : transcript ? "Tap stop when done" : "Tap the mic to start"}
         </div>
