@@ -46,7 +46,8 @@ type Screen =
   | "csat"
   | "voiceListen"
   | "voiceConfirm"
-  | "voiceUnclear";
+  | "voiceUnclear"
+  | "voiceProblem";
 
 interface ChatMsg {
   who: "bot" | "user";
