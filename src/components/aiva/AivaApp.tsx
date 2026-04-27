@@ -180,9 +180,7 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
       <img
         src={uspsLogo}
         alt="USPS logo"
-        width={1024}
-        height={1024}
-        className="w-40 h-40 object-contain animate-[fade-up_0.7s_ease-out]"
+        className="w-56 h-auto object-contain animate-[fade-up_0.7s_ease-out]"
         style={{ animationDelay: "0.05s", animationFillMode: "both" }}
       />
       <div className="space-y-3 max-w-[280px]">
