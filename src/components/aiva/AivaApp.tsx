@@ -126,10 +126,23 @@ export const AivaApp = () => {
           <LocationPermission
             onGranted={(addr) => {
               persistLocation(addr);
-              setScreen("greeting");
+              setScreen("confirmInitialLocation");
               setHistory([]);
             }}
             onDenied={() => {
+              setScreen("addressEntry");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "confirmInitialLocation" && (
+          <ConfirmInitialLocation
+            address={userLocation}
+            onConfirm={() => {
+              setScreen("greeting");
+              setHistory([]);
+            }}
+            onChange={() => {
               setScreen("addressEntry");
               setHistory([]);
             }}
