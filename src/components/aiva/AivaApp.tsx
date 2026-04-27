@@ -3,15 +3,20 @@ import { PhoneFrame } from "./PhoneFrame";
 import { Header } from "./Header";
 import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
+import { VoiceTextInput } from "./VoiceTextInput";
+import { MapView } from "./MapView";
 
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon, ArrowRight,
+  Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
   | "consent"
+  | "locationPermission"
+  | "addressEntry"
   | "qr"
   | "greeting"
   | "wayfinding"
