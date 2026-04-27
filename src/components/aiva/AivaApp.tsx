@@ -256,9 +256,6 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
   <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
-    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground pt-4">
-      USPS · Self-Operating Post Office
-    </div>
     <div className="flex flex-col items-center gap-8 text-center">
       <img
         src={uspsLogo}
