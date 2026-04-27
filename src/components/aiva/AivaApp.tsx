@@ -5,6 +5,9 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { MapView } from "./MapView";
+import {
+  ensureMicPermission, hasSeenMicExplainer, markMicExplainerSeen, MicPermissionExplainer,
+} from "./micPermission";
 
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
@@ -106,7 +109,7 @@ export const AivaApp = () => {
           showBack={history.length > 0}
         />
       )}
-      <div className="flex-1 overflow-hidden flex flex-col bg-white">
+      <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
         {screen === "consent" && (
           <ConsentScreen
             onAgree={() => {
@@ -808,6 +811,7 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
   const [confidence, setConfidence] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [manualText, setManualText] = useState("");
+  const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const finalRef = useRef<string>("");
 
@@ -871,6 +875,30 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
       setError(err?.message || "Could not start microphone.");
       setListening(false);
     }
+  };
+
+  const onMicTap = async () => {
+    if (!hasSeenMicExplainer()) {
+      setShowExplainer(true);
+      return;
+    }
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
+      return;
+    }
+    startListening();
+  };
+
+  const onExplainerAllow = async () => {
+    markMicExplainerSeen();
+    setShowExplainer(false);
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
+      return;
+    }
+    startListening();
   };
 
   const stopAndContinue = () => {
@@ -942,7 +970,7 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
 
       {!listening ? (
         <button
-          onClick={startListening}
+          onClick={onMicTap}
           className="w-16 h-16 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shadow-lg active:scale-95 transition"
           aria-label="Start recording"
         >
@@ -961,6 +989,12 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
       {!listening && transcript && (
         <ChoiceButton variant="primary" onClick={stopAndContinue}>Continue</ChoiceButton>
       )}
+
+      <MicPermissionExplainer
+        open={showExplainer}
+        onAllow={onExplainerAllow}
+        onCancel={() => setShowExplainer(false)}
+      />
     </div>
   );
 };

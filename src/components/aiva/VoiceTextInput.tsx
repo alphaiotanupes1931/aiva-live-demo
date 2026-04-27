@@ -1,5 +1,11 @@
-import { useEffect, useRef, useState, TextareaHTMLAttributes, InputHTMLAttributes } from "react";
+import { useEffect, useRef, useState, InputHTMLAttributes } from "react";
 import { Mic, Square } from "lucide-react";
+import {
+  ensureMicPermission,
+  hasSeenMicExplainer,
+  markMicExplainerSeen,
+  MicPermissionExplainer,
+} from "./micPermission";
 
 /**
  * Inline voice-to-text input. Renders a text field (or textarea) with a mic button.
@@ -25,6 +31,7 @@ export const VoiceTextInput = ({
   const [supported, setSupported] = useState(true);
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const baseRef = useRef<string>("");
 
@@ -36,7 +43,8 @@ export const VoiceTextInput = ({
     };
   }, []);
 
-  const start = () => {
+  // Real recognition start — only called after mic permission is granted.
+  const beginRecognition = () => {
     setError(null);
     const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!Ctor) { setSupported(false); return; }
@@ -78,6 +86,32 @@ export const VoiceTextInput = ({
     }
   };
 
+  // User tapped the mic. Show explainer first time, otherwise request permission directly.
+  const onMicClick = async () => {
+    if (listening) { stop(); return; }
+    if (!hasSeenMicExplainer()) {
+      setShowExplainer(true);
+      return;
+    }
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. You can enable it in your browser settings.");
+      return;
+    }
+    beginRecognition();
+  };
+
+  const onExplainerAllow = async () => {
+    markMicExplainerSeen();
+    setShowExplainer(false);
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. You can enable it in your browser settings.");
+      return;
+    }
+    beginRecognition();
+  };
+
   const stop = () => {
     try { recRef.current?.stop(); } catch {}
     setListening(false);
@@ -112,7 +146,7 @@ export const VoiceTextInput = ({
         {supported && (
           <button
             type="button"
-            onClick={listening ? stop : start}
+            onClick={onMicClick}
             aria-label={listening ? "Stop dictation" : "Start dictation"}
             aria-pressed={listening}
             className={`relative w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition active:scale-95 ${
@@ -136,6 +170,11 @@ export const VoiceTextInput = ({
       {error && (
         <div className="text-[11px] text-red-600 px-1">{error}</div>
       )}
+      <MicPermissionExplainer
+        open={showExplainer}
+        onAllow={onExplainerAllow}
+        onCancel={() => setShowExplainer(false)}
+      />
     </div>
   );
 };
