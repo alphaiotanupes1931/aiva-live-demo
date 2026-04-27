@@ -11,6 +11,7 @@ import {
 import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
+  | "consent"
   | "qr"
   | "greeting"
   | "wayfinding"
