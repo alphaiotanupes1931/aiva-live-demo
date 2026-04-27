@@ -874,6 +874,30 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
     }
   };
 
+  const onMicTap = async () => {
+    if (!hasSeenMicExplainer()) {
+      setShowExplainer(true);
+      return;
+    }
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
+      return;
+    }
+    startListening();
+  };
+
+  const onExplainerAllow = async () => {
+    markMicExplainerSeen();
+    setShowExplainer(false);
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
+      return;
+    }
+    startListening();
+  };
+
   const stopAndContinue = () => {
     try { recRef.current?.stop(); } catch {}
     setListening(false);
