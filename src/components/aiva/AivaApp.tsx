@@ -153,7 +153,10 @@ export const AivaApp = () => {
             onStop={(t, c) => {
               setVoiceTranscript(t);
               setVoiceConf(c);
-              goto("voiceConfirm");
+              const intent = classifyVoiceIntent(t);
+              if (intent === "wayfinding") goto("wayfinding");
+              else if (intent === "report") goto("voiceConfirm");
+              else goto("voiceUnclear");
             }}
           />
         )}
@@ -162,6 +165,14 @@ export const AivaApp = () => {
             transcript={voiceTranscript}
             confidence={voiceConf}
             onConfirm={() => goto("confirmLocation")}
+            onRetry={() => goto("voiceListen")}
+          />
+        )}
+        {screen === "voiceUnclear" && (
+          <VoiceUnclear
+            transcript={voiceTranscript}
+            onWayfinding={() => goto("wayfinding")}
+            onReport={() => goto("confirmLocation")}
             onRetry={() => goto("voiceListen")}
           />
         )}
