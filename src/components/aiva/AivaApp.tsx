@@ -79,7 +79,7 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr";
+  const showHeader = screen !== "qr" && screen !== "consent";
 
   return (
     <PhoneFrame>
@@ -91,6 +91,14 @@ export const AivaApp = () => {
         />
       )}
       <div className="flex-1 overflow-hidden flex flex-col bg-white">
+        {screen === "consent" && (
+          <ConsentScreen
+            onAgree={() => {
+              try { localStorage.setItem("aiva-consent", "1"); } catch {}
+              goto("qr");
+            }}
+          />
+        )}
         {screen === "qr" && <QrLanding onScan={() => goto("greeting")} />}
         {screen === "greeting" && (
           <Greeting
