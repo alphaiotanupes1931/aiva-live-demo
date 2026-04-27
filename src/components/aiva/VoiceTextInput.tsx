@@ -1,5 +1,11 @@
-import { useEffect, useRef, useState, TextareaHTMLAttributes, InputHTMLAttributes } from "react";
+import { useEffect, useRef, useState, InputHTMLAttributes } from "react";
 import { Mic, Square } from "lucide-react";
+import {
+  ensureMicPermission,
+  hasSeenMicExplainer,
+  markMicExplainerSeen,
+  MicPermissionExplainer,
+} from "./micPermission";
 
 /**
  * Inline voice-to-text input. Renders a text field (or textarea) with a mic button.
