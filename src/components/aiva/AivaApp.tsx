@@ -672,7 +672,12 @@ const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
       {!ready ? <Typing /> : (
         <div className="space-y-2">
           <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
-          <ChoiceButton onClick={onNo}>No</ChoiceButton>
+          <button
+            onClick={onNo}
+            className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
+          >
+            No
+          </button>
         </div>
       )}
     </ConvoLayout>
@@ -733,15 +738,17 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
     name: "Merrifield Post Office",
     address: "8409 Lee Hwy",
     city: "Merrifield, VA 22116",
-    lat: 38.8645,
-    lng: -77.2238,
     hours: "9 AM – 8 PM",
     driveMinutes: 8,
     miles: 3.2,
   };
-  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    `${PO.address}, ${PO.city}`
-  )}`;
+  const fullAddress = `${PO.address}, ${PO.city}`;
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+  const embedUrl = `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+
+  const [step, setStep] = useState<"info" | "askText" | "phone" | "sent">("info");
+  const [phone, setPhone] = useState("");
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
       <BotBubble>Here's the nearest staffed post office.</BotBubble>
@@ -766,19 +773,83 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
             <div className="font-semibold text-aiva-success mt-0.5">{PO.hours}</div>
           </div>
         </div>
-        <div className="mt-3">
-          <MapView label={`${PO.address}, ${PO.city}`} lat={PO.lat} lng={PO.lng} height={160} />
+        <div className="mt-3 rounded-xl overflow-hidden border border-border">
+          <iframe
+            title="Map to Merrifield Post Office"
+            src={embedUrl}
+            width="100%"
+            height="180"
+            style={{ border: 0, display: "block" }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </Card>
+
       <a
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-4 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl active:scale-[0.98] transition-all"
+        onClick={() => { if (step === "info") setStep("askText"); }}
       >
         <Navigation className="w-4 h-4" /> Get directions
       </a>
-      <ChoiceButton onClick={onNext}>Skip</ChoiceButton>
+
+      {step === "info" && (
+        <button
+          onClick={() => setStep("askText")}
+          className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
+        >
+          Skip
+        </button>
+      )}
+
+      {step === "askText" && (
+        <>
+          <BotBubble>Would you like a text with the address?</BotBubble>
+          <div className="space-y-2">
+            <ChoiceButton variant="primary" onClick={() => setStep("phone")}>Yes, text it to me</ChoiceButton>
+            <button
+              onClick={onNext}
+              className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
+            >
+              No thanks
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === "phone" && (
+        <Card>
+          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
+          <div className="flex items-center gap-2 mt-2 border border-border rounded-lg px-3 py-2">
+            <Smartphone className="w-4 h-4 text-muted-foreground" />
+            <input
+              type="tel"
+              inputMode="tel"
+              placeholder="(555) 123-4567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="flex-1 outline-none text-sm bg-transparent"
+            />
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-2">Number used once, not stored.</p>
+          <div className="mt-3">
+            <ChoiceButton variant="primary" onClick={() => setStep("sent")}>Send</ChoiceButton>
+          </div>
+        </Card>
+      )}
+
+      {step === "sent" && (
+        <>
+          <div className="flex items-center gap-2 bg-aiva-success-bg border border-aiva-success/30 text-aiva-success rounded-xl p-3 text-sm font-medium">
+            <CheckCircle2 className="w-5 h-5" />
+            Address sent to your phone.
+          </div>
+          <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
+        </>
+      )}
     </div>
   );
 };
