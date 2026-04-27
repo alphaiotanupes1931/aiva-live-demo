@@ -5,6 +5,9 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { MapView } from "./MapView";
+import {
+  ensureMicPermission, hasSeenMicExplainer, markMicExplainerSeen, MicPermissionExplainer,
+} from "./micPermission";
 
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
