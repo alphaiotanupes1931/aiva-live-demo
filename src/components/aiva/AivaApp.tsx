@@ -808,6 +808,7 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
   const [confidence, setConfidence] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [manualText, setManualText] = useState("");
+  const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const finalRef = useRef<string>("");
 
