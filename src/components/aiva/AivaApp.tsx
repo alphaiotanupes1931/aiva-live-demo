@@ -995,3 +995,133 @@ const VoiceConfirm = ({
     </ConvoLayout>
   );
 };
+
+/* ------- Location permission & manual address ------- */
+
+const LocationPermission = ({
+  onGranted, onDenied,
+}: { onGranted: (address: string) => void; onDenied: () => void }) => {
+  const [requesting, setRequesting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const requestLocation = () => {
+    setError(null);
+    if (!("geolocation" in navigator)) {
+      setError("Location services aren't available in this browser.");
+      onDenied();
+      return;
+    }
+    setRequesting(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        // We don't reverse-geocode in the demo — show coords-derived placeholder,
+        // and treat it as "detected current location."
+        const lat = pos.coords.latitude.toFixed(4);
+        const lon = pos.coords.longitude.toFixed(4);
+        const friendly = `Detected location (${lat}, ${lon})`;
+        setRequesting(false);
+        onGranted(friendly);
+      },
+      (err) => {
+        setRequesting(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          onDenied();
+        } else {
+          setError("We couldn't get your location. You can enter it manually.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+    );
+  };
+
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <div className="w-20 h-20 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center mx-auto">
+          <Navigation className="w-10 h-10 text-aiva-blue-deep" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Share your location</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
+            AIVA uses your location to find the nearest Self-Operating Post Office and route you to it.
+          </p>
+        </div>
+
+        <div className="bg-aiva-bot-bg rounded-xl p-4 text-[12px] leading-relaxed space-y-2 text-foreground/80">
+          <div className="flex items-start gap-2">
+            <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0 text-aiva-blue-deep" />
+            <span>
+              Your location is used only for this session. It's never stored on our servers or shared with third parties.
+            </span>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
+        )}
+
+        <div className="space-y-2">
+          <button
+            onClick={requestLocation}
+            disabled={requesting}
+            className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {requesting ? "Requesting…" : "Allow location access"}
+          </button>
+          <button
+            onClick={onDenied}
+            className="w-full bg-white border border-border text-foreground px-6 py-3 rounded-full font-medium text-sm hover:bg-aiva-bot-bg transition"
+          >
+            Enter address manually
+          </button>
+        </div>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
+  );
+};
+
+const AddressEntry = ({ onSubmit }: { onSubmit: (address: string) => void }) => {
+  const [address, setAddress] = useState("");
+  const valid = address.trim().length >= 4;
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <div className="w-20 h-20 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center mx-auto">
+          <MapPin className="w-10 h-10 text-aiva-blue-deep" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Enter your address</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
+            Type or dictate your address so AIVA can find the right Self-Operating Post Office for you.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Street address
+          </label>
+          <VoiceTextInput
+            value={address}
+            onChange={setAddress}
+            placeholder="e.g. 8150 Leesburg Pike, Vienna VA"
+            ariaLabel="Address"
+          />
+        </div>
+
+        <button
+          onClick={() => onSubmit(address.trim())}
+          disabled={!valid}
+          className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+        >
+          Continue
+        </button>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
+  );
+};
