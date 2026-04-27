@@ -43,10 +43,8 @@ export const VoiceTextInput = ({
     };
   }, []);
 
-  // Real start logic — only called after permission has been granted.
+  // Real recognition start — only called after mic permission is granted.
   const beginRecognition = () => {
-
-  const start = () => {
     setError(null);
     const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!Ctor) { setSupported(false); return; }
@@ -86,6 +84,32 @@ export const VoiceTextInput = ({
     } catch {
       setListening(false);
     }
+  };
+
+  // User tapped the mic. Show explainer first time, otherwise request permission directly.
+  const onMicClick = async () => {
+    if (listening) { stop(); return; }
+    if (!hasSeenMicExplainer()) {
+      setShowExplainer(true);
+      return;
+    }
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. You can enable it in your browser settings.");
+      return;
+    }
+    beginRecognition();
+  };
+
+  const onExplainerAllow = async () => {
+    markMicExplainerSeen();
+    setShowExplainer(false);
+    const ok = await ensureMicPermission();
+    if (!ok) {
+      setError("Microphone permission denied. You can enable it in your browser settings.");
+      return;
+    }
+    beginRecognition();
   };
 
   const stop = () => {
