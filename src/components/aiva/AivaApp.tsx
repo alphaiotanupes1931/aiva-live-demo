@@ -3,15 +3,20 @@ import { PhoneFrame } from "./PhoneFrame";
 import { Header } from "./Header";
 import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
+import { VoiceTextInput } from "./VoiceTextInput";
+import { MapView } from "./MapView";
 
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon, ArrowRight,
+  Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
   | "consent"
+  | "locationPermission"
+  | "addressEntry"
   | "qr"
   | "greeting"
   | "wayfinding"
@@ -41,10 +46,12 @@ interface ChatMsg {
 
 export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("aiva-consent") === "1") {
-      return "qr";
-    }
-    return "consent";
+    if (typeof window === "undefined") return "consent";
+    const consented = localStorage.getItem("aiva-consent") === "1";
+    const hasLoc = !!localStorage.getItem("aiva-location");
+    if (!consented) return "consent";
+    if (!hasLoc) return "locationPermission";
+    return "qr";
   });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
@@ -54,6 +61,15 @@ export const AivaApp = () => {
   const [comment, setComment] = useState("");
   const [voiceTranscript, setVoiceTranscript] = useState("");
   const [voiceConf, setVoiceConf] = useState(0);
+  const [userLocation, setUserLocation] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("aiva-location") || "";
+  });
+
+  const persistLocation = (loc: string) => {
+    setUserLocation(loc);
+    try { localStorage.setItem("aiva-location", loc); } catch {}
+  };
 
   const goto = (s: Screen) => {
     setHistory((h) => [...h, screen]);
@@ -79,7 +95,7 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr" && screen !== "consent";
+  const showHeader = screen !== "qr" && screen !== "consent" && screen !== "locationPermission" && screen !== "addressEntry";
 
   return (
     <PhoneFrame>
@@ -95,7 +111,30 @@ export const AivaApp = () => {
           <ConsentScreen
             onAgree={() => {
               try { localStorage.setItem("aiva-consent", "1"); } catch {}
-              goto("qr");
+              setScreen("locationPermission");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "locationPermission" && (
+          <LocationPermission
+            onGranted={(addr) => {
+              persistLocation(addr);
+              setScreen("qr");
+              setHistory([]);
+            }}
+            onDenied={() => {
+              setScreen("addressEntry");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "addressEntry" && (
+          <AddressEntry
+            onSubmit={(addr) => {
+              persistLocation(addr);
+              setScreen("qr");
+              setHistory([]);
             }}
           />
         )}
@@ -109,7 +148,11 @@ export const AivaApp = () => {
         )}
         {screen === "wayfinding" && <Wayfinding />}
         {screen === "confirmLocation" && (
-          <ConfirmLocation onConfirm={() => goto("thanks")} onDeny={() => goto("thanks")} />
+          <ConfirmLocation
+            address={userLocation}
+            onConfirm={() => goto("thanks")}
+            onDeny={() => goto("addressEntry")}
+          />
         )}
         {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
         {screen === "status" && <StatusScreen onNext={() => goto("services")} />}
@@ -322,24 +365,29 @@ const Greeting = ({
   );
 };
 
-const ComposerBar = ({ onMic }: { onMic: () => void }) => (
-  <div className="border-t border-border bg-white p-2 flex items-center gap-2 shrink-0">
-    <input
-      placeholder="Type a message…"
-      className="flex-1 bg-aiva-bot-bg rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40"
-    />
-    <button
-      onClick={onMic}
-      aria-label="Voice input"
-      className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center active:scale-95 transition"
-    >
-      <Mic className="w-5 h-5" />
-    </button>
-    <button aria-label="Send" className="w-10 h-10 rounded-full bg-aiva-bot-bg text-muted-foreground flex items-center justify-center">
-      <Send className="w-4 h-4" />
-    </button>
-  </div>
-);
+const ComposerBar = ({ onMic: _onMic }: { onMic: () => void }) => {
+  const [text, setText] = useState("");
+  return (
+    <div className="border-t border-border bg-white p-2 shrink-0">
+      <div className="flex items-end gap-2">
+        <VoiceTextInput
+          value={text}
+          onChange={setText}
+          placeholder="Type or dictate a message…"
+          ariaLabel="Message"
+          className="flex-1"
+        />
+        <button
+          aria-label="Send"
+          disabled={!text.trim()}
+          className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shrink-0 disabled:opacity-40 active:scale-95 transition"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const ConvoLayout = ({ messages, children }: { messages: ChatMsg[]; children?: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -365,27 +413,39 @@ const useTypingDelay = (ms = 500) => {
   return done;
 };
 
-const ConfirmLocation = ({ onConfirm, onDeny }: { onConfirm: () => void; onDeny: () => void }) => {
+const ConfirmLocation = ({
+  address, onConfirm, onDeny,
+}: { address: string; onConfirm: () => void; onDeny: () => void }) => {
   const ready = useTypingDelay(500);
+  // Parse a friendly two-line address. Fall back gracefully.
+  const lines = (address || "8150 Leesburg Pike, Vienna, VA 22182").split(",").map((s) => s.trim());
+  const line1 = lines[0] || address;
+  const line2 = lines.slice(1).join(", ");
+
   return (
     <ConvoLayout messages={[{ who: "bot", text: "Is this your current location?" }]}>
       {!ready ? <Typing /> : (
         <>
           <Card>
-            <div className="flex gap-3">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
-                <MapPin className="w-7 h-7 text-white" fill="white" />
+            <MapView label={`${line1}${line2 ? ", " + line2 : ""}`} height={170} />
+            <div className="flex items-start gap-3 pt-3">
+              <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5 text-aiva-blue-deep" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm">Self-Operating Post Office</div>
-                <div className="text-xs text-muted-foreground">8150 Leesburg Pike</div>
-                <div className="text-xs text-muted-foreground">Vienna, VA 22182</div>
+                <div className="font-semibold text-sm leading-tight">{line1}</div>
+                {line2 && (
+                  <div className="text-xs text-muted-foreground mt-0.5">{line2}</div>
+                )}
+                <div className="text-[11px] text-aiva-success font-medium mt-1 inline-flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-aiva-success" /> Location detected
+                </div>
               </div>
             </div>
           </Card>
           <div className="space-y-2 pt-1">
-            <ChoiceButton variant="primary" onClick={onConfirm}>Yes, confirm location</ChoiceButton>
-            <ChoiceButton onClick={onDeny}>No, I'm at another location</ChoiceButton>
+            <ChoiceButton variant="primary" onClick={onConfirm}>Yes, that's right</ChoiceButton>
+            <ChoiceButton onClick={onDeny}>No, change address</ChoiceButton>
           </div>
         </>
       )}
@@ -658,13 +718,16 @@ const Csat = ({
       <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         Add a comment (optional)
       </label>
-      <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        rows={3}
-        placeholder="Tell us more…"
-        className="w-full mt-2 border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
-      />
+      <div className="mt-2">
+        <VoiceTextInput
+          value={comment}
+          onChange={setComment}
+          placeholder="Tell us more — type or dictate…"
+          ariaLabel="Comment"
+          multiline
+          rows={3}
+        />
+      </div>
     </div>
     <ChoiceButton variant="primary" onClick={onSubmit}>Submit feedback</ChoiceButton>
   </div>
@@ -867,7 +930,7 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
       </div>
 
       <div className="w-full flex items-start gap-2 text-[11px] text-muted-foreground bg-aiva-bot-bg/60 border border-border rounded-lg px-3 py-2">
-        <span aria-hidden className="mt-0.5">🔒</span>
+        <Lock aria-hidden className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
         <span>
           Voice is transcribed by your browser. Audio isn't recorded or sent to USPS — only the text you confirm is shared.
         </span>
@@ -930,5 +993,135 @@ const VoiceConfirm = ({
         </>
       )}
     </ConvoLayout>
+  );
+};
+
+/* ------- Location permission & manual address ------- */
+
+const LocationPermission = ({
+  onGranted, onDenied,
+}: { onGranted: (address: string) => void; onDenied: () => void }) => {
+  const [requesting, setRequesting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const requestLocation = () => {
+    setError(null);
+    if (!("geolocation" in navigator)) {
+      setError("Location services aren't available in this browser.");
+      onDenied();
+      return;
+    }
+    setRequesting(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        // We don't reverse-geocode in the demo — show coords-derived placeholder,
+        // and treat it as "detected current location."
+        const lat = pos.coords.latitude.toFixed(4);
+        const lon = pos.coords.longitude.toFixed(4);
+        const friendly = `Detected location (${lat}, ${lon})`;
+        setRequesting(false);
+        onGranted(friendly);
+      },
+      (err) => {
+        setRequesting(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          onDenied();
+        } else {
+          setError("We couldn't get your location. You can enter it manually.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+    );
+  };
+
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <div className="w-20 h-20 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center mx-auto">
+          <Navigation className="w-10 h-10 text-aiva-blue-deep" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Share your location</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
+            AIVA uses your location to find the nearest Self-Operating Post Office and route you to it.
+          </p>
+        </div>
+
+        <div className="bg-aiva-bot-bg rounded-xl p-4 text-[12px] leading-relaxed space-y-2 text-foreground/80">
+          <div className="flex items-start gap-2">
+            <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0 text-aiva-blue-deep" />
+            <span>
+              Your location is used only for this session. It's never stored on our servers or shared with third parties.
+            </span>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
+        )}
+
+        <div className="space-y-2">
+          <button
+            onClick={requestLocation}
+            disabled={requesting}
+            className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {requesting ? "Requesting…" : "Allow location access"}
+          </button>
+          <button
+            onClick={onDenied}
+            className="w-full bg-white border border-border text-foreground px-6 py-3 rounded-full font-medium text-sm hover:bg-aiva-bot-bg transition"
+          >
+            Enter address manually
+          </button>
+        </div>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
+  );
+};
+
+const AddressEntry = ({ onSubmit }: { onSubmit: (address: string) => void }) => {
+  const [address, setAddress] = useState("");
+  const valid = address.trim().length >= 4;
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <div className="w-20 h-20 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center mx-auto">
+          <MapPin className="w-10 h-10 text-aiva-blue-deep" />
+        </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Enter your address</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
+            Type or dictate your address so AIVA can find the right Self-Operating Post Office for you.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Street address
+          </label>
+          <VoiceTextInput
+            value={address}
+            onChange={setAddress}
+            placeholder="e.g. 8150 Leesburg Pike, Vienna VA"
+            ariaLabel="Address"
+          />
+        </div>
+
+        <button
+          onClick={() => onSubmit(address.trim())}
+          disabled={!valid}
+          className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+        >
+          Continue
+        </button>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
   );
 };
