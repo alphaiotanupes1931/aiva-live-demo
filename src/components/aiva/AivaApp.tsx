@@ -413,27 +413,39 @@ const useTypingDelay = (ms = 500) => {
   return done;
 };
 
-const ConfirmLocation = ({ onConfirm, onDeny }: { onConfirm: () => void; onDeny: () => void }) => {
+const ConfirmLocation = ({
+  address, onConfirm, onDeny,
+}: { address: string; onConfirm: () => void; onDeny: () => void }) => {
   const ready = useTypingDelay(500);
+  // Parse a friendly two-line address. Fall back gracefully.
+  const lines = (address || "8150 Leesburg Pike, Vienna, VA 22182").split(",").map((s) => s.trim());
+  const line1 = lines[0] || address;
+  const line2 = lines.slice(1).join(", ");
+
   return (
     <ConvoLayout messages={[{ who: "bot", text: "Is this your current location?" }]}>
       {!ready ? <Typing /> : (
         <>
           <Card>
-            <div className="flex gap-3">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
-                <MapPin className="w-7 h-7 text-white" fill="white" />
+            <MapView label={`${line1}${line2 ? ", " + line2 : ""}`} height={170} />
+            <div className="flex items-start gap-3 pt-3">
+              <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5 text-aiva-blue-deep" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm">Self-Operating Post Office</div>
-                <div className="text-xs text-muted-foreground">8150 Leesburg Pike</div>
-                <div className="text-xs text-muted-foreground">Vienna, VA 22182</div>
+                <div className="font-semibold text-sm leading-tight">{line1}</div>
+                {line2 && (
+                  <div className="text-xs text-muted-foreground mt-0.5">{line2}</div>
+                )}
+                <div className="text-[11px] text-aiva-success font-medium mt-1 inline-flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-aiva-success" /> Location detected
+                </div>
               </div>
             </div>
           </Card>
           <div className="space-y-2 pt-1">
-            <ChoiceButton variant="primary" onClick={onConfirm}>Yes, confirm location</ChoiceButton>
-            <ChoiceButton onClick={onDeny}>No, I'm at another location</ChoiceButton>
+            <ChoiceButton variant="primary" onClick={onConfirm}>Yes, that's right</ChoiceButton>
+            <ChoiceButton onClick={onDeny}>No, change address</ChoiceButton>
           </div>
         </>
       )}
