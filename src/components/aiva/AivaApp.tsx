@@ -271,7 +271,7 @@ export const AivaApp = () => {
           <VoiceConfirm
             transcript={voiceTranscript}
             confidence={voiceConf}
-            onConfirm={() => goto("confirmLocation")}
+            onConfirm={() => goto("thanks")}
             onRetry={() => goto("voiceListen")}
           />
         )}
