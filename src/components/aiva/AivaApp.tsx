@@ -1023,6 +1023,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
           }
         }
         setTranscript(finalRef.current.trim());
+        interimRef.current = interimText;
         setInterim(interimText);
         if (conf) setConfidence(conf);
       };
