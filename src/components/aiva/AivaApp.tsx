@@ -986,6 +986,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
   const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const finalRef = useRef<string>("");
+  const interimRef = useRef<string>("");
 
   // Detect support on mount but DO NOT auto-start (gesture required)
   useEffect(() => {
