@@ -11,6 +11,7 @@ import {
 import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
+  | "consent"
   | "qr"
   | "greeting"
   | "wayfinding"
@@ -39,7 +40,12 @@ interface ChatMsg {
 }
 
 export const AivaApp = () => {
-  const [screen, setScreen] = useState<Screen>("qr");
+  const [screen, setScreen] = useState<Screen>(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("aiva-consent") === "1") {
+      return "qr";
+    }
+    return "consent";
+  });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
   const [problemDetail, setProblemDetail] = useState<string>("");
@@ -73,7 +79,7 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
-  const showHeader = screen !== "qr";
+  const showHeader = screen !== "qr" && screen !== "consent";
 
   return (
     <PhoneFrame>
@@ -85,6 +91,14 @@ export const AivaApp = () => {
         />
       )}
       <div className="flex-1 overflow-hidden flex flex-col bg-white">
+        {screen === "consent" && (
+          <ConsentScreen
+            onAgree={() => {
+              try { localStorage.setItem("aiva-consent", "1"); } catch {}
+              goto("qr");
+            }}
+          />
+        )}
         {screen === "qr" && <QrLanding onScan={() => goto("greeting")} />}
         {screen === "greeting" && (
           <Greeting
@@ -182,6 +196,66 @@ export const AivaApp = () => {
 };
 
 /* ---------- Screens ---------- */
+
+const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
+  const [agreed, setAgreed] = useState(false);
+  return (
+    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+      <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground pt-2 text-center">
+        USPS · Self-Operating Post Office
+      </div>
+      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
+        <img src={uspsLogo} alt="USPS" className="w-32 h-auto object-contain mx-auto" />
+        <div className="text-center space-y-2">
+          <h1 className="text-xl font-bold tracking-tight">Before you continue</h1>
+          <p className="text-[13px] text-foreground/70 leading-relaxed">
+            Please review how AIVA handles your information.
+          </p>
+        </div>
+
+        <div className="bg-aiva-bot-bg rounded-xl p-4 text-[12px] leading-relaxed space-y-3 text-foreground/80">
+          <div>
+            <div className="font-semibold text-foreground mb-1">What we collect</div>
+            Your menu choices and any messages you send so AIVA can help you. If you opt in to SMS updates, we use your phone number only for that ticket.
+          </div>
+          <div>
+            <div className="font-semibold text-foreground mb-1">Voice input</div>
+            Voice is transcribed by your browser's built-in speech engine. Audio is processed on your device and is <span className="font-semibold">not recorded or stored</span> by USPS.
+          </div>
+          <div>
+            <div className="font-semibold text-foreground mb-1">No tracking, no selling</div>
+            AIVA does not sell your information or use it for advertising. This is a demo experience — no real account is created.
+          </div>
+        </div>
+
+        <label className="flex items-start gap-3 text-[13px] cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-aiva-blue-deep cursor-pointer"
+          />
+          <span className="text-foreground/80">
+            I agree to the{" "}
+            <span className="text-aiva-blue-deep font-semibold underline">Terms of Use</span> and{" "}
+            <span className="text-aiva-blue-deep font-semibold underline">Privacy Notice</span>.
+          </span>
+        </label>
+
+        <button
+          onClick={onAgree}
+          disabled={!agreed}
+          className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
+        >
+          Agree & Continue
+        </button>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
+        Demo only · Not a real USPS service
+      </p>
+    </div>
+  );
+};
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
   <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
@@ -796,6 +870,13 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
         ) : (
           <span className="text-muted-foreground">Your words will appear here…</span>
         )}
+      </div>
+
+      <div className="w-full flex items-start gap-2 text-[11px] text-muted-foreground bg-aiva-bot-bg/60 border border-border rounded-lg px-3 py-2">
+        <span aria-hidden className="mt-0.5">🔒</span>
+        <span>
+          Voice is transcribed by your browser. Audio isn't recorded or sent to USPS — only the text you confirm is shared.
+        </span>
       </div>
 
       {error && (
