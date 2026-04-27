@@ -30,7 +30,8 @@ type Screen =
   | "anythingElse"
   | "csat"
   | "voiceListen"
-  | "voiceConfirm";
+  | "voiceConfirm"
+  | "voiceUnclear";
 
 interface ChatMsg {
   who: "bot" | "user";
@@ -152,7 +153,10 @@ export const AivaApp = () => {
             onStop={(t, c) => {
               setVoiceTranscript(t);
               setVoiceConf(c);
-              goto("voiceConfirm");
+              const intent = classifyVoiceIntent(t);
+              if (intent === "wayfinding") goto("wayfinding");
+              else if (intent === "report") goto("voiceConfirm");
+              else goto("voiceUnclear");
             }}
           />
         )}
@@ -161,6 +165,14 @@ export const AivaApp = () => {
             transcript={voiceTranscript}
             confidence={voiceConf}
             onConfirm={() => goto("confirmLocation")}
+            onRetry={() => goto("voiceListen")}
+          />
+        )}
+        {screen === "voiceUnclear" && (
+          <VoiceUnclear
+            transcript={voiceTranscript}
+            onWayfinding={() => goto("wayfinding")}
+            onReport={() => goto("confirmLocation")}
             onRetry={() => goto("voiceListen")}
           />
         )}
@@ -591,6 +603,71 @@ const Csat = ({
 );
 
 /* ------- Voice ------- */
+
+type VoiceIntent = "wayfinding" | "report" | "unclear";
+
+const classifyVoiceIntent = (raw: string): VoiceIntent => {
+  const t = (raw || "").toLowerCase().trim();
+  if (!t) return "unclear";
+
+  const wayfindingKeywords = [
+    "find", "where", "locate", "location", "directions", "direction",
+    "show me", "help me find", "look for", "looking for",
+    "drop off", "drop-off", "mailbox", "drop box", "kiosk",
+    "stamps", "stamp machine", "package", "packages", "parcel",
+    "scale", "weigh", "po box", "p.o. box", "pickup", "pick up",
+    "hours", "open", "closed", "wayfinding", "navigate",
+  ];
+  const reportKeywords = [
+    "report", "problem", "issue", "broken", "not working", "doesn't work",
+    "doesnt work", "isn't working", "isnt working", "stuck", "jam", "jammed",
+    "error", "complaint", "complain", "bug", "fix", "out of order",
+    "malfunction", "trouble", "help with", "something wrong", "not functioning",
+  ];
+
+  if (wayfindingKeywords.some((k) => t.includes(k))) return "wayfinding";
+  if (reportKeywords.some((k) => t.includes(k))) return "report";
+  return "unclear";
+};
+
+const VoiceUnclear = ({
+  transcript, onWayfinding, onReport, onRetry,
+}: {
+  transcript: string;
+  onWayfinding: () => void;
+  onReport: () => void;
+  onRetry: () => void;
+}) => {
+  const ready = useTypingDelay(500);
+  return (
+    <ConvoLayout
+      messages={[
+        { who: "user", text: transcript || "(no audio)" },
+        ...(ready
+          ? [{
+              who: "bot" as const,
+              text: `Sorry, I didn't quite catch that as one of my options. I can help you with two things — would you like to find something, or report a problem?`,
+            }]
+          : []),
+      ]}
+    >
+      {!ready ? <Typing /> : (
+        <>
+          <ChoiceButton variant="primary" onClick={onWayfinding}>
+            <span className="inline-flex items-center gap-2"><MapIcon className="w-4 h-4" /> Help me find something</span>
+          </ChoiceButton>
+          <ChoiceButton onClick={onReport}>
+            <span className="inline-flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report a problem</span>
+          </ChoiceButton>
+          <ChoiceButton onClick={onRetry}>
+            <span className="inline-flex items-center gap-2"><Mic className="w-4 h-4" /> Try voice again</span>
+          </ChoiceButton>
+        </>
+      )}
+    </ConvoLayout>
+  );
+};
+
 
 const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) => void }) => {
   const [supported, setSupported] = useState<boolean>(true);
