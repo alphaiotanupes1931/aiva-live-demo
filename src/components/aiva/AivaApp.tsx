@@ -139,22 +139,17 @@ export const AivaApp = () => {
         {screen === "newOrReturning" && (
           <NewOrReturning
             onNew={() => goto("onboarding")}
-            onReturning={() => {
-              if (userLocation) goto("confirmInitialLocation");
-              else goto("locationPermission");
-            }}
+            onReturning={() => goto("locationPermission")}
           />
         )}
         {screen === "onboarding" && (
           <Onboarding
             onDone={() => {
-              if (userLocation) setScreen("confirmInitialLocation");
-              else setScreen("locationPermission");
+              setScreen("locationPermission");
               setHistory([]);
             }}
             onSkip={() => {
-              if (userLocation) setScreen("confirmInitialLocation");
-              else setScreen("locationPermission");
+              setScreen("locationPermission");
               setHistory([]);
             }}
           />
@@ -167,7 +162,7 @@ export const AivaApp = () => {
               setHistory([]);
             }}
             onDenied={() => {
-              setScreen("addressEntry");
+              setScreen("confirmInitialLocation");
               setHistory([]);
             }}
           />
