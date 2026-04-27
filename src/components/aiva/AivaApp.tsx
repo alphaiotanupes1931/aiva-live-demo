@@ -986,6 +986,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
   const [showExplainer, setShowExplainer] = useState(false);
   const recRef = useRef<any>(null);
   const finalRef = useRef<string>("");
+  const interimRef = useRef<string>("");
 
   // Detect support on mount but DO NOT auto-start (gesture required)
   useEffect(() => {
@@ -1022,6 +1023,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
           }
         }
         setTranscript(finalRef.current.trim());
+        interimRef.current = interimText;
         setInterim(interimText);
         if (conf) setConfidence(conf);
       };
@@ -1034,7 +1036,17 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
         }
         setListening(false);
       };
-      rec.onend = () => setListening(false);
+      rec.onend = () => {
+        setListening(false);
+        const final = (finalRef.current + " " + interimRef.current).trim();
+        if (final) {
+          setManualText((prev) => (prev ? prev.trimEnd() + " " : "") + final);
+          finalRef.current = "";
+          interimRef.current = "";
+          setTranscript("");
+          setInterim("");
+        }
+      };
 
       finalRef.current = "";
       setTranscript("");
@@ -1153,8 +1165,14 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
             onClick={() => {
               try { recRef.current?.stop(); } catch {}
               setListening(false);
-              const final = (finalRef.current + " " + interim).trim();
-              setManualText((prev) => (prev ? prev + " " : "") + (final || transcript));
+              const final = (finalRef.current + " " + interimRef.current).trim();
+              if (final) {
+                setManualText((prev) => (prev ? prev.trimEnd() + " " : "") + final);
+                finalRef.current = "";
+                interimRef.current = "";
+                setTranscript("");
+                setInterim("");
+              }
             }}
             className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center shadow active:scale-95 transition shrink-0"
             aria-label="Stop recording"
