@@ -728,6 +728,7 @@ const Csat = ({
           rows={3}
         />
       </div>
+    </div>
     <ChoiceButton variant="primary" onClick={onSubmit}>Submit feedback</ChoiceButton>
   </div>
 );
