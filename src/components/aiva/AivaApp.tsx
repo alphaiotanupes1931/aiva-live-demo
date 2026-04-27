@@ -365,24 +365,29 @@ const Greeting = ({
   );
 };
 
-const ComposerBar = ({ onMic }: { onMic: () => void }) => (
-  <div className="border-t border-border bg-white p-2 flex items-center gap-2 shrink-0">
-    <input
-      placeholder="Type a message…"
-      className="flex-1 bg-aiva-bot-bg rounded-full px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40"
-    />
-    <button
-      onClick={onMic}
-      aria-label="Voice input"
-      className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center active:scale-95 transition"
-    >
-      <Mic className="w-5 h-5" />
-    </button>
-    <button aria-label="Send" className="w-10 h-10 rounded-full bg-aiva-bot-bg text-muted-foreground flex items-center justify-center">
-      <Send className="w-4 h-4" />
-    </button>
-  </div>
-);
+const ComposerBar = ({ onMic: _onMic }: { onMic: () => void }) => {
+  const [text, setText] = useState("");
+  return (
+    <div className="border-t border-border bg-white p-2 shrink-0">
+      <div className="flex items-end gap-2">
+        <VoiceTextInput
+          value={text}
+          onChange={setText}
+          placeholder="Type or dictate a message…"
+          ariaLabel="Message"
+          className="flex-1"
+        />
+        <button
+          aria-label="Send"
+          disabled={!text.trim()}
+          className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shrink-0 disabled:opacity-40 active:scale-95 transition"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const ConvoLayout = ({ messages, children }: { messages: ChatMsg[]; children?: React.ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null);
