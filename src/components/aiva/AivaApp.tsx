@@ -111,7 +111,30 @@ export const AivaApp = () => {
           <ConsentScreen
             onAgree={() => {
               try { localStorage.setItem("aiva-consent", "1"); } catch {}
-              goto("qr");
+              setScreen("locationPermission");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "locationPermission" && (
+          <LocationPermission
+            onGranted={(addr) => {
+              persistLocation(addr);
+              setScreen("qr");
+              setHistory([]);
+            }}
+            onDenied={() => {
+              setScreen("addressEntry");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "addressEntry" && (
+          <AddressEntry
+            onSubmit={(addr) => {
+              persistLocation(addr);
+              setScreen("qr");
+              setHistory([]);
             }}
           />
         )}
