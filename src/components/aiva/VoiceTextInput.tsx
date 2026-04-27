@@ -170,6 +170,11 @@ export const VoiceTextInput = ({
       {error && (
         <div className="text-[11px] text-red-600 px-1">{error}</div>
       )}
+      <MicPermissionExplainer
+        open={showExplainer}
+        onAllow={onExplainerAllow}
+        onCancel={() => setShowExplainer(false)}
+      />
     </div>
   );
 };
