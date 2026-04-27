@@ -194,8 +194,6 @@ export const AivaApp = () => {
             }}
           />
         )}
-          />
-        )}
         {screen === "greeting" && (
           <Greeting
             onWayfinding={() => goto("wayfinding")}
