@@ -1100,12 +1100,31 @@ const LocationPermission = ({
     }
     setRequesting(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        // We don't reverse-geocode in the demo — show coords-derived placeholder,
-        // and treat it as "detected current location."
-        const lat = pos.coords.latitude.toFixed(4);
-        const lon = pos.coords.longitude.toFixed(4);
-        const friendly = `Detected location (${lat}, ${lon})`;
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        let friendly = "";
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
+            { headers: { "Accept": "application/json" } },
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const a = data.address || {};
+            const street = [a.house_number, a.road].filter(Boolean).join(" ");
+            const city = a.city || a.town || a.village || a.hamlet || a.suburb || "";
+            const state = a.state || "";
+            const postcode = a.postcode || "";
+            const cityLine = [city, [state, postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+            friendly = [street, cityLine].filter(Boolean).join(", ") || data.display_name || "";
+          }
+        } catch {
+          // ignore — fall through to coordinate fallback
+        }
+        if (!friendly) {
+          friendly = `Lat ${lat.toFixed(4)}, Lon ${lon.toFixed(4)}`;
+        }
         setRequesting(false);
         onGranted(friendly);
       },
