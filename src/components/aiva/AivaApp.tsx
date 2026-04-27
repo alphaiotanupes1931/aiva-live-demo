@@ -279,7 +279,7 @@ export const AivaApp = () => {
           <VoiceUnclear
             transcript={voiceTranscript}
             onWayfinding={() => goto("wayfinding")}
-            onReport={() => goto("confirmLocation")}
+            onReport={() => goto("thanks")}
             onRetry={() => goto("voiceListen")}
           />
         )}
