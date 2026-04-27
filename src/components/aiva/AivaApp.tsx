@@ -1080,6 +1080,28 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
         <ChoiceButton variant="primary" onClick={stopAndContinue}>Continue</ChoiceButton>
       )}
 
+      {!listening && (
+        <div className="w-full space-y-2">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground">
+            <div className="flex-1 h-px bg-border" />
+            <span>or type it</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+          <textarea
+            value={manualText}
+            onChange={(e) => setManualText(e.target.value)}
+            rows={3}
+            placeholder="Type your problem here…"
+            className="w-full border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none"
+          />
+          {manualText.trim() && (
+            <ChoiceButton variant="primary" onClick={() => onStop(manualText.trim(), 1)}>
+              Submit
+            </ChoiceButton>
+          )}
+        </div>
+      )}
+
       <MicPermissionExplainer
         open={showExplainer}
         onAllow={onExplainerAllow}
