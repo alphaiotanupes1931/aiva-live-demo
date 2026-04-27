@@ -192,7 +192,7 @@ export const AivaApp = () => {
         {screen === "greeting" && (
           <Greeting
             onWayfinding={() => goto("wayfinding")}
-            onReport={() => goto("confirmLocation")}
+            onReport={() => goto("thanks")}
             onVoice={() => goto("voiceListen")}
           />
         )}
@@ -271,7 +271,7 @@ export const AivaApp = () => {
           <VoiceConfirm
             transcript={voiceTranscript}
             confidence={voiceConf}
-            onConfirm={() => goto("confirmLocation")}
+            onConfirm={() => goto("thanks")}
             onRetry={() => goto("voiceListen")}
           />
         )}
@@ -279,7 +279,7 @@ export const AivaApp = () => {
           <VoiceUnclear
             transcript={voiceTranscript}
             onWayfinding={() => goto("wayfinding")}
-            onReport={() => goto("confirmLocation")}
+            onReport={() => goto("thanks")}
             onRetry={() => goto("voiceListen")}
           />
         )}
