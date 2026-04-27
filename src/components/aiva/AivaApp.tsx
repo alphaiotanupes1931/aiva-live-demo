@@ -46,7 +46,8 @@ type Screen =
   | "csat"
   | "voiceListen"
   | "voiceConfirm"
-  | "voiceUnclear";
+  | "voiceUnclear"
+  | "voiceProblem";
 
 interface ChatMsg {
   who: "bot" | "user";
@@ -205,7 +206,30 @@ export const AivaApp = () => {
           />
         )}
         {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
-        {screen === "status" && <StatusScreen onNext={() => goto("services")} />}
+        {screen === "status" && (
+          <StatusScreen
+            onNext={(equipment) => {
+              if (!equipment) { goto("services"); return; }
+              setProblem(equipment);
+              if (equipment.includes("Drum Chute")) goto("drumChute");
+              else goto("voiceProblem");
+            }}
+          />
+        )}
+        {screen === "voiceProblem" && (
+          <VoiceListen
+            prompt={
+              problem.includes("SSK")
+                ? "What's the problem with the Self-Service Kiosk? Type or speak into the mic."
+                : "What's the problem? Type or speak into the mic."
+            }
+            onStop={(t, c) => {
+              setProblemDetail(t);
+              setVoiceConf(c);
+              goto("submitting");
+            }}
+          />
+        )}
         {screen === "services" && <Services onReport={() => goto("problemType")} />}
         {screen === "problemType" && (
           <ProblemType
@@ -866,7 +890,7 @@ const VoiceUnclear = ({
 };
 
 
-const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) => void }) => {
+const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: number) => void; prompt?: string }) => {
   const [supported, setSupported] = useState<boolean>(true);
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -1001,6 +1025,9 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
         </div>
       </div>
       <div className="text-center">
+        {prompt && (
+          <div className="text-sm font-semibold text-foreground mb-2 px-2">{prompt}</div>
+        )}
         <div className="font-semibold">
           {listening ? "Listening…" : transcript ? "Tap stop when done" : "Tap the mic to start"}
         </div>
