@@ -4,7 +4,7 @@ import { Header } from "./Header";
 import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
-import { MapView } from "./MapView";
+
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
 import { StateCityPicker } from "./StateCityPicker";
@@ -499,7 +499,17 @@ const ConfirmLocation = ({
       {!ready ? <Typing /> : (
         <>
           <Card>
-            <MapView label={`${line1}${line2 ? ", " + line2 : ""}`} height={170} />
+            <div className="rounded-xl overflow-hidden border border-border">
+              <iframe
+                title="Your location"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(`${line1}${line2 ? ", " + line2 : ""}`)}&output=embed`}
+                width="100%"
+                height="170"
+                style={{ border: 0, display: "block" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
             <div className="flex items-start gap-3 pt-3">
               <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5 text-aiva-blue-deep" />
@@ -672,12 +682,7 @@ const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
       {!ready ? <Typing /> : (
         <div className="space-y-2">
           <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
-          <button
-            onClick={onNo}
-            className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
-          >
-            No
-          </button>
+          <ChoiceButton onClick={onNo}>No</ChoiceButton>
         </div>
       )}
     </ConvoLayout>
@@ -753,22 +758,17 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
     <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
       <BotBubble>Here's the nearest staffed post office.</BotBubble>
       <Card>
-        <div className="flex gap-3">
-          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-[#A7C7E7] to-[#5B8DBF] flex items-center justify-center shrink-0">
-            <MapPin className="w-6 h-6 text-white" fill="white" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="font-semibold text-sm">{PO.name}</div>
-            <div className="text-xs text-muted-foreground">{PO.address}</div>
-            <div className="text-xs text-muted-foreground">{PO.city}</div>
-          </div>
+        <div>
+          <div className="font-semibold text-sm">{PO.name}</div>
+          <div className="text-xs text-muted-foreground">{PO.address}</div>
+          <div className="text-xs text-muted-foreground">{PO.city}</div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
-          <div className="rounded-lg bg-aiva-bot-bg px-2.5 py-2">
+          <div className="rounded-xl bg-aiva-bot-bg px-2.5 py-2">
             <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Drive</div>
             <div className="font-semibold text-foreground mt-0.5">{PO.driveMinutes} min · {PO.miles} mi</div>
           </div>
-          <div className="rounded-lg bg-aiva-bot-bg px-2.5 py-2">
+          <div className="rounded-xl bg-aiva-bot-bg px-2.5 py-2">
             <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Open today</div>
             <div className="font-semibold text-aiva-success mt-0.5">{PO.hours}</div>
           </div>
@@ -790,8 +790,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-4 py-3 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl active:scale-[0.98] transition-all"
-        onClick={() => { if (step === "info") setStep("askText"); }}
+        className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-4 py-3 rounded-full font-semibold text-sm hover:opacity-90 active:scale-[0.99] transition"
       >
         <Navigation className="w-4 h-4" /> Get directions
       </a>
@@ -805,12 +804,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
           <BotBubble>Would you like a text with the address?</BotBubble>
           <div className="space-y-2">
             <ChoiceButton variant="primary" onClick={() => setStep("phone")}>Yes, text it to me</ChoiceButton>
-            <button
-              onClick={onNext}
-              className="w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium text-center hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition"
-            >
-              No thanks
-            </button>
+            <ChoiceButton onClick={onNext}>Skip</ChoiceButton>
           </div>
         </>
       )}
@@ -1400,7 +1394,17 @@ const ConfirmInitialLocation = ({
         </div>
 
         <Card>
-          <MapView label={line1} height={170} />
+          <div className="rounded-xl overflow-hidden border border-border">
+            <iframe
+              title="Detected location"
+              src={`https://www.google.com/maps?q=${encodeURIComponent(`${line1}${line2 ? ", " + line2 : ""}`)}&output=embed`}
+              width="100%"
+              height="170"
+              style={{ border: 0, display: "block" }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
           <div className="flex items-start gap-3 pt-3">
             <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
               <MapPin className="w-5 h-5 text-aiva-blue-deep" />

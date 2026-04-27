@@ -76,8 +76,8 @@ export const ChoiceButton = ({
     onClick={onClick}
     className={
       variant === "primary"
-        ? "w-full bg-aiva-blue-deep text-white rounded-lg py-3 px-4 text-sm font-semibold hover:opacity-90 active:scale-[0.99] transition"
-        : "w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-lg py-3 px-4 text-sm font-medium hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition text-left"
+        ? "w-full bg-aiva-blue-deep text-white rounded-full py-3 px-4 text-sm font-semibold hover:opacity-90 active:scale-[0.99] transition"
+        : "w-full bg-white border border-aiva-blue-deep text-aiva-blue-deep rounded-full py-3 px-4 text-sm font-medium hover:bg-aiva-blue-deep/5 active:scale-[0.99] transition text-center"
     }
   >
     {children}
