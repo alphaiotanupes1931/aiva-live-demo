@@ -104,6 +104,8 @@ export const AivaApp = () => {
   const showHeader =
     screen !== "qr" &&
     screen !== "consent" &&
+    screen !== "newOrReturning" &&
+    screen !== "onboarding" &&
     screen !== "locationPermission" &&
     screen !== "confirmInitialLocation" &&
     screen !== "addressEntry";
@@ -123,6 +125,36 @@ export const AivaApp = () => {
             onAgree={() => {
               try { localStorage.setItem("aiva-consent", "1"); } catch {}
               setScreen("qr");
+              setHistory([]);
+            }}
+          />
+        )}
+        {screen === "qr" && (
+          <QrLanding
+            onScan={() => {
+              goto("newOrReturning");
+            }}
+          />
+        )}
+        {screen === "newOrReturning" && (
+          <NewOrReturning
+            onNew={() => goto("onboarding")}
+            onReturning={() => {
+              if (userLocation) goto("confirmInitialLocation");
+              else goto("locationPermission");
+            }}
+          />
+        )}
+        {screen === "onboarding" && (
+          <Onboarding
+            onDone={() => {
+              if (userLocation) setScreen("confirmInitialLocation");
+              else setScreen("locationPermission");
+              setHistory([]);
+            }}
+            onSkip={() => {
+              if (userLocation) setScreen("confirmInitialLocation");
+              else setScreen("locationPermission");
               setHistory([]);
             }}
           />
@@ -154,7 +186,7 @@ export const AivaApp = () => {
           />
         )}
         {screen === "addressEntry" && (
-          <AddressEntry
+          <StateCityPicker
             onSubmit={(addr) => {
               persistLocation(addr);
               setScreen("greeting");
@@ -162,12 +194,6 @@ export const AivaApp = () => {
             }}
           />
         )}
-        {screen === "qr" && (
-          <QrLanding
-            onScan={() => {
-              const hasLoc = !!userLocation;
-              goto(hasLoc ? "greeting" : "locationPermission");
-            }}
           />
         )}
         {screen === "greeting" && (
