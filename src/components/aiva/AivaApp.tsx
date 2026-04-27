@@ -668,11 +668,11 @@ const Submitted = ({ onNext }: { onNext: () => void }) => {
 const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
   const ready = useTypingDelay(450);
   return (
-    <ConvoLayout messages={[{ who: "bot", text: "Want a text when it's resolved?" }]}>
+    <ConvoLayout messages={[{ who: "bot", text: "Do you still need to drop off your package? If so, we can send you to the nearest post office." }]}>
       {!ready ? <Typing /> : (
         <div className="space-y-2">
-          <ChoiceButton variant="primary" onClick={onYes}>Yes, notify me</ChoiceButton>
-          <ChoiceButton onClick={onNo}>No thanks</ChoiceButton>
+          <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
+          <ChoiceButton onClick={onNo}>No</ChoiceButton>
         </div>
       )}
     </ConvoLayout>
