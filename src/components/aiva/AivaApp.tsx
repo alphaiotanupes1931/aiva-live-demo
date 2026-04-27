@@ -148,7 +148,11 @@ export const AivaApp = () => {
         )}
         {screen === "wayfinding" && <Wayfinding />}
         {screen === "confirmLocation" && (
-          <ConfirmLocation onConfirm={() => goto("thanks")} onDeny={() => goto("thanks")} />
+          <ConfirmLocation
+            address={userLocation}
+            onConfirm={() => goto("thanks")}
+            onDeny={() => goto("addressEntry")}
+          />
         )}
         {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
         {screen === "status" && <StatusScreen onNext={() => goto("services")} />}
