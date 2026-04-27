@@ -139,22 +139,17 @@ export const AivaApp = () => {
         {screen === "newOrReturning" && (
           <NewOrReturning
             onNew={() => goto("onboarding")}
-            onReturning={() => {
-              if (userLocation) goto("confirmInitialLocation");
-              else goto("locationPermission");
-            }}
+            onReturning={() => goto("locationPermission")}
           />
         )}
         {screen === "onboarding" && (
           <Onboarding
             onDone={() => {
-              if (userLocation) setScreen("confirmInitialLocation");
-              else setScreen("locationPermission");
+              setScreen("locationPermission");
               setHistory([]);
             }}
             onSkip={() => {
-              if (userLocation) setScreen("confirmInitialLocation");
-              else setScreen("locationPermission");
+              setScreen("locationPermission");
               setHistory([]);
             }}
           />
@@ -167,7 +162,7 @@ export const AivaApp = () => {
               setHistory([]);
             }}
             onDenied={() => {
-              setScreen("addressEntry");
+              setScreen("confirmInitialLocation");
               setHistory([]);
             }}
           />
@@ -384,9 +379,15 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
       </button>
     </div>
-    <p className="text-[10px] text-muted-foreground tracking-wide text-center pb-5">
-      Demo · No real account or data needed
-    </p>
+    <div className="text-center pb-5 space-y-1.5">
+      <div className="inline-flex items-center gap-1.5 text-[11px] font-medium text-foreground/70 bg-aiva-bot-bg px-2.5 py-1 rounded-full">
+        <span className="text-sm leading-none">🇺🇸</span>
+        <span>Detected country: United States</span>
+      </div>
+      <p className="text-[10px] text-muted-foreground tracking-wide">
+        Demo · No real account or data needed
+      </p>
+    </div>
   </div>
 );
 
@@ -1099,12 +1100,31 @@ const LocationPermission = ({
     }
     setRequesting(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        // We don't reverse-geocode in the demo — show coords-derived placeholder,
-        // and treat it as "detected current location."
-        const lat = pos.coords.latitude.toFixed(4);
-        const lon = pos.coords.longitude.toFixed(4);
-        const friendly = `Detected location (${lat}, ${lon})`;
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        let friendly = "";
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
+            { headers: { "Accept": "application/json" } },
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const a = data.address || {};
+            const street = [a.house_number, a.road].filter(Boolean).join(" ");
+            const city = a.city || a.town || a.village || a.hamlet || a.suburb || "";
+            const state = a.state || "";
+            const postcode = a.postcode || "";
+            const cityLine = [city, [state, postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+            friendly = [street, cityLine].filter(Boolean).join(", ") || data.display_name || "";
+          }
+        } catch {
+          // ignore — fall through to coordinate fallback
+        }
+        if (!friendly) {
+          friendly = `Lat ${lat.toFixed(4)}, Lon ${lon.toFixed(4)}`;
+        }
         setRequesting(false);
         onGranted(friendly);
       },

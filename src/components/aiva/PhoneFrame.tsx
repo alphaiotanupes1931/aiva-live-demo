@@ -22,7 +22,7 @@ const BrowserChrome = ({ children }: { children: ReactNode }) => (
       </div>
       <div className="flex-1 bg-[#f1f3f4] rounded-full px-3 py-1.5 flex items-center gap-2">
         <Lock className="w-3 h-3 text-foreground/50" />
-        <span className="text-xs text-foreground/70 truncate">aiva.usps.com/sopo/vienna-va</span>
+        <span className="text-xs text-foreground/70 truncate">aiva.usps.com</span>
       </div>
       <Search className="w-4 h-4 text-foreground/40" />
     </div>
