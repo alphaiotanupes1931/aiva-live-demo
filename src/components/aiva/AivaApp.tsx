@@ -970,7 +970,7 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
 
       {!listening ? (
         <button
-          onClick={startListening}
+          onClick={onMicTap}
           className="w-16 h-16 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shadow-lg active:scale-95 transition"
           aria-label="Start recording"
         >
