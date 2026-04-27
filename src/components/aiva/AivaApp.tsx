@@ -5,9 +5,10 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { useSpeech } from "./useSpeech";
 import {
-  QrCode, MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
-  ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon,
+  MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
+  ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon, ArrowRight,
 } from "lucide-react";
+import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
   | "qr"
@@ -171,26 +172,45 @@ export const AivaApp = () => {
 /* ---------- Screens ---------- */
 
 const QrLanding = ({ onScan }: { onScan: () => void }) => (
-  <div className="flex-1 flex flex-col items-center justify-between p-8 bg-gradient-to-b from-aiva-navy to-[#1c1c4a] text-white anim-fade-up">
-    <div />
-    <div className="flex flex-col items-center gap-6 text-center">
-      <div className="text-xs uppercase tracking-[0.3em] opacity-70">USPS · SOPO</div>
-      <button
-        onClick={onScan}
-        className="bg-white text-aiva-navy w-56 h-56 rounded-2xl flex flex-col items-center justify-center gap-3 shadow-xl active:scale-95 transition"
-        aria-label="Scan QR code"
-      >
-        <QrCode className="w-32 h-32" strokeWidth={1.2} />
-        <span className="text-xs font-semibold tracking-wide">TAP TO SCAN</span>
-      </button>
-      <div className="space-y-1 max-w-xs">
-        <h1 className="text-2xl font-bold">Welcome to AIVA</h1>
-        <p className="text-sm opacity-80">
-          Your AI Virtual Assistant for this Self-Operating Post Office.
+  <div className="flex-1 flex flex-col items-center justify-between p-8 bg-white text-aiva-navy anim-fade-up">
+    <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground pt-4">
+      USPS · Self-Operating Post Office
+    </div>
+    <div className="flex flex-col items-center gap-8 text-center">
+      <img
+        src={uspsLogo}
+        alt="USPS logo"
+        width={1024}
+        height={1024}
+        className="w-40 h-40 object-contain animate-[fade-up_0.7s_ease-out]"
+        style={{ animationDelay: "0.05s", animationFillMode: "both" }}
+      />
+      <div className="space-y-3 max-w-[280px]">
+        <h1
+          className="text-[26px] leading-tight font-bold tracking-tight anim-fade-up"
+          style={{ animationDelay: "0.25s", animationFillMode: "both" }}
+        >
+          Welcome to <span className="text-aiva-blue-deep">AIVA</span>
+        </h1>
+        <p
+          className="text-[14px] leading-relaxed text-foreground/70 anim-fade-up"
+          style={{ animationDelay: "0.4s", animationFillMode: "both" }}
+        >
+          Your AI Virtual Assistant for Self-Operating Post Offices.
         </p>
       </div>
+      <button
+        onClick={onScan}
+        className="group inline-flex items-center gap-2 bg-aiva-blue-deep text-white px-7 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all anim-fade-up"
+        style={{ animationDelay: "0.55s", animationFillMode: "both" }}
+      >
+        Get started
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+      </button>
     </div>
-    <p className="text-[11px] opacity-60">Demo · No real account or data needed</p>
+    <p className="text-[10px] text-muted-foreground tracking-wide">
+      Demo · No real account or data needed
+    </p>
   </div>
 );
 
