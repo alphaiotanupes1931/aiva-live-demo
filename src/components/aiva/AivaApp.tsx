@@ -51,10 +51,7 @@ export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
     if (typeof window === "undefined") return "consent";
     const consented = localStorage.getItem("aiva-consent") === "1";
-    const hasLoc = !!localStorage.getItem("aiva-location");
-    if (!consented) return "consent";
-    if (!hasLoc) return "locationPermission";
-    return "qr";
+    return consented ? "qr" : "consent";
   });
   const [history, setHistory] = useState<Screen[]>([]);
   const [problem, setProblem] = useState<string>("");
