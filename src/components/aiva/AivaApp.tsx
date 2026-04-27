@@ -989,6 +989,12 @@ const VoiceListen = ({ onStop }: { onStop: (transcript: string, conf: number) =>
       {!listening && transcript && (
         <ChoiceButton variant="primary" onClick={stopAndContinue}>Continue</ChoiceButton>
       )}
+
+      <MicPermissionExplainer
+        open={showExplainer}
+        onAllow={onExplainerAllow}
+        onCancel={() => setShowExplainer(false)}
+      />
     </div>
   );
 };
