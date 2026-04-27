@@ -5,6 +5,9 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { MapView } from "./MapView";
+import { Onboarding } from "./Onboarding";
+import { NewOrReturning } from "./NewOrReturning";
+import { StateCityPicker } from "./StateCityPicker";
 import {
   ensureMicPermission, hasSeenMicExplainer, markMicExplainerSeen, MicPermissionExplainer,
 } from "./micPermission";
@@ -18,10 +21,12 @@ import uspsLogo from "@/assets/usps-logo.png";
 
 type Screen =
   | "consent"
+  | "qr"
+  | "newOrReturning"
+  | "onboarding"
   | "locationPermission"
   | "confirmInitialLocation"
   | "addressEntry"
-  | "qr"
   | "greeting"
   | "wayfinding"
   | "confirmLocation"
