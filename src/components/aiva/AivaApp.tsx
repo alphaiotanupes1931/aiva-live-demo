@@ -535,27 +535,29 @@ const EQUIP_STATUS = [
   { name: "Mail Chute", ok: true },
 ];
 
-const StatusScreen = ({ onNext }: { onNext: () => void }) => {
+const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
   const ready = useTypingDelay(500);
   return (
-    <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location." }]}>
+    <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
-        <>
-          <Card>
-            <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment</div>
-            <ul className="space-y-2">
-              {EQUIP_STATUS.map((e) => (
-                <li key={e.name} className="flex items-center justify-between text-sm">
+        <Card>
+          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment list</div>
+          <ul className="space-y-2">
+            {EQUIP_STATUS.map((e) => (
+              <li key={e.name}>
+                <button
+                  onClick={() => onNext(e.name)}
+                  className="w-full flex items-center justify-between text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                >
                   <span>{e.name}</span>
                   <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
                     <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
                   </span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-          <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
-        </>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Card>
       )}
     </ConvoLayout>
   );
