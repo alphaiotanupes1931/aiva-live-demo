@@ -47,11 +47,11 @@ const StepLayout = ({
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img src={photo} alt={photoAlt || ""} loading="lazy" className="w-full h-auto object-cover block" />
         </div>
-      ) : (
+      ) : photoUnavailable ? (
         <div className="rounded-2xl bg-aiva-bot-bg/40 border border-dashed border-border flex items-center justify-center aspect-[4/3]">
           <span className="text-xs text-muted-foreground font-medium">Photo unavailable</span>
         </div>
-      )}
+      ) : null}
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
       <button
