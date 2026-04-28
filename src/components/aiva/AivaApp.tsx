@@ -263,8 +263,41 @@ export const AivaApp = () => {
         {screen === "arrived" && (
           <Arrived
             service={serviceIntent}
-            onWalkthrough={() => goto("thanks")}
+            onWalkthrough={() => {
+              if (serviceIntent === "Ship a Package") goto("shipIntro");
+              else goto("thanks");
+            }}
             onDone={() => goto("anythingElse")}
+          />
+        )}
+        {screen === "shipIntro" && (
+          <ShipIntro onNext={() => goto("shipStep1")} onBack={back} />
+        )}
+        {screen === "shipStep1" && (
+          <ShipStep1 onNext={() => goto("shipStep2")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "shipStep2" && (
+          <ShipStep2 onNext={() => goto("shipStep3")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "shipStep3" && (
+          <ShipStep3 onNext={() => goto("shipStep4")} onMore={() => goto("shipServiceCompare")} />
+        )}
+        {screen === "shipServiceCompare" && (
+          <ShipServiceCompare onBack={back} />
+        )}
+        {screen === "shipStep4" && (
+          <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "shipStep5" && (
+          <ShipStep5 onNext={() => goto("shipDone")} onWhere={() => goto("shipDrumChuteWhere")} />
+        )}
+        {screen === "shipDrumChuteWhere" && (
+          <ShipDrumChuteWhere onBack={back} />
+        )}
+        {screen === "shipDone" && (
+          <ShipDone
+            onDone={() => goto("csat")}
+            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
         {screen === "confirmLocation" && (
