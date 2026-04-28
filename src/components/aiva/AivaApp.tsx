@@ -4,6 +4,7 @@ import { Header } from "./Header";
 import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
+import { ChatbotModal } from "./ChatbotModal";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
@@ -91,6 +92,7 @@ export const AivaApp = () => {
   });
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
+  const [chatOpen, setChatOpen] = useState(false);
 
   const persistLocation = (loc: string) => {
     setUserLocation(loc);
@@ -136,7 +138,7 @@ export const AivaApp = () => {
       {showHeader && (
         <Header
           onBack={history.length > 0 ? back : undefined}
-          onRestart={restart}
+          onChat={() => setChatOpen(true)}
           showBack={history.length > 0}
         />
       )}
@@ -338,6 +340,7 @@ export const AivaApp = () => {
           />
         )}
       </div>
+      <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} />
     </PhoneFrame>
   );
 };
