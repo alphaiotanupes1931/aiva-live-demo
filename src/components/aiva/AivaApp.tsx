@@ -623,7 +623,41 @@ const ConfirmLocation = ({
   );
 };
 
-const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone: () => void }) => {
+const ARRIVED_INFO: Record<string, { equipment: string; zone: string; context: string; photo: string; alt: string; cta: string }> = {
+  "Ship a Package": {
+    equipment: "Self-Service Kiosk", zone: "Zone 2",
+    context: "Use this to weigh, label, and pay for your package.",
+    photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk",
+    cta: "Walk me through shipping",
+  },
+  "Drop Off a Prepaid Package": {
+    equipment: "Automated Parcel Drop", zone: "Zone 3",
+    context: "Scan your prepaid label and drop your package inside.",
+    photo: apdPhoto, alt: "USPS Automated Parcel Drop",
+    cta: "Walk me through dropping off",
+  },
+  "Buy Stamps": {
+    equipment: "Self-Service Kiosk", zone: "Zone 2",
+    context: "Use this to buy stamps and pay with card or contactless.",
+    photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk",
+    cta: "Walk me through buying stamps",
+  },
+  "Pick Up a Package": {
+    equipment: "Parcel Lockers", zone: "Zone 4",
+    context: "Tap your pickup code on the screen to open your locker.",
+    photo: parcelLockersPhoto, alt: "USPS Parcel Lockers",
+    cta: "Walk me through pickup",
+  },
+  "Access PO Box": {
+    equipment: "PO Box Wall", zone: "Zone 4",
+    context: "Use your PO Box key or combination to retrieve your mail.",
+    photo: parcelLockersPhoto, alt: "USPS PO Boxes",
+    cta: "Walk me through PO Box access",
+  },
+};
+
+const Arrived = ({ service, onWalkthrough, onDone }: { service?: string; onWalkthrough: () => void; onDone: () => void }) => {
+  const info = (service && ARRIVED_INFO[service]) || ARRIVED_INFO["Ship a Package"];
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
@@ -632,15 +666,15 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
           <div className="text-sm font-semibold text-aiva-success">You have arrived</div>
         </div>
 
-        <h1 className="text-xl font-bold text-aiva-navy mb-1">Self-Service Kiosk</h1>
+        <h1 className="text-xl font-bold text-aiva-navy mb-1">{info.equipment}</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          Zone 2 · Use this to weigh, label, and pay for your package.
+          {info.zone} · {info.context}
         </p>
 
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img
-            src={sskKioskPhoto}
-            alt="USPS Self-Service Kiosk"
+            src={info.photo}
+            alt={info.alt}
             loading="lazy"
             className="w-full h-auto object-cover block"
           />
@@ -652,7 +686,7 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
           onClick={onWalkthrough}
           className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
         >
-          Walk me through shipping
+          {info.cta}
         </button>
         <button
           onClick={onDone}
@@ -663,6 +697,7 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
       </div>
     </div>
   );
+
 };
 
 const Thanks = ({ onNext }: { onNext: () => void }) => {
