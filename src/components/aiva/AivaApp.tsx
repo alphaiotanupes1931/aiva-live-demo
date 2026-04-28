@@ -90,7 +90,7 @@ export const AivaApp = () => {
     return localStorage.getItem("aiva-location") || "";
   });
 
-  const persistLocation = (loc: string) => {
+  const [serviceIntent, setServiceIntent] = useState<string>("");
     setUserLocation(loc);
     try { localStorage.setItem("aiva-location", loc); } catch {}
   };
