@@ -193,6 +193,7 @@ export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
     banner={{ text: "✓ You're all set" }}
     title="Your package is on its way"
     subtitle="Thanks for using AIVA. Have a great day."
+    photoUnavailable={false}
     primaryLabel="Done"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
