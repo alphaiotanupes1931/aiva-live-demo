@@ -292,7 +292,7 @@ export const AivaApp = () => {
         {screen === "submitting" && (
           <Submitting onDone={() => goto("submitted")} problem={problem} detail={problemDetail} />
         )}
-        {screen === "submitted" && <Submitted onNext={() => goto("notify")} />}
+        {screen === "submitted" && <Submitted problem={problem} onNext={() => goto("notify")} />}
         {screen === "notify" && (
           <Notify onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
         )}
