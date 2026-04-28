@@ -218,16 +218,23 @@ export const AivaApp = () => {
           />
         )}
         {screen === "findIntent" && (
-          <FindIntent onSelect={() => goto("wayfinding")} />
+          <FindIntent
+            onSelect={(intent) => {
+              setServiceIntent(intent);
+              goto("wayfinding");
+            }}
+          />
         )}
         {screen === "wayfinding" && (
           <Wayfinding
+            service={serviceIntent}
             onFound={() => goto("arrived")}
             onNotFound={() => goto("thanks")}
           />
         )}
         {screen === "arrived" && (
           <Arrived
+            service={serviceIntent}
             onWalkthrough={() => goto("thanks")}
             onDone={() => goto("anythingElse")}
           />
