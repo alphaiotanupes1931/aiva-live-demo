@@ -549,29 +549,21 @@ const Expandable = ({
 };
 
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
-  const [selected, setSelected] = useState<string | null>(null);
   return (
     <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
-      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-5 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">What would you like to do?</h1>
         <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll point you to the right equipment.</p>
         <div className="space-y-2.5">
-          {FIND_INTENTS.map((intent) => {
-            const active = selected === intent;
-            return (
-              <button
-                key={intent}
-                onClick={() => setSelected(intent)}
-                className={`w-full h-12 rounded-full font-semibold text-sm transition border-2 ${
-                  active
-                    ? "bg-aiva-navy text-white border-aiva-navy"
-                    : "bg-white text-aiva-navy border-aiva-navy/20 hover:border-aiva-navy/50"
-                }`}
-              >
-                {intent}
-              </button>
-            );
-          })}
+          {FIND_INTENTS.map((intent) => (
+            <button
+              key={intent}
+              onClick={() => onSelect(intent)}
+              className="w-full h-12 rounded-full font-semibold text-sm transition border-2 bg-white text-aiva-navy border-aiva-navy/20 hover:border-aiva-navy/50 hover:bg-aiva-navy hover:text-white active:scale-[0.99]"
+            >
+              {intent}
+            </button>
+          ))}
         </div>
 
         <div className="mt-6">
@@ -610,15 +602,6 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
             </Expandable>
           </div>
         </div>
-      </div>
-      <div className="px-5 pb-5 pt-2 shrink-0">
-        <button
-          onClick={() => selected && onSelect(selected)}
-          disabled={!selected}
-          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          Continue
-        </button>
       </div>
     </div>
   );
