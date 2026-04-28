@@ -54,21 +54,21 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
   },
   "Pick Up a Package": {
     equipment: "Parcel Lockers",
-    zone: "Zone 4 · Check It",
+    zone: "Zone 4 · Pick Up",
     cue: "On your left, toward the back",
     photo: parcelLockersPhoto,
     alt: "USPS Parcel Lockers",
     signage: signageZone4,
-    signageAlt: "Check It zone signage",
+    signageAlt: "Pick Up zone signage",
   },
   "Access PO Box": {
     equipment: "PO Box Wall",
-    zone: "Zone 4 · Check It",
+    zone: "Zone 4 · Pick Up",
     cue: "On your left as you walk in",
     photo: poBoxesPhoto,
     alt: "USPS PO Boxes",
     signage: signageZone4,
-    signageAlt: "Check It zone signage",
+    signageAlt: "Pick Up zone signage",
   },
 };
 
