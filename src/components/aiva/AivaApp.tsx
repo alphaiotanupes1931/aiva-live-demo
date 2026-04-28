@@ -603,15 +603,6 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
           </div>
         </div>
       </div>
-      <div className="px-5 pb-5 pt-2 shrink-0">
-        <button
-          onClick={() => selected && onSelect(selected)}
-          disabled={!selected}
-          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          Continue
-        </button>
-      </div>
     </div>
   );
 };
