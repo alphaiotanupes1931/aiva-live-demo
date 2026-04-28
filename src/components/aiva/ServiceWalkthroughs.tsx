@@ -1,4 +1,6 @@
-import { CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CheckCircle2, Mail, MapPin } from "lucide-react";
+import { toast } from "sonner";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
