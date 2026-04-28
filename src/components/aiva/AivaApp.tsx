@@ -261,8 +261,18 @@ export const AivaApp = () => {
         {screen === "findIntent" && (
           <FindIntent
             onSelect={(intent) => {
+              if (intent === "Drop Off a Prepaid Package") {
+                setServiceIntent(intent);
+                goto("dropIntro");
+                return;
+              }
+              if (intent === "Buy Stamps") {
+                setServiceIntent(intent);
+                goto("stampsIntro");
+                return;
+              }
               if (intent === "Pick Up Mail or Package") {
-                goto("pickupChoice");
+                goto("pickupTriage");
                 return;
               }
               setServiceIntent(intent);
