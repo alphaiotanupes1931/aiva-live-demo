@@ -1136,13 +1136,17 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
                     onClick={() => onNext(e.name)}
                     className="w-full flex items-center gap-3 text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
                   >
-                    {photo && (
+                    {photo ? (
                       <img
                         src={photo.photo}
                         alt={photo.alt}
                         loading="lazy"
                         className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
                       />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg border border-dashed border-border bg-muted/40 shrink-0 flex items-center justify-center text-[9px] text-muted-foreground text-center leading-tight px-1">
+                        Photo unavailable
+                      </div>
                     )}
                     <span className="flex-1 min-w-0 truncate">{e.name}</span>
                     {isSSK && (
