@@ -454,7 +454,7 @@ const FIND_INTENTS = [
 ];
 
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
-  const [selected, setSelected] = useState<string>(FIND_INTENTS[0]);
+  const [selected, setSelected] = useState<string | null>(null);
   return (
     <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
@@ -481,8 +481,9 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
       </div>
       <div className="px-5 pb-5 pt-2 shrink-0">
         <button
-          onClick={() => onSelect(selected)}
-          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+          onClick={() => selected && onSelect(selected)}
+          disabled={!selected}
+          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Continue
         </button>

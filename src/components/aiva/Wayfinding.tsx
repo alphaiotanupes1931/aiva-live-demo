@@ -1,4 +1,5 @@
 import purchaseItSign from "@/assets/zone-purchase-it.png";
+import kioskPhoto from "@/assets/ssk-kiosk.jpg";
 
 interface WayfindingProps {
   onFound?: () => void;
@@ -14,24 +15,35 @@ export const Wayfinding = ({ onFound, onNotFound }: WayfindingProps) => {
           Look up — you'll see this sign above the Self-Service Kiosk.
         </p>
 
-        <div className="mb-3">
+        <div className="mb-2">
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
             Look for this sign
           </div>
-          <div className="text-base font-bold text-foreground leading-tight">
-            "PURCHASE IT"
-          </div>
-          <div className="text-sm text-muted-foreground mt-0.5">
+          <div className="text-sm text-muted-foreground">
             Zone 2 · On your right as you walk in
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden bg-[#F5F1EA] border border-border shadow-sm aspect-[16/9] flex items-center justify-center p-4">
+        <div className="rounded-2xl overflow-hidden bg-[#F5F1EA] border border-border shadow-sm aspect-[16/7] flex items-center justify-center p-3 mb-3">
           <img
             src={purchaseItSign}
-            alt="Purchase It — Complete Transaction Here sign above the USPS Self-Service Kiosk"
+            alt="Purchase It — Complete Transaction Here sign"
             loading="lazy"
             className="w-full h-full object-contain"
+          />
+        </div>
+
+        <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
+          Then walk to this kiosk
+        </div>
+        <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
+          <img
+            src={kioskPhoto}
+            alt="USPS Self-Service Kiosk"
+            width={768}
+            height={1024}
+            loading="lazy"
+            className="w-full h-auto object-cover block"
           />
         </div>
       </div>
