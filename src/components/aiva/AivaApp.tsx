@@ -347,7 +347,10 @@ export const AivaApp = () => {
           <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} />
         )}
         {screen === "dropStep2" && (
-          <DropStep2 onNext={() => goto("dropStep3")} onHelp={() => setChatOpen(true)} />
+          <DropStep2 onNext={() => goto("dropStep3")} onTooBig={() => goto("dropTooBig")} />
+        )}
+        {screen === "dropTooBig" && (
+          <DropTooBigRedirect onDirections={() => goto("wayfinding")} onBack={back} />
         )}
         {screen === "dropStep3" && (
           <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("thanks")} />
