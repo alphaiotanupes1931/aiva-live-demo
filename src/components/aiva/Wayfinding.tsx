@@ -82,9 +82,7 @@ export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) =>
           Use this equipment
         </div>
         <h1 className="text-xl font-bold text-aiva-navy mb-1">{g.equipment}</h1>
-        <p className="text-sm text-muted-foreground mb-4">
-          {g.zone} · {g.cue}
-        </p>
+        <p className="text-sm text-muted-foreground mb-4">{g.zone}</p>
 
         {g.signage && (
           <div className="mb-3">
