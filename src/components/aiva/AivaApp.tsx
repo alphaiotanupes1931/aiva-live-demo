@@ -15,6 +15,7 @@ import {
   PickupTriage, PkgFindLockers, PkgEnterCode, PkgDone,
   POBoxFind, POBoxDone, HeldMailRedirect,
 } from "./ServiceWalkthroughs";
+import { QuickCheck, StaffedPORedirect } from "./QuickCheck";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
@@ -93,6 +94,8 @@ type Screen =
   | "dropStep3"
   | "dropDone"
   | "dropTooBig"
+  | "quickCheck"
+  | "quickCheckRedirect"
   | "stampsIntro"
   | "stampsFindSSK"
   | "stampsStep1"
@@ -133,6 +136,8 @@ export const AivaApp = () => {
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [quickCheckReason, setQuickCheckReason] = useState<"hazmat" | "oversized" | "both">("hazmat");
+  const [pendingFlow, setPendingFlow] = useState<"ship" | "drop" | null>(null);
 
   const persistLocation = (loc: string) => {
     setUserLocation(loc);
@@ -264,7 +269,14 @@ export const AivaApp = () => {
             onSelect={(intent) => {
               if (intent === "Drop Off a Prepaid Package") {
                 setServiceIntent(intent);
-                goto("dropIntro");
+                setPendingFlow("drop");
+                goto("quickCheck");
+                return;
+              }
+              if (intent === "Ship a Package") {
+                setServiceIntent(intent);
+                setPendingFlow("ship");
+                goto("quickCheck");
                 return;
               }
               if (intent === "Buy Stamps") {
@@ -338,6 +350,30 @@ export const AivaApp = () => {
         )}
 
         {/* Drop Off a Prepaid Package */}
+
+        {/* Quick Check screening (Ship + Drop Off only) */}
+        {screen === "quickCheck" && (
+          <QuickCheck
+            onContinue={(result) => {
+              if (result === "none") {
+                if (pendingFlow === "drop") goto("dropIntro");
+                else if (pendingFlow === "ship") goto("wayfinding");
+              } else {
+                setQuickCheckReason(result as "hazmat" | "oversized" | "both");
+                goto("quickCheckRedirect");
+              }
+            }}
+            onBack={back}
+          />
+        )}
+        {screen === "quickCheckRedirect" && (
+          <StaffedPORedirect
+            reason={quickCheckReason}
+            onDirections={() => goto("wayfinding")}
+            onBack={back}
+          />
+        )}
+
         {screen === "dropIntro" && (
           <DropIntro onNext={() => goto("dropFindAPD")} onBack={back} />
         )}
