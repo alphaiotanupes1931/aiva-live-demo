@@ -345,7 +345,7 @@ export const AivaApp = () => {
         )}
         {screen === "shipDone" && (
           <ShipDone
-            onDone={() => goto("csat")}
+            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -401,7 +401,7 @@ export const AivaApp = () => {
         )}
         {screen === "dropDone" && (
           <DropDone
-            onDone={() => goto("csat")}
+            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -424,7 +424,7 @@ export const AivaApp = () => {
         )}
         {screen === "stampsDone" && (
           <StampsDone
-            onDone={() => goto("csat")}
+            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -445,7 +445,7 @@ export const AivaApp = () => {
         )}
         {screen === "pkgDone" && (
           <PkgDone
-            onDone={() => goto("csat")}
+            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -454,7 +454,7 @@ export const AivaApp = () => {
         )}
         {screen === "poBoxDone" && (
           <POBoxDone
-            onDone={() => goto("csat")}
+            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -524,7 +524,7 @@ export const AivaApp = () => {
         )}
         {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
         {screen === "anythingElse" && (
-          <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => goto("csat")} />
+          <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} />
         )}
         {screen === "csat" && (
           <Csat
