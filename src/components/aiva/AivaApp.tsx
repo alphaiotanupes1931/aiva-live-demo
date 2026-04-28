@@ -570,7 +570,7 @@ const LocationEquipmentCard = () => {
           <MapPin className="w-4 h-4 text-aiva-navy shrink-0" />
           <span className="flex flex-col min-w-0">
             <span className="text-sm font-semibold text-aiva-navy">Available equipment</span>
-            <span className="text-[11px] text-muted-foreground truncate">SOPO near me · 8409 Lee Hwy, Merrifield, VA</span>
+            <span className="text-[11px] text-muted-foreground truncate">SOPO near me · 8150 Leesburg Pike Ste 180B, Vienna, VA</span>
           </span>
         </span>
         <span className={`text-aiva-navy/60 transition-transform shrink-0 ml-2 ${open ? "rotate-180" : ""}`} aria-hidden>▾</span>
