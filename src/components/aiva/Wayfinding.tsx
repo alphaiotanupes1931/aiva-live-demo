@@ -4,6 +4,7 @@ import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
 import mailChutePhoto from "@/assets/equip-mail-chute.jpg";
 import signageZone2 from "@/assets/signage-zone-2.png";
+import signageZone3 from "@/assets/signage-zone-3.png";
 
 interface WayfindingProps {
   service?: string;
@@ -37,6 +38,8 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
     cue: "Straight ahead, along the back wall",
     photo: apdPhoto,
     alt: "USPS Automated Parcel Drop",
+    signage: signageZone3,
+    signageAlt: "Send It zone signage",
   },
   "Buy Stamps": {
     equipment: "Self-Service Kiosk",
