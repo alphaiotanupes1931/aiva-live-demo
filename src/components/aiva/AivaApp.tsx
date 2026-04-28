@@ -65,7 +65,8 @@ type Screen =
   | "voiceListen"
   | "voiceConfirm"
   | "voiceUnclear"
-  | "voiceProblem";
+  | "voiceProblem"
+  | "pickupChoice";
 
 interface ChatMsg {
   who: "bot" | "user";
@@ -221,6 +222,18 @@ export const AivaApp = () => {
         )}
         {screen === "findIntent" && (
           <FindIntent
+            onSelect={(intent) => {
+              if (intent === "Pick Up Mail or Package") {
+                goto("pickupChoice");
+                return;
+              }
+              setServiceIntent(intent);
+              goto("wayfinding");
+            }}
+          />
+        )}
+        {screen === "pickupChoice" && (
+          <PickupChoice
             onSelect={(intent) => {
               setServiceIntent(intent);
               goto("wayfinding");
@@ -485,8 +498,7 @@ const FIND_INTENTS = [
   "Ship a Package",
   "Drop Off a Prepaid Package",
   "Buy Stamps",
-  "Pick Up a Package",
-  "Access PO Box",
+  "Pick Up Mail or Package",
 ];
 
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
@@ -527,6 +539,31 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
     </div>
   );
 };
+
+const PickupChoice = ({ onSelect }: { onSelect: (intent: string) => void }) => (
+  <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
+    <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
+      <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you picking up?</h1>
+      <p className="text-sm text-muted-foreground mb-5">
+        I'll point you to the right equipment.
+      </p>
+    </div>
+    <div className="px-5 pb-5 pt-2 space-y-2 shrink-0">
+      <button
+        onClick={() => onSelect("Pick Up a Package")}
+        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+      >
+        A package
+      </button>
+      <button
+        onClick={() => onSelect("Access PO Box")}
+        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+      >
+        Mail from my PO Box
+      </button>
+    </div>
+  </div>
+);
 
 const ComposerBar = ({ onMic: _onMic }: { onMic: () => void }) => {
   const [text, setText] = useState("");
