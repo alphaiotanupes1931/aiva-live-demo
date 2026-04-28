@@ -136,6 +136,8 @@ export const AivaApp = () => {
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [quickCheckReason, setQuickCheckReason] = useState<"hazmat" | "oversized" | "both">("hazmat");
+  const [pendingFlow, setPendingFlow] = useState<"ship" | "drop" | null>(null);
 
   const persistLocation = (loc: string) => {
     setUserLocation(loc);
