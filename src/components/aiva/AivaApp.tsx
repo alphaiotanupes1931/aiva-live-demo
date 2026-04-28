@@ -510,6 +510,82 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
   </div>
 );
 
+const LOCATION_EQUIPMENT = [
+  { name: "Self-Service Kiosk", zone: "Zone 2" },
+  { name: "Drum Chute", zone: "Zone 3" },
+  { name: "Automated Parcel Drop", zone: "Zone 3" },
+  { name: "Mail Chute", zone: "Zone 3" },
+  { name: "Parcel Lockers", zone: "Zone 4" },
+  { name: "PO Boxes", zone: "Zone 4" },
+];
+
+const LocationEquipmentCard = () => {
+  const [location, setLocation] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("aiva-location") || "";
+  });
+  const [entry, setEntry] = useState("");
+  const [open, setOpen] = useState(false);
+
+  if (!location) {
+    return (
+      <div className="bg-white border border-aiva-navy/15 rounded-xl p-3.5">
+        <div className="flex items-center gap-2 mb-1.5">
+          <MapPin className="w-4 h-4 text-aiva-navy" />
+          <span className="text-sm font-semibold text-aiva-navy">See equipment at your Post Office</span>
+        </div>
+        <p className="text-[12px] text-muted-foreground mb-2.5 leading-relaxed">
+          Enter your location to view available equipment.
+        </p>
+        <div className="flex gap-2">
+          <input
+            value={entry}
+            onChange={(e) => setEntry(e.target.value)}
+            placeholder="ZIP or city"
+            className="flex-1 h-9 px-3 rounded-full border border-aiva-navy/20 text-[13px] outline-none focus:border-aiva-navy/50 bg-aiva-page"
+          />
+          <button
+            onClick={() => {
+              if (!entry.trim()) return;
+              try { localStorage.setItem("aiva-location", entry.trim()); } catch {}
+              setLocation(entry.trim());
+            }}
+            className="h-9 px-4 rounded-full bg-aiva-navy text-white text-[13px] font-semibold disabled:opacity-40"
+            disabled={!entry.trim()}
+          >
+            View
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-aiva-navy/15 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-aiva-bot-bg/40 transition"
+      >
+        <span className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-aiva-navy" />
+          <span className="text-sm font-semibold text-aiva-navy">Equipment at {location}</span>
+        </span>
+        <span className={`text-aiva-navy/60 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden>▾</span>
+      </button>
+      {open && (
+        <ul className="px-4 pb-3 pt-0 space-y-1.5 anim-fade-up">
+          {LOCATION_EQUIPMENT.map((e) => (
+            <li key={e.name} className="flex items-center justify-between text-[13px]">
+              <span className="text-aiva-navy">{e.name}</span>
+              <span className="text-[11px] text-muted-foreground font-medium">{e.zone}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 const Greeting = ({
   onWayfinding, onReport, onVoice,
 }: { onWayfinding: () => void; onReport: () => void; onVoice: () => void }) => {
@@ -531,6 +607,9 @@ const Greeting = ({
               <ChoiceButton onClick={onReport}>
                 <span className="inline-flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report a problem</span>
               </ChoiceButton>
+            </div>
+            <div className="pt-3">
+              <LocationEquipmentCard />
             </div>
           </>
         )}
