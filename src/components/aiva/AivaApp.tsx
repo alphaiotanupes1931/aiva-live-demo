@@ -31,19 +31,15 @@ import {
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
-import drumChutePhoto from "@/assets/equip-drum-chute.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
-import mailChutePhoto from "@/assets/equip-mail-chute.jpg";
 
 const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
   "Self-Service Kiosk (SSK)": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
   "Self-Service Kiosk": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
-  "Drum Chute": { photo: drumChutePhoto, alt: "USPS Drum Chute" },
   "Automated Parcel Drop (APD)": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
   "Automated Parcel Drop": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
   "Parcel Lockers": { photo: parcelLockersPhoto, alt: "USPS Parcel Lockers" },
-  "Mail Chute": { photo: mailChutePhoto, alt: "USPS Mail Chute" },
 };
 
 type Screen =
