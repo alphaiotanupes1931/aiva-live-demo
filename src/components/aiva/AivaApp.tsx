@@ -781,9 +781,27 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "What kind of problem are you having?" }]}>
       {!ready ? <Typing /> : (
         <div className="space-y-2">
-          {PROBLEMS.map((p) => (
-            <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>
-          ))}
+          {PROBLEMS.map((p) => {
+            const photo = EQUIPMENT_PHOTOS[p];
+            if (!photo) {
+              return <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>;
+            }
+            return (
+              <button
+                key={p}
+                onClick={() => onPick(p)}
+                className="w-full flex items-center gap-3 bg-white border border-border rounded-xl p-2.5 text-left hover:border-aiva-navy/40 active:scale-[0.99] transition"
+              >
+                <img
+                  src={photo.photo}
+                  alt={photo.alt}
+                  loading="lazy"
+                  className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
+                />
+                <span className="flex-1 text-sm font-semibold text-aiva-navy">{p}</span>
+              </button>
+            );
+          })}
         </div>
       )}
     </ConvoLayout>
