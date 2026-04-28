@@ -30,6 +30,7 @@ type Screen =
   | "greeting"
   | "findIntent"
   | "wayfinding"
+  | "arrived"
   | "confirmLocation"
   | "thanks"
   | "status"
