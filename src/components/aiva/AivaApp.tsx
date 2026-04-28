@@ -661,7 +661,7 @@ const Submitted = ({ onNext }: { onNext: () => void }) => {
         <div className="font-semibold text-base">Report submitted</div>
       </div>
       <div className="bg-aiva-success-bg border border-aiva-success/30 text-aiva-success rounded-xl p-3 text-sm font-medium anim-fade-up">
-        Thank you for reporting this issue. The local post office has been notified and will investigate shortly.
+        Thank you for reporting this issue. The local post office has been notified.
       </div>
       <Card>
         <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
