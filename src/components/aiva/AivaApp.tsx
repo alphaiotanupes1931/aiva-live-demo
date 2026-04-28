@@ -94,6 +94,7 @@ type Screen =
   | "dropStep3"
   | "dropDone"
   | "dropTooBig"
+  | "dropReceiptIssue"
   | "quickCheck"
   | "quickCheckRedirect"
   | "stampsIntro"
