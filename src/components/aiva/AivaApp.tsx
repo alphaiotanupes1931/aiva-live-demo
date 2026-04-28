@@ -204,8 +204,14 @@ export const AivaApp = () => {
         )}
         {screen === "wayfinding" && (
           <Wayfinding
-            onFound={() => goto("thanks")}
+            onFound={() => goto("arrived")}
             onNotFound={() => goto("thanks")}
+          />
+        )}
+        {screen === "arrived" && (
+          <Arrived
+            onWalkthrough={() => goto("thanks")}
+            onDone={() => goto("anythingElse")}
           />
         )}
         {screen === "confirmLocation" && (
