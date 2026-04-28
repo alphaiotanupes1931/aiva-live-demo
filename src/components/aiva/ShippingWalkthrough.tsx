@@ -7,6 +7,7 @@ type StepLayoutProps = {
   subtitle: string;
   photo?: string;
   photoAlt?: string;
+  photoUnavailable?: boolean;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel?: string;
@@ -20,6 +21,7 @@ const StepLayout = ({
   subtitle,
   photo,
   photoAlt,
+  photoUnavailable,
   primaryLabel,
   onPrimary,
   secondaryLabel,
@@ -41,11 +43,15 @@ const StepLayout = ({
       )}
       <h1 className="text-xl font-bold text-aiva-navy mb-1.5">{title}</h1>
       <p className="text-sm text-muted-foreground leading-relaxed mb-4">{subtitle}</p>
-      {photo && (
+      {photo ? (
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img src={photo} alt={photoAlt || ""} loading="lazy" className="w-full h-auto object-cover block" />
         </div>
-      )}
+      ) : photoUnavailable ? (
+        <div className="rounded-2xl bg-aiva-bot-bg/40 border border-dashed border-border flex items-center justify-center aspect-[4/3]">
+          <span className="text-xs text-muted-foreground font-medium">Photo unavailable</span>
+        </div>
+      ) : null}
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
       <button
@@ -164,6 +170,7 @@ export const ShipStep5 = ({ onNext, onWhere }: { onNext: () => void; onWhere: ()
     stepLabel="Step 5 of 5"
     title="Drop off your package"
     subtitle="Take your labeled package to the Drum Chute in Zone 3 and drop it in. You're almost done."
+    photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
     secondaryLabel="Where is the Drum Chute?"
@@ -175,6 +182,7 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
   <StepLayout
     title="Drum Chute"
     subtitle="Head to Zone 3 — the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
+    photoUnavailable
     primaryLabel="Got it"
     onPrimary={onBack}
   />
