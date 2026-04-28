@@ -353,7 +353,7 @@ export const AivaApp = () => {
           />
         )}
       </div>
-      <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} />
+      <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} location={userLocation} />
     </PhoneFrame>
   );
 };

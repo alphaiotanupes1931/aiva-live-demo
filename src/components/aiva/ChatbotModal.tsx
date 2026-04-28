@@ -1,34 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, Mic, MicOff } from "lucide-react";
+import { X, Send, Mic, MicOff, Loader2 } from "lucide-react";
 import { useSpeech } from "./useSpeech";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface ChatbotModalProps {
   open: boolean;
   onClose: () => void;
+  location?: string;
 }
 
-type Msg = { who: "bot" | "user"; text: string };
+type Msg = { role: "assistant" | "user"; content: string };
 
-const DEMO_QA: { q: string; a: string }[] = [
-  {
-    q: "What are USPS hours?",
-    a: "Most USPS Post Offices are open Monday–Friday 9 AM to 5 PM, and Saturdays 9 AM to 1 PM. Hours vary by location — check usps.com/locator for your nearest branch.",
-  },
-  {
-    q: "How much does it cost to ship a package?",
-    a: "USPS Ground Advantage starts at $5.50 for small packages. Priority Mail starts around $10.40. Final price depends on weight, size, and destination — use the Self-Service Kiosk or usps.com to get an exact quote.",
-  },
+const SUGGESTED_QUESTIONS = [
+  "What are the Post Office hours near me?",
+  "How much does it cost to ship a 2 lb package to California?",
 ];
 
-export const ChatbotModal = ({ open, onClose }: ChatbotModalProps) => {
+export const ChatbotModal = ({ open, onClose, location }: ChatbotModalProps) => {
   const [messages, setMessages] = useState<Msg[]>([
     {
-      who: "bot",
-      text: "Hi! I'm AIVA. This is a demo, so I can answer 2 sample USPS questions. Tap one below or use the mic to ask.",
+      role: "assistant",
+      content:
+        "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
     },
   ]);
-  const [asked, setAsked] = useState<Set<number>>(new Set());
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const speech = useSpeech();
 
@@ -38,35 +36,57 @@ export const ChatbotModal = ({ open, onClose }: ChatbotModalProps) => {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
   if (!open) return null;
 
-  const askDemo = (idx: number) => {
-    const { q, a } = DEMO_QA[idx];
-    setMessages((m) => [...m, { who: "user", text: q }, { who: "bot", text: a }]);
-    setAsked((s) => new Set(s).add(idx));
-  };
+  const sendMessage = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
 
-  const handleSend = () => {
-    const text = input.trim();
-    if (!text) return;
-    setMessages((m) => [
-      ...m,
-      { who: "user", text },
-      {
-        who: "bot",
-        text: "This is a demo — I can only answer the two sample questions below. Try one of those!",
-      },
-    ]);
+    const newMessages: Msg[] = [...messages, { role: "user", content: trimmed }];
+    setMessages(newMessages);
     setInput("");
     speech.reset();
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("aiva-chat", {
+        body: {
+          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          location: location || "unknown",
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    } catch (err: any) {
+      console.error("Chat error:", err);
+      toast({
+        title: "Couldn't reach AIVA",
+        description: err?.message || "Please try again.",
+        variant: "destructive",
+      });
+      setMessages((m) => [
+        ...m,
+        {
+          role: "assistant",
+          content: "Sorry, I had trouble connecting. Please try again.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleMic = () => {
     if (speech.listening) speech.stop();
     else speech.start();
   };
+
+  const showSuggestions = messages.length === 1 && !loading;
 
   return (
     <div
@@ -81,7 +101,9 @@ export const ChatbotModal = ({ open, onClose }: ChatbotModalProps) => {
         <div className="h-12 bg-aiva-navy text-white flex items-center justify-between px-4 rounded-t-2xl shrink-0">
           <div className="flex flex-col leading-tight">
             <span className="font-semibold text-sm">Chat with AIVA</span>
-            <span className="text-[10px] opacity-80 -mt-0.5">Demo · 2 sample questions</span>
+            <span className="text-[10px] opacity-80 -mt-0.5">
+              {location ? `Local to ${location}` : "USPS Virtual Assistant"}
+            </span>
           </div>
           <button
             onClick={onClose}
@@ -97,33 +119,37 @@ export const ChatbotModal = ({ open, onClose }: ChatbotModalProps) => {
           {messages.map((m, i) => (
             <div
               key={i}
-              className={`max-w-[80%] px-3 py-2 rounded-2xl text-[13px] leading-relaxed ${
-                m.who === "bot"
+              className={`max-w-[85%] px-3 py-2 rounded-2xl text-[13px] leading-relaxed whitespace-pre-wrap ${
+                m.role === "assistant"
                   ? "bg-aiva-bot-bg text-aiva-navy rounded-bl-sm"
                   : "ml-auto bg-aiva-blue-deep text-white rounded-br-sm"
               }`}
             >
-              {m.text}
+              {m.content}
             </div>
           ))}
 
-          {/* Suggested questions */}
-          {asked.size < DEMO_QA.length && (
+          {loading && (
+            <div className="bg-aiva-bot-bg text-aiva-navy rounded-2xl rounded-bl-sm px-3 py-2 inline-flex items-center gap-2 text-[13px]">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              AIVA is typing…
+            </div>
+          )}
+
+          {showSuggestions && (
             <div className="pt-2 space-y-1.5">
               <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
                 Try asking
               </div>
-              {DEMO_QA.map((qa, idx) =>
-                asked.has(idx) ? null : (
-                  <button
-                    key={idx}
-                    onClick={() => askDemo(idx)}
-                    className="block w-full text-left text-[12px] bg-white border border-border rounded-xl px-3 py-2 hover:bg-aiva-bot-bg transition"
-                  >
-                    {qa.q}
-                  </button>
-                )
-              )}
+              {SUGGESTED_QUESTIONS.map((q) => (
+                <button
+                  key={q}
+                  onClick={() => sendMessage(q)}
+                  className="block w-full text-left text-[12px] bg-white border border-border rounded-xl px-3 py-2 hover:bg-aiva-bot-bg transition"
+                >
+                  {q}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -154,13 +180,14 @@ export const ChatbotModal = ({ open, onClose }: ChatbotModalProps) => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
               placeholder="Ask AIVA…"
-              className="flex-1 h-10 px-3 rounded-full bg-aiva-bot-bg text-[13px] text-aiva-navy placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-aiva-blue-deep/30"
+              disabled={loading}
+              className="flex-1 h-10 px-3 rounded-full bg-aiva-bot-bg text-[13px] text-aiva-navy placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-aiva-blue-deep/30 disabled:opacity-60"
             />
             <button
-              onClick={handleSend}
-              disabled={!input.trim()}
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || loading}
               aria-label="Send"
               className="w-10 h-10 rounded-full bg-aiva-blue-deep text-white flex items-center justify-center shrink-0 disabled:opacity-40 hover:bg-aiva-blue-deep/90 transition"
             >
