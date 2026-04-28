@@ -91,9 +91,12 @@ export const AivaApp = () => {
   });
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
+
+  const persistLocation = (loc: string) => {
     setUserLocation(loc);
     try { localStorage.setItem("aiva-location", loc); } catch {}
   };
+
 
   const goto = (s: Screen) => {
     setHistory((h) => [...h, screen]);
