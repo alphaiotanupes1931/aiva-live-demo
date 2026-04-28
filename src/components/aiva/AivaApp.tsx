@@ -28,6 +28,7 @@ type Screen =
   | "confirmInitialLocation"
   | "addressEntry"
   | "greeting"
+  | "findIntent"
   | "wayfinding"
   | "confirmLocation"
   | "thanks"
