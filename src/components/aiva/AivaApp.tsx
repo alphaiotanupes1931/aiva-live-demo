@@ -987,7 +987,7 @@ const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }
       <Card>
         <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
         <p className="text-sm text-foreground/80 leading-relaxed">
-          The local post office will dispatch staff to investigate {equipmentLabel}. You don't need to do anything else — your report is in the queue.
+          The local post office has been notified about {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
       </Card>
       {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
