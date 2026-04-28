@@ -350,6 +350,30 @@ export const AivaApp = () => {
         )}
 
         {/* Drop Off a Prepaid Package */}
+
+        {/* Quick Check screening (Ship + Drop Off only) */}
+        {screen === "quickCheck" && (
+          <QuickCheck
+            onContinue={(result) => {
+              if (result === "none") {
+                if (pendingFlow === "drop") goto("dropIntro");
+                else if (pendingFlow === "ship") goto("wayfinding");
+              } else {
+                setQuickCheckReason(result as "hazmat" | "oversized" | "both");
+                goto("quickCheckRedirect");
+              }
+            }}
+            onBack={back}
+          />
+        )}
+        {screen === "quickCheckRedirect" && (
+          <StaffedPORedirect
+            reason={quickCheckReason}
+            onDirections={() => goto("wayfinding")}
+            onBack={back}
+          />
+        )}
+
         {screen === "dropIntro" && (
           <DropIntro onNext={() => goto("dropFindAPD")} onBack={back} />
         )}
