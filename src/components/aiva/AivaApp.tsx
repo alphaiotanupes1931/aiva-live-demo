@@ -340,6 +340,7 @@ export const AivaApp = () => {
           />
         )}
       </div>
+      <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} />
     </PhoneFrame>
   );
 };
