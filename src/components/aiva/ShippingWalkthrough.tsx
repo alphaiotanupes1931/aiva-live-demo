@@ -47,7 +47,7 @@ const StepLayout = ({
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img src={photo} alt={photoAlt || ""} loading="lazy" className="w-full h-auto object-cover block" />
         </div>
-      ) : photoUnavailable ? (
+      ) : photoUnavailable !== false ? (
         <div className="rounded-2xl bg-aiva-bot-bg/40 border border-dashed border-border flex items-center justify-center aspect-[4/3]">
           <span className="text-xs text-muted-foreground font-medium">Photo unavailable</span>
         </div>
@@ -193,6 +193,7 @@ export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
     banner={{ text: "✓ You're all set" }}
     title="Your package is on its way"
     subtitle="Thanks for using AIVA. Have a great day."
+    photoUnavailable={false}
     primaryLabel="Done"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"

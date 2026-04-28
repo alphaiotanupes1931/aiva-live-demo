@@ -56,7 +56,7 @@ const StepLayout = ({
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img src={photo} alt={photoAlt || ""} loading="lazy" className="w-full h-auto object-cover block" />
         </div>
-      ) : photoUnavailable ? (
+      ) : photoUnavailable !== false ? (
         <div className="rounded-2xl bg-aiva-bot-bg/40 border border-dashed border-border flex items-center justify-center aspect-[4/3]">
           <span className="text-xs text-muted-foreground font-medium">Photo unavailable</span>
         </div>
@@ -214,6 +214,7 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
 export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ You're all set" }}
+    photoUnavailable={false}
     title="Your package is on its way"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Done"
@@ -290,6 +291,7 @@ export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport
 export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ You're all set" }}
+    photoUnavailable={false}
     title="Stamps purchased"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Done"
@@ -369,6 +371,7 @@ export const PkgEnterCode = ({ onNext, onHelp }: { onNext: () => void; onHelp: (
 export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ Package retrieved" }}
+    photoUnavailable={false}
     title="You've got your package"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Done"
@@ -396,6 +399,7 @@ export const POBoxFind = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
 export const POBoxDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ Mail retrieved" }}
+    photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Done"
