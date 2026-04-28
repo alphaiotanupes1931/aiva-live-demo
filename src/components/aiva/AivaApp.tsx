@@ -28,6 +28,7 @@ type Screen =
   | "confirmInitialLocation"
   | "addressEntry"
   | "greeting"
+  | "findIntent"
   | "wayfinding"
   | "confirmLocation"
   | "thanks"
@@ -192,10 +193,13 @@ export const AivaApp = () => {
         )}
         {screen === "greeting" && (
           <Greeting
-            onWayfinding={() => goto("wayfinding")}
+            onWayfinding={() => goto("findIntent")}
             onReport={() => goto("thanks")}
             onVoice={() => goto("voiceListen")}
           />
+        )}
+        {screen === "findIntent" && (
+          <FindIntent onSelect={() => goto("wayfinding")} />
         )}
         {screen === "wayfinding" && (
           <Wayfinding
@@ -438,6 +442,51 @@ const Greeting = ({
         )}
       </div>
       <ComposerBar onMic={onVoice} />
+    </div>
+  );
+};
+
+const FIND_INTENTS = [
+  "Ship a Package",
+  "Drop Off Prepaid",
+  "Access PO Box",
+  "Retrieve Parcel",
+];
+
+const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
+  const [selected, setSelected] = useState<string>(FIND_INTENTS[0]);
+  return (
+    <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
+        <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you trying to do?</h1>
+        <p className="text-sm text-muted-foreground mb-5">Pick one so I can guide you to the right spot.</p>
+        <div className="space-y-2.5">
+          {FIND_INTENTS.map((intent) => {
+            const active = selected === intent;
+            return (
+              <button
+                key={intent}
+                onClick={() => setSelected(intent)}
+                className={`w-full h-12 rounded-full font-semibold text-sm transition border-2 ${
+                  active
+                    ? "bg-aiva-navy text-white border-aiva-navy"
+                    : "bg-white text-aiva-navy border-aiva-navy/20 hover:border-aiva-navy/50"
+                }`}
+              >
+                {intent}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="px-5 pb-5 pt-2 shrink-0">
+        <button
+          onClick={() => onSelect(selected)}
+          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   );
 };
