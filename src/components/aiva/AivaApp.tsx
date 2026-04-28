@@ -10,7 +10,7 @@ import {
   ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
 } from "./ShippingWalkthrough";
 import {
-  DropIntro, DropFindAPD, DropStep1, DropStep2, DropStep3, DropDone, DropTooBigRedirect,
+  DropIntro, DropFindAPD, DropStep1, DropStep2, DropStep3, DropDone, DropTooBigRedirect, DropReceiptIssue,
   StampsIntro, StampsFindSSK, StampsStep1, StampsStep2, StampsStep3, StampsDone,
   PickupTriage, PkgFindLockers, PkgEnterCode, PkgDone,
   POBoxFind, POBoxDone, HeldMailRedirect,
