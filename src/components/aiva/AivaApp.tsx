@@ -65,7 +65,8 @@ type Screen =
   | "voiceListen"
   | "voiceConfirm"
   | "voiceUnclear"
-  | "voiceProblem";
+  | "voiceProblem"
+  | "pickupChoice";
 
 interface ChatMsg {
   who: "bot" | "user";
@@ -221,6 +222,18 @@ export const AivaApp = () => {
         )}
         {screen === "findIntent" && (
           <FindIntent
+            onSelect={(intent) => {
+              if (intent === "Pick Up Mail or Package") {
+                goto("pickupChoice");
+                return;
+              }
+              setServiceIntent(intent);
+              goto("wayfinding");
+            }}
+          />
+        )}
+        {screen === "pickupChoice" && (
+          <PickupChoice
             onSelect={(intent) => {
               setServiceIntent(intent);
               goto("wayfinding");
@@ -485,8 +498,7 @@ const FIND_INTENTS = [
   "Ship a Package",
   "Drop Off a Prepaid Package",
   "Buy Stamps",
-  "Pick Up a Package",
-  "Access PO Box",
+  "Pick Up Mail or Package",
 ];
 
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
