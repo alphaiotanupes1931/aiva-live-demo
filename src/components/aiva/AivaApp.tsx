@@ -842,8 +842,13 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
   );
 };
 
-const Submitted = ({ onNext }: { onNext: () => void }) => {
+const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }) => {
   const ready = useTypingDelay(700);
+  // Strip parenthetical abbreviation, e.g. "Self-Service Kiosk (SSK)" -> "Self-Service Kiosk"
+  const cleaned = (problem || "").replace(/\s*\(.*?\)\s*/g, "").trim();
+  const equipmentLabel = cleaned && cleaned.toLowerCase() !== "something else"
+    ? `the ${cleaned}`
+    : "the issue you reported";
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
       <div className="flex flex-col items-center gap-2 pt-4 anim-fade-up">
@@ -858,7 +863,7 @@ const Submitted = ({ onNext }: { onNext: () => void }) => {
       <Card>
         <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
         <p className="text-sm text-foreground/80 leading-relaxed">
-          The local post office will dispatch staff to investigate the Drum Chute. You don't need to do anything else — your report is in the queue.
+          The local post office will dispatch staff to investigate {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
       </Card>
       {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
