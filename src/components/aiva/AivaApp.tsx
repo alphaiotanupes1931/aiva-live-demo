@@ -566,11 +566,14 @@ const LocationEquipmentCard = () => {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-aiva-bot-bg/40 transition"
       >
-        <span className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-aiva-navy" />
-          <span className="text-sm font-semibold text-aiva-navy">Equipment at {location}</span>
+        <span className="flex items-center gap-2 min-w-0">
+          <MapPin className="w-4 h-4 text-aiva-navy shrink-0" />
+          <span className="flex flex-col min-w-0">
+            <span className="text-sm font-semibold text-aiva-navy">Available equipment</span>
+            <span className="text-[11px] text-muted-foreground truncate">SOPO near me · 8409 Lee Hwy, Merrifield, VA</span>
+          </span>
         </span>
-        <span className={`text-aiva-navy/60 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden>▾</span>
+        <span className={`text-aiva-navy/60 transition-transform shrink-0 ml-2 ${open ? "rotate-180" : ""}`} aria-hidden>▾</span>
       </button>
       {open && (
         <ul className="px-4 pb-3 pt-0 space-y-1.5 anim-fade-up">
