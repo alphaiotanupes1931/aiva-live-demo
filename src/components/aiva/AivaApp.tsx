@@ -269,7 +269,14 @@ export const AivaApp = () => {
             onSelect={(intent) => {
               if (intent === "Drop Off a Prepaid Package") {
                 setServiceIntent(intent);
-                goto("dropIntro");
+                setPendingFlow("drop");
+                goto("quickCheck");
+                return;
+              }
+              if (intent === "Ship a Package") {
+                setServiceIntent(intent);
+                setPendingFlow("ship");
+                goto("quickCheck");
                 return;
               }
               if (intent === "Buy Stamps") {
