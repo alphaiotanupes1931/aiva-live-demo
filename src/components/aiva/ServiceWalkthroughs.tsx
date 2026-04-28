@@ -127,7 +127,7 @@ export const DropStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
   />
 );
 
-export const DropStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const DropStep2 = ({ onNext, onTooBig }: { onNext: () => void; onTooBig: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 3"
     title="Place your package inside"
@@ -135,8 +135,66 @@ export const DropStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     primaryLabel="Done"
     onPrimary={onNext}
     secondaryLabel="My package doesn't fit"
-    onSecondary={onHelp}
+    onSecondary={onTooBig}
   />
+);
+
+export const DropTooBigRedirect = ({
+  onDirections,
+  onBack,
+}: {
+  onDirections: () => void;
+  onBack: () => void;
+}) => (
+  <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
+    <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
+      <h1 className="text-xl font-bold text-aiva-navy mb-1.5">Your package is too big for the APD</h1>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+        Packages larger than 24" x 16" x 12" can't be dropped here. Take it to the nearest staffed Post Office and a clerk will accept it.
+      </p>
+      <div className="bg-white border border-border rounded-2xl p-4 shadow-sm space-y-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            Nearest staffed Post Office
+          </div>
+          <div className="text-sm font-semibold text-aiva-navy leading-snug">
+            Vienna Post Office
+          </div>
+          <div className="text-[13px] text-foreground/75 leading-relaxed">
+            301 Center St S, Vienna, VA 22180
+          </div>
+        </div>
+        <div className="border-t border-border pt-3 grid grid-cols-2 gap-3">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+              Distance
+            </div>
+            <div className="text-sm font-semibold text-aiva-navy">2.3 mi</div>
+          </div>
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+              Hours today
+            </div>
+            <div className="text-sm font-semibold text-aiva-navy">9 AM – 5 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
+      <button
+        onClick={onDirections}
+        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+      >
+        Get directions
+      </button>
+      <button
+        onClick={onBack}
+        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+      >
+        Back
+      </button>
+    </div>
+  </div>
 );
 
 export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
