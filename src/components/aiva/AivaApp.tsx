@@ -599,8 +599,6 @@ const ConfirmLocation = ({
 };
 
 const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone: () => void }) => {
-  // Lazy import via require-style ES import at top would be cleaner; use dynamic asset path
-  const kioskPhoto = new URL("@/assets/ssk-kiosk.jpg", import.meta.url).href;
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
