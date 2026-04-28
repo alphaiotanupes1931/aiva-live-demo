@@ -1,6 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
-import drumChutePhoto from "@/assets/equip-drum-chute.jpg";
 
 type StepLayoutProps = {
   stepLabel?: string;
