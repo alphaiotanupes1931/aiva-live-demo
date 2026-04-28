@@ -19,6 +19,20 @@ import {
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
+import drumChutePhoto from "@/assets/equip-drum-chute.jpg";
+import apdPhoto from "@/assets/equip-apd.jpg";
+import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
+import mailChutePhoto from "@/assets/equip-mail-chute.jpg";
+
+const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
+  "Self-Service Kiosk (SSK)": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
+  "Self-Service Kiosk": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
+  "Drum Chute": { photo: drumChutePhoto, alt: "USPS Drum Chute" },
+  "Automated Parcel Drop (APD)": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
+  "Automated Parcel Drop": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
+  "Parcel Lockers": { photo: parcelLockersPhoto, alt: "USPS Parcel Lockers" },
+  "Mail Chute": { photo: mailChutePhoto, alt: "USPS Mail Chute" },
+};
 
 type Screen =
   | "consent"
@@ -76,10 +90,13 @@ export const AivaApp = () => {
     return localStorage.getItem("aiva-location") || "";
   });
 
+  const [serviceIntent, setServiceIntent] = useState<string>("");
+
   const persistLocation = (loc: string) => {
     setUserLocation(loc);
     try { localStorage.setItem("aiva-location", loc); } catch {}
   };
+
 
   const goto = (s: Screen) => {
     setHistory((h) => [...h, screen]);
@@ -201,16 +218,23 @@ export const AivaApp = () => {
           />
         )}
         {screen === "findIntent" && (
-          <FindIntent onSelect={() => goto("wayfinding")} />
+          <FindIntent
+            onSelect={(intent) => {
+              setServiceIntent(intent);
+              goto("wayfinding");
+            }}
+          />
         )}
         {screen === "wayfinding" && (
           <Wayfinding
+            service={serviceIntent}
             onFound={() => goto("arrived")}
             onNotFound={() => goto("thanks")}
           />
         )}
         {screen === "arrived" && (
           <Arrived
+            service={serviceIntent}
             onWalkthrough={() => goto("thanks")}
             onDone={() => goto("anythingElse")}
           />
@@ -268,7 +292,7 @@ export const AivaApp = () => {
         {screen === "submitting" && (
           <Submitting onDone={() => goto("submitted")} problem={problem} detail={problemDetail} />
         )}
-        {screen === "submitted" && <Submitted onNext={() => goto("notify")} />}
+        {screen === "submitted" && <Submitted problem={problem} onNext={() => goto("notify")} />}
         {screen === "notify" && (
           <Notify onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
         )}
@@ -456,9 +480,10 @@ const Greeting = ({
 
 const FIND_INTENTS = [
   "Ship a Package",
-  "Drop Off Prepaid",
+  "Drop Off a Prepaid Package",
+  "Buy Stamps",
+  "Pick Up a Package",
   "Access PO Box",
-  "Retrieve Parcel",
 ];
 
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
@@ -466,8 +491,8 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
   return (
     <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
-        <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you trying to do?</h1>
-        <p className="text-sm text-muted-foreground mb-5">Pick one so I can guide you to the right spot.</p>
+        <h1 className="text-xl font-bold text-aiva-navy mb-1">What would you like to do?</h1>
+        <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll point you to the right equipment.</p>
         <div className="space-y-2.5">
           {FIND_INTENTS.map((intent) => {
             const active = selected === intent;
@@ -598,7 +623,41 @@ const ConfirmLocation = ({
   );
 };
 
-const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone: () => void }) => {
+const ARRIVED_INFO: Record<string, { equipment: string; zone: string; context: string; photo: string; alt: string; cta: string }> = {
+  "Ship a Package": {
+    equipment: "Self-Service Kiosk", zone: "Zone 2",
+    context: "Use this to weigh, label, and pay for your package.",
+    photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk",
+    cta: "Walk me through shipping",
+  },
+  "Drop Off a Prepaid Package": {
+    equipment: "Automated Parcel Drop", zone: "Zone 3",
+    context: "Scan your prepaid label and drop your package inside.",
+    photo: apdPhoto, alt: "USPS Automated Parcel Drop",
+    cta: "Walk me through dropping off",
+  },
+  "Buy Stamps": {
+    equipment: "Self-Service Kiosk", zone: "Zone 2",
+    context: "Use this to buy stamps and pay with card or contactless.",
+    photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk",
+    cta: "Walk me through buying stamps",
+  },
+  "Pick Up a Package": {
+    equipment: "Parcel Lockers", zone: "Zone 4",
+    context: "Tap your pickup code on the screen to open your locker.",
+    photo: parcelLockersPhoto, alt: "USPS Parcel Lockers",
+    cta: "Walk me through pickup",
+  },
+  "Access PO Box": {
+    equipment: "PO Box Wall", zone: "Zone 4",
+    context: "Use your PO Box key or combination to retrieve your mail.",
+    photo: parcelLockersPhoto, alt: "USPS PO Boxes",
+    cta: "Walk me through PO Box access",
+  },
+};
+
+const Arrived = ({ service, onWalkthrough, onDone }: { service?: string; onWalkthrough: () => void; onDone: () => void }) => {
+  const info = (service && ARRIVED_INFO[service]) || ARRIVED_INFO["Ship a Package"];
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
@@ -607,15 +666,15 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
           <div className="text-sm font-semibold text-aiva-success">You have arrived</div>
         </div>
 
-        <h1 className="text-xl font-bold text-aiva-navy mb-1">Self-Service Kiosk</h1>
+        <h1 className="text-xl font-bold text-aiva-navy mb-1">{info.equipment}</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          Zone 2 · Use this to weigh, label, and pay for your package.
+          {info.zone} · {info.context}
         </p>
 
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img
-            src={sskKioskPhoto}
-            alt="USPS Self-Service Kiosk"
+            src={info.photo}
+            alt={info.alt}
             loading="lazy"
             className="w-full h-auto object-cover block"
           />
@@ -627,7 +686,7 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
           onClick={onWalkthrough}
           className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
         >
-          Walk me through shipping
+          {info.cta}
         </button>
         <button
           onClick={onDone}
@@ -638,6 +697,7 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
       </div>
     </div>
   );
+
 };
 
 const Thanks = ({ onNext }: { onNext: () => void }) => {
@@ -669,19 +729,28 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
         <Card>
-          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment list</div>
-          <ul className="space-y-2">
+          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
+          <ul className="space-y-1.5">
             {EQUIP_STATUS.map((e) => {
               const isSSK = e.name.includes("SSK");
+              const photo = EQUIPMENT_PHOTOS[e.name];
               return (
                 <li key={e.name}>
                   <button
                     onClick={() => onNext(e.name)}
-                    className="w-full flex items-center justify-between text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                    className="w-full flex items-center gap-3 text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
                   >
-                    <span>{e.name}</span>
+                    {photo && (
+                      <img
+                        src={photo.photo}
+                        alt={photo.alt}
+                        loading="lazy"
+                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
+                      />
+                    )}
+                    <span className="flex-1 min-w-0 truncate">{e.name}</span>
                     {isSSK && (
-                      <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
+                      <span className="inline-flex items-center gap-1 text-aiva-success text-[11px] font-semibold shrink-0">
                         <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
                       </span>
                     )}
@@ -712,9 +781,27 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "What kind of problem are you having?" }]}>
       {!ready ? <Typing /> : (
         <div className="space-y-2">
-          {PROBLEMS.map((p) => (
-            <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>
-          ))}
+          {PROBLEMS.map((p) => {
+            const photo = EQUIPMENT_PHOTOS[p];
+            if (!photo) {
+              return <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>;
+            }
+            return (
+              <button
+                key={p}
+                onClick={() => onPick(p)}
+                className="w-full flex items-center gap-3 bg-white border border-border rounded-xl p-2.5 text-left hover:border-aiva-navy/40 active:scale-[0.99] transition"
+              >
+                <img
+                  src={photo.photo}
+                  alt={photo.alt}
+                  loading="lazy"
+                  className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
+                />
+                <span className="flex-1 text-sm font-semibold text-aiva-navy">{p}</span>
+              </button>
+            );
+          })}
         </div>
       )}
     </ConvoLayout>
@@ -755,8 +842,13 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
   );
 };
 
-const Submitted = ({ onNext }: { onNext: () => void }) => {
+const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }) => {
   const ready = useTypingDelay(700);
+  // Strip parenthetical abbreviation, e.g. "Self-Service Kiosk (SSK)" -> "Self-Service Kiosk"
+  const cleaned = (problem || "").replace(/\s*\(.*?\)\s*/g, "").trim();
+  const equipmentLabel = cleaned && cleaned.toLowerCase() !== "something else"
+    ? `the ${cleaned}`
+    : "the issue you reported";
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
       <div className="flex flex-col items-center gap-2 pt-4 anim-fade-up">
@@ -771,7 +863,7 @@ const Submitted = ({ onNext }: { onNext: () => void }) => {
       <Card>
         <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
         <p className="text-sm text-foreground/80 leading-relaxed">
-          The local post office will dispatch staff to investigate the Drum Chute. You don't need to do anything else — your report is in the queue.
+          The local post office will dispatch staff to investigate {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
       </Card>
       {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
