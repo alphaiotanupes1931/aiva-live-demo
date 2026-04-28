@@ -391,7 +391,13 @@ export const AivaApp = () => {
           <DropTooBigRedirect onDirections={() => goto("wayfinding")} onBack={back} />
         )}
         {screen === "dropStep3" && (
-          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("thanks")} />
+          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("dropReceiptIssue")} />
+        )}
+        {screen === "dropReceiptIssue" && (
+          <DropReceiptIssue
+            onTrack={() => setChatOpen(true)}
+            onReport={() => goto("thanks")}
+          />
         )}
         {screen === "dropDone" && (
           <DropDone
