@@ -478,22 +478,11 @@ export const DropReceiptIssue = ({
   onTrack: () => void;
   onReport: () => void;
 }) => {
-  const [email, setEmail] = useState("");
-
   useEffect(() => {
     // Simulate notifying the local post office about the APD printer issue.
     // In production, this would invoke an edge function to send an email.
     console.log("[AIVA] Notified local post office: APD receipt printer issue at SOPO");
   }, []);
-
-  const handleSendReceipt = () => {
-    if (!email.trim() || !/.+@.+\..+/.test(email)) {
-      toast.error("Enter a valid email");
-      return;
-    }
-    toast.success("Receipt sent");
-    setEmail("");
-  };
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
