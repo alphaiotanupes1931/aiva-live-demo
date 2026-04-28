@@ -92,6 +92,7 @@ type Screen =
   | "dropStep2"
   | "dropStep3"
   | "dropDone"
+  | "dropTooBig"
   | "stampsIntro"
   | "stampsFindSSK"
   | "stampsStep1"
