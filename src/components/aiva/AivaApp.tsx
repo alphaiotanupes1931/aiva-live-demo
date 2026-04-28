@@ -197,7 +197,12 @@ export const AivaApp = () => {
             onVoice={() => goto("voiceListen")}
           />
         )}
-        {screen === "wayfinding" && <Wayfinding />}
+        {screen === "wayfinding" && (
+          <Wayfinding
+            onFound={() => goto("thanks")}
+            onNotFound={() => goto("thanks")}
+          />
+        )}
         {screen === "confirmLocation" && (
           <ConfirmLocation
             address={userLocation}
