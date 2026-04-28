@@ -729,19 +729,28 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
         <Card>
-          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Equipment list</div>
-          <ul className="space-y-2">
+          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
+          <ul className="space-y-1.5">
             {EQUIP_STATUS.map((e) => {
               const isSSK = e.name.includes("SSK");
+              const photo = EQUIPMENT_PHOTOS[e.name];
               return (
                 <li key={e.name}>
                   <button
                     onClick={() => onNext(e.name)}
-                    className="w-full flex items-center justify-between text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                    className="w-full flex items-center gap-3 text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
                   >
-                    <span>{e.name}</span>
+                    {photo && (
+                      <img
+                        src={photo.photo}
+                        alt={photo.alt}
+                        loading="lazy"
+                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
+                      />
+                    )}
+                    <span className="flex-1 min-w-0 truncate">{e.name}</span>
                     {isSSK && (
-                      <span className="inline-flex items-center gap-1 text-aiva-success text-xs font-semibold">
+                      <span className="inline-flex items-center gap-1 text-aiva-success text-[11px] font-semibold shrink-0">
                         <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
                       </span>
                     )}
