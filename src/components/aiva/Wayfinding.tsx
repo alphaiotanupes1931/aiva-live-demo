@@ -85,12 +85,12 @@ export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) =>
             <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">
               Look for this sign
             </div>
-            <div className="rounded-lg overflow-hidden bg-white border border-border shadow-sm mx-auto" style={{ maxWidth: "60%" }}>
+            <div className="rounded-lg overflow-hidden bg-white border border-border shadow-sm">
               <img
                 src={g.signage}
                 alt={g.signageAlt || "Zone signage"}
                 loading="lazy"
-                className="w-full h-20 object-contain block"
+                className="w-full h-24 object-contain block"
               />
             </div>
           </div>
