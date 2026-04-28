@@ -614,7 +614,7 @@ const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone:
 
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
           <img
-            src={kioskPhoto}
+            src={sskKioskPhoto}
             alt="USPS Self-Service Kiosk"
             loading="lazy"
             className="w-full h-auto object-cover block"
