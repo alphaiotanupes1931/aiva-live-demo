@@ -5,6 +5,10 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { ChatbotModal } from "./ChatbotModal";
+import {
+  ShipIntro, ShipStep1, ShipStep2, ShipStep3, ShipServiceCompare,
+  ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
+} from "./ShippingWalkthrough";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
