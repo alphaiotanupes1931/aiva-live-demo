@@ -1183,7 +1183,7 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
         <div className="space-y-2">
           {PROBLEMS.map((p) => {
             const photo = EQUIPMENT_PHOTOS[p];
-            if (!photo) {
+            if (p === "Something else") {
               return <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>;
             }
             return (
@@ -1192,12 +1192,18 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
                 onClick={() => onPick(p)}
                 className="w-full flex items-center gap-3 bg-white border border-border rounded-xl p-2.5 text-left hover:border-aiva-navy/40 active:scale-[0.99] transition"
               >
-                <img
-                  src={photo.photo}
-                  alt={photo.alt}
-                  loading="lazy"
-                  className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
-                />
+                {photo ? (
+                  <img
+                    src={photo.photo}
+                    alt={photo.alt}
+                    loading="lazy"
+                    className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-lg border border-dashed border-border bg-muted/40 shrink-0 flex items-center justify-center text-[10px] text-muted-foreground text-center leading-tight px-1">
+                    Photo unavailable
+                  </div>
+                )}
                 <span className="flex-1 text-sm font-semibold text-aiva-navy">{p}</span>
               </button>
             );
