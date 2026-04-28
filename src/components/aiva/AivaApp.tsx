@@ -94,6 +94,8 @@ type Screen =
   | "dropStep3"
   | "dropDone"
   | "dropTooBig"
+  | "quickCheck"
+  | "quickCheckRedirect"
   | "stampsIntro"
   | "stampsFindSSK"
   | "stampsStep1"
