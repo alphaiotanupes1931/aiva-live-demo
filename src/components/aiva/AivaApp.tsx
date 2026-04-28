@@ -9,6 +9,12 @@ import {
   ShipIntro, ShipStep1, ShipStep2, ShipStep3, ShipServiceCompare,
   ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
 } from "./ShippingWalkthrough";
+import {
+  DropIntro, DropFindAPD, DropStep1, DropStep2, DropStep3, DropDone,
+  StampsIntro, StampsFindSSK, StampsStep1, StampsStep2, StampsStep3, StampsDone,
+  PickupTriage, PkgFindLockers, PkgEnterCode, PkgDone,
+  POBoxFind, POBoxDone, HeldMailRedirect,
+} from "./ServiceWalkthroughs";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
@@ -79,7 +85,26 @@ type Screen =
   | "shipStep4"
   | "shipStep5"
   | "shipDrumChuteWhere"
-  | "shipDone";
+  | "shipDone"
+  | "dropIntro"
+  | "dropFindAPD"
+  | "dropStep1"
+  | "dropStep2"
+  | "dropStep3"
+  | "dropDone"
+  | "stampsIntro"
+  | "stampsFindSSK"
+  | "stampsStep1"
+  | "stampsStep2"
+  | "stampsStep3"
+  | "stampsDone"
+  | "pickupTriage"
+  | "pkgFindLockers"
+  | "pkgEnterCode"
+  | "pkgDone"
+  | "poBoxFind"
+  | "poBoxDone"
+  | "heldMailRedirect";
 
 interface ChatMsg {
   who: "bot" | "user";
