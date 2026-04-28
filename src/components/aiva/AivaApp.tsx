@@ -18,6 +18,7 @@ import {
   Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
+import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 
 type Screen =
   | "consent"
@@ -30,6 +31,7 @@ type Screen =
   | "greeting"
   | "findIntent"
   | "wayfinding"
+  | "arrived"
   | "confirmLocation"
   | "thanks"
   | "status"
@@ -203,8 +205,14 @@ export const AivaApp = () => {
         )}
         {screen === "wayfinding" && (
           <Wayfinding
-            onFound={() => goto("thanks")}
+            onFound={() => goto("arrived")}
             onNotFound={() => goto("thanks")}
+          />
+        )}
+        {screen === "arrived" && (
+          <Arrived
+            onWalkthrough={() => goto("thanks")}
+            onDone={() => goto("anythingElse")}
           />
         )}
         {screen === "confirmLocation" && (
@@ -587,6 +595,48 @@ const ConfirmLocation = ({
         </>
       )}
     </ConvoLayout>
+  );
+};
+
+const Arrived = ({ onWalkthrough, onDone }: { onWalkthrough: () => void; onDone: () => void }) => {
+  return (
+    <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
+      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
+        <div className="flex items-center gap-2 rounded-xl bg-aiva-success/10 border border-aiva-success/30 px-3 py-2.5 mb-4">
+          <CheckCircle2 className="w-5 h-5 text-aiva-success shrink-0" />
+          <div className="text-sm font-semibold text-aiva-success">You have arrived</div>
+        </div>
+
+        <h1 className="text-xl font-bold text-aiva-navy mb-1">Self-Service Kiosk</h1>
+        <p className="text-sm text-muted-foreground mb-4">
+          Zone 2 · Use this to weigh, label, and pay for your package.
+        </p>
+
+        <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
+          <img
+            src={sskKioskPhoto}
+            alt="USPS Self-Service Kiosk"
+            loading="lazy"
+            className="w-full h-auto object-cover block"
+          />
+        </div>
+      </div>
+
+      <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
+        <button
+          onClick={onWalkthrough}
+          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          Walk me through shipping
+        </button>
+        <button
+          onClick={onDone}
+          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          I'm good, thanks
+        </button>
+      </div>
+    </div>
   );
 };
 
