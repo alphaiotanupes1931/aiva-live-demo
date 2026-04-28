@@ -511,39 +511,7 @@ export const DropReceiptIssue = ({
         </p>
 
         <div className="space-y-3">
-          {/* Card 1 — Digital receipt */}
-          <div className="bg-white border border-border rounded-2xl p-4 shadow-sm">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-aiva-navy/10 flex items-center justify-center shrink-0">
-                <Mail className="w-5 h-5 text-aiva-navy" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-aiva-navy leading-snug">
-                  Get a digital receipt
-                </div>
-                <div className="text-[13px] text-foreground/75 leading-relaxed mt-0.5">
-                  Enter your email and we'll send you a confirmation.
-                </div>
-              </div>
-            </div>
-            <input
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full h-11 rounded-xl border border-border bg-aiva-page px-3 text-sm text-aiva-navy placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-aiva-navy/30 mb-2"
-            />
-            <button
-              onClick={handleSendReceipt}
-              className="w-full h-11 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-            >
-              Send receipt
-            </button>
-          </div>
-
-          {/* Card 2 — Track package */}
+          {/* Track package */}
           <div className="bg-white border border-border rounded-2xl p-4 shadow-sm">
             <div className="flex items-start gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-aiva-navy/10 flex items-center justify-center shrink-0">
