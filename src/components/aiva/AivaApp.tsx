@@ -15,7 +15,7 @@ import {
   PickupTriage, PkgFindLockers, PkgEnterCode, PkgDone,
   POBoxFind, POBoxDone, HeldMailRedirect,
 } from "./ServiceWalkthroughs";
-import { QuickCheck, StaffedPORedirect, type QuickCheckResult } from "./QuickCheck";
+import { QuickCheck, StaffedPORedirect } from "./QuickCheck";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
