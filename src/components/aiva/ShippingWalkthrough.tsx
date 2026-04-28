@@ -170,6 +170,7 @@ export const ShipStep5 = ({ onNext, onWhere }: { onNext: () => void; onWhere: ()
     stepLabel="Step 5 of 5"
     title="Drop off your package"
     subtitle="Take your labeled package to the Drum Chute in Zone 3 and drop it in. You're almost done."
+    photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
     secondaryLabel="Where is the Drum Chute?"
@@ -181,6 +182,7 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
   <StepLayout
     title="Drum Chute"
     subtitle="Head to Zone 3 — the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
+    photoUnavailable
     primaryLabel="Got it"
     onPrimary={onBack}
   />
