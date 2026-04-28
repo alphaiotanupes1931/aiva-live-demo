@@ -9,6 +9,12 @@ import {
   ShipIntro, ShipStep1, ShipStep2, ShipStep3, ShipServiceCompare,
   ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
 } from "./ShippingWalkthrough";
+import {
+  DropIntro, DropFindAPD, DropStep1, DropStep2, DropStep3, DropDone,
+  StampsIntro, StampsFindSSK, StampsStep1, StampsStep2, StampsStep3, StampsDone,
+  PickupTriage, PkgFindLockers, PkgEnterCode, PkgDone,
+  POBoxFind, POBoxDone, HeldMailRedirect,
+} from "./ServiceWalkthroughs";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
@@ -79,7 +85,26 @@ type Screen =
   | "shipStep4"
   | "shipStep5"
   | "shipDrumChuteWhere"
-  | "shipDone";
+  | "shipDone"
+  | "dropIntro"
+  | "dropFindAPD"
+  | "dropStep1"
+  | "dropStep2"
+  | "dropStep3"
+  | "dropDone"
+  | "stampsIntro"
+  | "stampsFindSSK"
+  | "stampsStep1"
+  | "stampsStep2"
+  | "stampsStep3"
+  | "stampsDone"
+  | "pickupTriage"
+  | "pkgFindLockers"
+  | "pkgEnterCode"
+  | "pkgDone"
+  | "poBoxFind"
+  | "poBoxDone"
+  | "heldMailRedirect";
 
 interface ChatMsg {
   who: "bot" | "user";
@@ -236,8 +261,18 @@ export const AivaApp = () => {
         {screen === "findIntent" && (
           <FindIntent
             onSelect={(intent) => {
+              if (intent === "Drop Off a Prepaid Package") {
+                setServiceIntent(intent);
+                goto("dropIntro");
+                return;
+              }
+              if (intent === "Buy Stamps") {
+                setServiceIntent(intent);
+                goto("stampsIntro");
+                return;
+              }
               if (intent === "Pick Up Mail or Package") {
-                goto("pickupChoice");
+                goto("pickupTriage");
                 return;
               }
               setServiceIntent(intent);
@@ -300,6 +335,89 @@ export const AivaApp = () => {
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
+
+        {/* Drop Off a Prepaid Package */}
+        {screen === "dropIntro" && (
+          <DropIntro onNext={() => goto("dropFindAPD")} onBack={back} />
+        )}
+        {screen === "dropFindAPD" && (
+          <DropFindAPD onNext={() => goto("dropStep1")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "dropStep1" && (
+          <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "dropStep2" && (
+          <DropStep2 onNext={() => goto("dropStep3")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "dropStep3" && (
+          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("thanks")} />
+        )}
+        {screen === "dropDone" && (
+          <DropDone
+            onDone={() => goto("csat")}
+            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
+        )}
+
+        {/* Buy Stamps */}
+        {screen === "stampsIntro" && (
+          <StampsIntro onNext={() => goto("stampsFindSSK")} onBack={back} />
+        )}
+        {screen === "stampsFindSSK" && (
+          <StampsFindSSK onNext={() => goto("stampsStep1")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "stampsStep1" && (
+          <StampsStep1 onNext={() => goto("stampsStep2")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "stampsStep2" && (
+          <StampsStep2 onNext={() => goto("stampsStep3")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "stampsStep3" && (
+          <StampsStep3 onNext={() => goto("stampsDone")} onReport={() => goto("thanks")} />
+        )}
+        {screen === "stampsDone" && (
+          <StampsDone
+            onDone={() => goto("csat")}
+            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
+        )}
+
+        {/* Pick Up Mail or Package */}
+        {screen === "pickupTriage" && (
+          <PickupTriage
+            onPackage={() => goto("pkgFindLockers")}
+            onPOBox={() => goto("poBoxFind")}
+            onHeld={() => goto("heldMailRedirect")}
+          />
+        )}
+        {screen === "pkgFindLockers" && (
+          <PkgFindLockers onNext={() => goto("pkgEnterCode")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "pkgEnterCode" && (
+          <PkgEnterCode onNext={() => goto("pkgDone")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "pkgDone" && (
+          <PkgDone
+            onDone={() => goto("csat")}
+            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
+        )}
+        {screen === "poBoxFind" && (
+          <POBoxFind onNext={() => goto("poBoxDone")} onHelp={() => setChatOpen(true)} />
+        )}
+        {screen === "poBoxDone" && (
+          <POBoxDone
+            onDone={() => goto("csat")}
+            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
+        )}
+        {screen === "heldMailRedirect" && (
+          <HeldMailRedirect
+            onDirections={() => goto("wayfinding")}
+            onBack={back}
+          />
+        )}
+
         {screen === "confirmLocation" && (
           <ConfirmLocation
             address={userLocation}
