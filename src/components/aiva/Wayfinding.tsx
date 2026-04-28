@@ -3,6 +3,7 @@ import drumChutePhoto from "@/assets/equip-drum-chute.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
 import mailChutePhoto from "@/assets/equip-mail-chute.jpg";
+import poBoxesPhoto from "@/assets/equip-po-boxes.jpg";
 import signageZone2 from "@/assets/signage-zone-2.png";
 import signageZone3 from "@/assets/signage-zone-3.png";
 import signageZone4 from "@/assets/signage-zone-4.png";
@@ -64,7 +65,7 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
     equipment: "PO Box Wall",
     zone: "Zone 4 · Check It",
     cue: "On your left as you walk in",
-    photo: parcelLockersPhoto,
+    photo: poBoxesPhoto,
     alt: "USPS PO Boxes",
     signage: signageZone4,
     signageAlt: "Check It zone signage",
