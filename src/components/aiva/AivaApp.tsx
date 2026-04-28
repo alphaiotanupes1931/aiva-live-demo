@@ -66,7 +66,16 @@ type Screen =
   | "voiceConfirm"
   | "voiceUnclear"
   | "voiceProblem"
-  | "pickupChoice";
+  | "pickupChoice"
+  | "shipIntro"
+  | "shipStep1"
+  | "shipStep2"
+  | "shipStep3"
+  | "shipServiceCompare"
+  | "shipStep4"
+  | "shipStep5"
+  | "shipDrumChuteWhere"
+  | "shipDone";
 
 interface ChatMsg {
   who: "bot" | "user";
