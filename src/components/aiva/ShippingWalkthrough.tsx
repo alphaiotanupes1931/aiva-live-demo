@@ -7,6 +7,7 @@ type StepLayoutProps = {
   subtitle: string;
   photo?: string;
   photoAlt?: string;
+  photoUnavailable?: boolean;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel?: string;
@@ -20,6 +21,7 @@ const StepLayout = ({
   subtitle,
   photo,
   photoAlt,
+  photoUnavailable,
   primaryLabel,
   onPrimary,
   secondaryLabel,
