@@ -3,6 +3,7 @@ import drumChutePhoto from "@/assets/equip-drum-chute.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
 import mailChutePhoto from "@/assets/equip-mail-chute.jpg";
+import signageZone2 from "@/assets/signage-zone-2.png";
 
 interface WayfindingProps {
   service?: string;
@@ -16,6 +17,8 @@ type Guidance = {
   cue: string;
   photo: string;
   alt: string;
+  signage?: string;
+  signageAlt?: string;
 };
 
 const SERVICE_GUIDANCE: Record<string, Guidance> = {
@@ -25,6 +28,8 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
     cue: "On your right as you walk in",
     photo: sskKioskPhoto,
     alt: "USPS Self-Service Kiosk",
+    signage: signageZone2,
+    signageAlt: "Purchase It zone signage",
   },
   "Drop Off a Prepaid Package": {
     equipment: "Automated Parcel Drop",
@@ -39,6 +44,8 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
     cue: "On your right as you walk in",
     photo: sskKioskPhoto,
     alt: "USPS Self-Service Kiosk",
+    signage: signageZone2,
+    signageAlt: "Purchase It zone signage",
   },
   "Pick Up a Package": {
     equipment: "Parcel Lockers",
@@ -70,15 +77,38 @@ export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) =>
           {g.zone} · {g.cue}
         </p>
 
-        <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
-          <img
-            src={g.photo}
-            alt={g.alt}
-            width={1024}
-            height={768}
-            loading="lazy"
-            className="w-full h-auto object-cover block"
-          />
+        {g.signage && (
+          <div className="mb-3">
+            <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">
+              Look for this sign
+            </div>
+            <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
+              <img
+                src={g.signage}
+                alt={g.signageAlt || "Zone signage"}
+                loading="lazy"
+                className="w-full h-auto object-contain block"
+              />
+            </div>
+          </div>
+        )}
+
+        <div>
+          {g.signage && (
+            <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">
+              Then find this equipment
+            </div>
+          )}
+          <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
+            <img
+              src={g.photo}
+              alt={g.alt}
+              width={1024}
+              height={768}
+              loading="lazy"
+              className="w-full h-auto object-cover block"
+            />
+          </div>
         </div>
       </div>
 
