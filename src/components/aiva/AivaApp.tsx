@@ -18,6 +18,7 @@ import {
   Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
+import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 
 type Screen =
   | "consent"
