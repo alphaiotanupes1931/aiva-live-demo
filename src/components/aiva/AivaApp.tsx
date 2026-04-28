@@ -193,10 +193,13 @@ export const AivaApp = () => {
         )}
         {screen === "greeting" && (
           <Greeting
-            onWayfinding={() => goto("wayfinding")}
+            onWayfinding={() => goto("findIntent")}
             onReport={() => goto("thanks")}
             onVoice={() => goto("voiceListen")}
           />
+        )}
+        {screen === "findIntent" && (
+          <FindIntent onSelect={() => goto("wayfinding")} />
         )}
         {screen === "wayfinding" && (
           <Wayfinding
