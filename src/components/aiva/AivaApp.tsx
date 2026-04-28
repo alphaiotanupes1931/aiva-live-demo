@@ -501,6 +501,53 @@ const FIND_INTENTS = [
   "Pick Up Mail or Package",
 ];
 
+const ZONE_INFO = [
+  { zone: "Zone 1", name: "Prep", desc: "Package preparation area — pack, label, and tape your items before sending." },
+  { zone: "Zone 2", name: "Purchase", desc: "Self-Service Kiosk (SSK) — buy stamps, weigh and pay for shipping, print labels." },
+  { zone: "Zone 3", name: "Send It", desc: "Drop-off zone — Drum Chute, Automated Parcel Drop (APD), and Mail Chute." },
+  { zone: "Zone 4", name: "Pick Up", desc: "Parcel Lockers and PO Boxes — collect packages and mail." },
+];
+
+const EQUIPMENT_INFO = [
+  { name: "Self-Service Kiosk (SSK)", desc: "Touchscreen kiosk for buying stamps, weighing packages, printing shipping labels, and paying — no clerk needed." },
+  { name: "Drum Chute", desc: "Rotating drum drop for letters and small flat-rate packages already labeled and paid." },
+  { name: "Automated Parcel Drop (APD)", desc: "Scans your prepaid label and accepts packages up to a set size — no waiting in line." },
+  { name: "Mail Chute", desc: "Standard slot for letters and stamped envelopes." },
+  { name: "Parcel Lockers", desc: "Secure lockers where USPS leaves packages for pickup using a key or code from your delivery notice." },
+  { name: "PO Boxes", desc: "Your private locked mailbox for receiving mail at the Post Office address." },
+];
+
+const Expandable = ({
+  label,
+  children,
+  defaultOpen = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="bg-white border border-aiva-navy/15 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-aiva-bot-bg/40 transition"
+      >
+        <span className="text-sm font-semibold text-aiva-navy">{label}</span>
+        <span
+          className={`text-aiva-navy/60 transition-transform ${open ? "rotate-180" : ""}`}
+          aria-hidden
+        >
+          ▾
+        </span>
+      </button>
+      {open && (
+        <div className="px-4 pb-3 pt-0 anim-fade-up">{children}</div>
+      )}
+    </div>
+  );
+};
+
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
   const [selected, setSelected] = useState<string | null>(null);
   return (
@@ -525,6 +572,43 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
               </button>
             );
           })}
+        </div>
+
+        <div className="mt-6">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2 px-1">
+            Resources
+          </div>
+          <div className="space-y-2">
+            <Expandable label="Zones in this Post Office">
+              <div className="space-y-2.5 pt-2">
+                {ZONE_INFO.map((z) => (
+                  <div key={z.zone} className="flex gap-3">
+                    <div className="shrink-0 w-14">
+                      <div className="text-[10px] font-bold uppercase tracking-wide text-aiva-blue-deep">
+                        {z.zone}
+                      </div>
+                      <div className="text-[11px] font-semibold text-aiva-navy leading-tight">
+                        {z.name}
+                      </div>
+                    </div>
+                    <div className="text-[12px] text-foreground/75 leading-relaxed flex-1">
+                      {z.desc}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Expandable>
+            <Expandable label="Equipment guide">
+              <div className="space-y-2.5 pt-2">
+                {EQUIPMENT_INFO.map((e) => (
+                  <div key={e.name}>
+                    <div className="text-[12px] font-semibold text-aiva-navy">{e.name}</div>
+                    <div className="text-[12px] text-foreground/75 leading-relaxed">{e.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </Expandable>
+          </div>
         </div>
       </div>
       <div className="px-5 pb-5 pt-2 shrink-0">
