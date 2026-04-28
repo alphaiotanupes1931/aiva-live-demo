@@ -144,28 +144,6 @@ export const AivaApp = () => {
     try { localStorage.setItem("aiva-location", loc); } catch {}
   };
 
-        {/* Quick Check screening */}
-        {screen === "quickCheck" && (
-          <QuickCheck
-            onContinue={(result) => {
-              if (result === "none") {
-                if (pendingFlow === "drop") goto("dropIntro");
-                else if (pendingFlow === "ship") goto("wayfinding");
-              } else {
-                setQuickCheckReason(result as "hazmat" | "oversized" | "both");
-                goto("quickCheckRedirect");
-              }
-            }}
-            onBack={back}
-          />
-        )}
-        {screen === "quickCheckRedirect" && (
-          <StaffedPORedirect
-            reason={quickCheckReason}
-            onDirections={() => goto("wayfinding")}
-            onBack={back}
-          />
-        )}
 
   const goto = (s: Screen) => {
     setHistory((h) => [...h, screen]);
