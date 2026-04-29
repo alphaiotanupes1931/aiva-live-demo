@@ -212,10 +212,8 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    primaryLabel="Done"
-    onPrimary={onDone}
-    secondaryLabel="Help me with something else"
-    onSecondary={onElse}
+    primaryLabel="Help me with something else"
+    onPrimary={onElse}
   />
 );
 
@@ -280,10 +278,8 @@ export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () 
     photoUnavailable={false}
     title="Stamps purchased"
     subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
-    onPrimary={onDone}
-    secondaryLabel="Help me with something else"
-    onSecondary={onElse}
+    primaryLabel="Help me with something else"
+    onPrimary={onElse}
   />
 );
 
@@ -357,10 +353,8 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
     photoUnavailable={false}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
-    primaryLabel="Done"
-    onPrimary={onDone}
-    secondaryLabel="Help me with something else"
-    onSecondary={onElse}
+    primaryLabel="Help me with something else"
+    onPrimary={onElse}
   />
 );
 
@@ -382,10 +376,8 @@ export const POBoxDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =
     photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
-    onPrimary={onDone}
-    secondaryLabel="Help me with something else"
-    onSecondary={onElse}
+    primaryLabel="Help me with something else"
+    onPrimary={onElse}
   />
 );
 
