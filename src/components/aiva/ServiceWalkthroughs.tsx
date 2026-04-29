@@ -20,6 +20,7 @@ type StepLayoutProps = {
   tertiaryLabel?: string;
   onTertiary?: () => void;
   banner?: { text: string };
+  onBack?: () => void;
 };
 
 const StepLayout = ({
@@ -36,6 +37,7 @@ const StepLayout = ({
   tertiaryLabel,
   onTertiary,
   banner,
+  onBack,
 }: StepLayoutProps) => (
   <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
     <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
@@ -63,20 +65,6 @@ const StepLayout = ({
       ) : null}
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onPrimary}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        {primaryLabel}
-      </button>
-      {secondaryLabel && onSecondary && (
-        <button
-          onClick={onSecondary}
-          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-        >
-          {secondaryLabel}
-        </button>
-      )}
       {tertiaryLabel && onTertiary && (
         <button
           onClick={onTertiary}
@@ -85,6 +73,31 @@ const StepLayout = ({
           {tertiaryLabel}
         </button>
       )}
+      {secondaryLabel && onSecondary && (
+        <button
+          onClick={onSecondary}
+          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          {secondaryLabel}
+        </button>
+      )}
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={onPrimary}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          {primaryLabel}
+        </button>
+      </div>
     </div>
   </div>
 );
