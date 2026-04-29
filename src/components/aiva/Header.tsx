@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import uspsLogo from "@/assets/usps-logo.png";
 
 interface HeaderProps {
   onBack?: () => void;
@@ -23,6 +24,8 @@ export const Header = ({ onBack, showBack = true }: HeaderProps) => (
       <span className="font-semibold text-base">AIVA</span>
       <span className="text-[10px] opacity-80 -mt-0.5">USPS Virtual Assistant</span>
     </div>
-    <div className="w-9 h-9" aria-hidden />
+    <div className="w-9 h-9 flex items-center justify-end">
+      <img src={uspsLogo} alt="USPS" className="h-6 w-auto object-contain" />
+    </div>
   </header>
 );
