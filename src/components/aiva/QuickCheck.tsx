@@ -79,7 +79,7 @@ const CheckCard = ({ icon, label, selected, onToggle, expanded, onExpand, items,
   </div>
 );
 
-export type QuickCheckResult = "none" | "hazmat" | "oversized" | "both";
+export type QuickCheckResult = "none" | "hazmat" | "oversized" | "international" | "multiple";
 
 export const QuickCheck = ({
   onContinue,
@@ -121,11 +121,10 @@ export const QuickCheck = ({
   const canContinue = selected.size > 0;
 
   const handleContinue = () => {
-    const hazmat = selected.has("hazmat");
-    const oversized = selected.has("oversized");
-    if (hazmat && oversized) onContinue("both");
-    else if (hazmat) onContinue("hazmat");
-    else if (oversized) onContinue("oversized");
+    if (selected.has("none")) { onContinue("none"); return; }
+    const restrictions = (["hazmat", "oversized", "international"] as const).filter((k) => selected.has(k));
+    if (restrictions.length > 1) onContinue("multiple");
+    else if (restrictions.length === 1) onContinue(restrictions[0]);
     else onContinue("none");
   };
 
@@ -213,7 +212,7 @@ export const StaffedPORedirect = ({
   onDirections,
   onBack,
 }: {
-  reason: "hazmat" | "oversized" | "both";
+  reason: "hazmat" | "oversized" | "international" | "multiple";
   onDirections: () => void;
   onBack: () => void;
 }) => {
@@ -228,10 +227,15 @@ export const StaffedPORedirect = ({
       subtitle:
         "This SOPO can only accept packages within standard size limits. Here's the nearest staffed Post Office where larger packages can be processed.",
     },
-    both: {
+    international: {
+      title: "International packages need a staffed Post Office",
+      subtitle:
+        "International shipments require customs forms and clerk verification, which this SOPO can't provide. Here's the nearest staffed Post Office that ships internationally.",
+    },
+    multiple: {
       title: "This package needs a staffed Post Office",
       subtitle:
-        "Your package contains hazardous materials and exceeds our size limits. Both require a staffed Post Office where a postal worker can verify and accept it.",
+        "Based on what you selected, your package needs a staffed Post Office where a postal worker can verify and accept it.",
     },
   }[reason];
 
