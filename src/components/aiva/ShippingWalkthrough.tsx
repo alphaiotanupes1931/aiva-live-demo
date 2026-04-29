@@ -149,15 +149,13 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
   </div>
 );
 
-export const ShipStep4 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const ShipStep4 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
     subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
