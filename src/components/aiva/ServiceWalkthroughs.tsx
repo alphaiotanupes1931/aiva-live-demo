@@ -382,7 +382,6 @@ export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onH
 
 export const POBoxDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ Mail retrieved" }}
     photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."
