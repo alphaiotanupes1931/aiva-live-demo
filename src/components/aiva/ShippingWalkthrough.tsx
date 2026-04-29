@@ -154,29 +154,27 @@ export const ShipStep4 = ({ onNext }: { onNext: () => void; onHelp?: () => void 
   <StepLayout
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
-    subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically."
+    subtitle="Insert your card or tap to pay. Then print your label — the kiosk will print your shipping label automatically. Grab it from the printer slot before moving on."
     primaryLabel="Next"
     onPrimary={onNext}
   />
 );
 
-export const ShipStep5 = ({ onNext, onWhere }: { onNext: () => void; onWhere: () => void }) => (
+export const ShipStep5 = ({ onNext }: { onNext: () => void; onWhere?: () => void }) => (
   <StepLayout
     stepLabel="Step 5 of 5"
     title="Drop off your package"
-    subtitle="Take your labeled package to the Drum Chute in Zone 3 and drop it in. You're almost done."
+    subtitle="Take your labeled package to the Drum Chute or APD if available. You're almost done."
     photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
-    secondaryLabel="Where is the Drum Chute?"
-    onSecondary={onWhere}
   />
 );
 
 export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
   <StepLayout
     title="Drum Chute"
-    subtitle="Head to Zone 3 — the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
+    subtitle="Head to the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
     photoUnavailable
     primaryLabel="Back"
     onPrimary={onBack}
@@ -186,10 +184,10 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
 export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ You're all set" }}
-    title="Your package is on its way"
-    subtitle="Thanks for using AIVA. Have a great day."
+    title="Thanks for using AIVA"
+    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}

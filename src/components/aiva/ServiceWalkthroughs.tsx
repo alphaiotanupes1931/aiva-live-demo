@@ -94,7 +94,7 @@ const StepLayout = ({
 export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
     title="Let's drop off your prepaid package"
-    subtitle="I'll guide you to the Automated Parcel Drop in Zone 3. You'll scan your label, drop your package, and get a receipt."
+    subtitle="I'll guide you to the Automated Parcel Drop. You'll scan your label, drop your package, and get a receipt."
     photo={apdPhoto}
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="Take me there"
@@ -107,7 +107,7 @@ export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
 export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Automated Parcel Drop"
-    subtitle="Look for this in Zone 3, near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
+    subtitle="Look for it near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
     photo={apdPhoto}
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="I found it"
@@ -210,10 +210,10 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
 export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ You're all set" }}
+    title="Thanks for using AIVA"
+    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    title="Your package is on its way"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
@@ -225,7 +225,7 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
 export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
     title="Let's buy your stamps"
-    subtitle="I'll guide you to the Self-Service Kiosk in Zone 2. The kiosk prints sheets of stamps and accepts card payment."
+    subtitle="I'll guide you to the Self-Service Kiosk. The kiosk prints sheets of stamps and accepts card payment."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="Take me there"
@@ -238,7 +238,7 @@ export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: ()
 export const StampsFindSSK = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Self-Service Kiosk"
-    subtitle="Look for this in Zone 2. Tap 'Tap to Get Started' on the screen when you reach it."
+    subtitle="Tap 'Tap to Get Started' on the screen when you reach it."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="I found it"
@@ -337,7 +337,7 @@ export const PickupTriage = ({
 export const PkgFindLockers = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Parcel Lockers"
-    subtitle="Head to Zone 4. You'll need the pickup code from your delivery notification."
+    subtitle="You'll need the pickup code from your delivery notification."
     photo={parcelLockersPhoto}
     photoAlt="USPS Parcel Lockers"
     primaryLabel="I found them"
@@ -360,9 +360,9 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
   <StepLayout
     banner={{ text: "✓ Package retrieved" }}
     photoUnavailable={false}
-    title="You've got your package"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
+    title="Thanks for using AIVA"
+    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
+    primaryLabel="Next"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
@@ -374,7 +374,7 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
 export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find your PO Box"
-    subtitle="Head to Zone 4. Use your PO Box key or combination to unlock your box."
+    subtitle="Use your PO Box key or combination to unlock your box."
     photo={poBoxesPhoto}
     photoAlt="USPS PO Boxes"
     primaryLabel="I found it"

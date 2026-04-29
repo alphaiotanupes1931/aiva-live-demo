@@ -344,7 +344,7 @@ export const AivaApp = () => {
           <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} />
         )}
         {screen === "shipStep5" && (
-          <ShipStep5 onNext={() => goto("shipDone")} onWhere={() => goto("shipDrumChuteWhere")} />
+          <ShipStep5 onNext={() => goto("shipDone")} />
         )}
         {screen === "shipDrumChuteWhere" && (
           <ShipDrumChuteWhere onBack={back} />
@@ -893,9 +893,8 @@ const LocationEquipmentCard = () => {
       {open && (
         <ul className="px-4 pb-3 pt-0 space-y-1.5 anim-fade-up">
           {LOCATION_EQUIPMENT.map((e) => (
-            <li key={e.name} className="flex items-center justify-between text-[13px]">
+            <li key={e.name} className="flex items-center text-[13px]">
               <span className="text-aiva-navy">{e.name}</span>
-              <span className="text-[11px] text-muted-foreground font-medium">{e.zone}</span>
             </li>
           ))}
         </ul>
@@ -1213,7 +1212,7 @@ const Arrived = ({ service, onWalkthrough, onDone }: { service?: string; onWalkt
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">{info.equipment}</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          {info.zone} · {info.context}
+          {info.context}
         </p>
 
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
@@ -1266,6 +1265,7 @@ const EQUIP_STATUS = [
   { name: "Automated Parcel Drop (APD)", ok: true },
   { name: "Parcel Lockers", ok: true },
   { name: "Mail Chute", ok: true },
+  { name: "PO Boxes", ok: true },
 ];
 
 const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
@@ -1277,7 +1277,6 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
           <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
           <ul className="space-y-1.5">
             {EQUIP_STATUS.map((e) => {
-              const isSSK = e.name.includes("SSK");
               const photo = EQUIPMENT_PHOTOS[e.name];
               return (
                 <li key={e.name}>
@@ -1301,11 +1300,6 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
                       />
                     )}
                     <span className="flex-1 min-w-0 truncate">{e.name}</span>
-                    {isSSK && (
-                      <span className="inline-flex items-center gap-1 text-aiva-success text-[11px] font-semibold shrink-0">
-                        <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
-                      </span>
-                    )}
                   </button>
                 </li>
               );
