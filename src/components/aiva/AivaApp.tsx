@@ -45,6 +45,7 @@ const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
 };
 
 type Screen =
+  | "disclaimer"
   | "consent"
   | "qr"
   | "newOrReturning"
