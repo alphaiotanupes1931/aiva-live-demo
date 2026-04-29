@@ -4,6 +4,7 @@ import apdPhoto from "@/assets/equip-apd.jpg";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
 import poBoxesPhoto from "@/assets/equip-po-boxes.jpg";
+import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
 type StepLayoutProps = {
   stepLabel?: string;
@@ -56,8 +57,8 @@ const StepLayout = ({
           <img src={photo} alt={photoAlt || ""} loading="lazy" className="w-full h-auto object-cover block" />
         </div>
       ) : photoUnavailable !== false ? (
-        <div className="rounded-2xl bg-aiva-bot-bg/40 border border-dashed border-border flex items-center justify-center aspect-[4/3]">
-          <span className="text-xs text-muted-foreground font-medium">Photo unavailable</span>
+        <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
+          <img src={photoUnavailableImg} alt="Photo unavailable" loading="lazy" className="w-full h-auto object-cover block" />
         </div>
       ) : null}
     </div>
