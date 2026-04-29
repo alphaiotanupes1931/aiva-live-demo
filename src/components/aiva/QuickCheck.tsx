@@ -33,11 +33,7 @@ type CardProps = {
 };
 
 const CheckCard = ({ icon, label, selected, onToggle, expanded, onExpand, items, expandable }: CardProps) => (
-  <div
-    className={`rounded-2xl bg-white border-2 shadow-sm transition-all ${
-      selected ? "border-aiva-navy" : "border-border"
-    }`}
-  >
+  <div className={`transition-colors ${selected ? "bg-aiva-navy/[0.04]" : "bg-white"}`}>
     <button
       onClick={onToggle}
       className="w-full flex items-center gap-3 p-4 text-left"
@@ -135,7 +131,7 @@ export const QuickCheck = ({
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A few items can't be processed at this SOPO. Tap any that apply to your package.
         </p>
-        <div className="space-y-3">
+        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden divide-y divide-border">
           <CheckCard
             icon={
               <div className="w-10 h-10 rounded-full bg-aiva-error/10 flex items-center justify-center">
