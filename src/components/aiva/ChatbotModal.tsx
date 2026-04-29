@@ -145,7 +145,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
               <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
                 Try asking
               </div>
-              {SUGGESTED_QUESTIONS.map((q) => (
+              {tips.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
