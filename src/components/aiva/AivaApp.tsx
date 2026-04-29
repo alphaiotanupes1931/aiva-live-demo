@@ -569,10 +569,154 @@ export const AivaApp = () => {
           />
         )}
       </div>
-      <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} location={userLocation} />
+      <ChatbotModal
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        location={userLocation}
+        pageContext={ctx.label}
+        suggestions={ctx.suggestions}
+      />
+      {showChatFab && (
+        <button
+          onClick={() => setChatOpen(true)}
+          aria-label="Chat with AIVA"
+          className="absolute bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-aiva-blue-deep text-white shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center ring-4 ring-white/60"
+        >
+          <MessageCircle className="w-6 h-6" />
+        </button>
+      )}
     </PhoneFrame>
   );
 };
+
+/* ---------- Page context for chatbot ---------- */
+
+function getPageContext(screen: Screen, serviceIntent: string): { label?: string; suggestions?: string[] } {
+  const generic = [
+    "What are the Post Office hours?",
+    "How much to ship a 2 lb package?",
+    "How do I track a package?",
+  ];
+  switch (screen) {
+    case "greeting":
+    case "findIntent":
+      return { label: "Home — choosing a service", suggestions: generic };
+    case "quickCheck":
+    case "quickCheckRedirect":
+      return {
+        label: "Quick check — pre-shipping screening",
+        suggestions: [
+          "What counts as hazardous materials?",
+          "Can I ship lithium batteries?",
+          "What are the size limits?",
+          "Where's the nearest staffed Post Office?",
+        ],
+      };
+    case "wayfinding":
+    case "arrived":
+      return {
+        label: `Wayfinding — ${serviceIntent || "finding equipment"}`,
+        suggestions: [
+          `Where is the equipment for ${serviceIntent || "this service"}?`,
+          "What does the SOPO zone signage look like?",
+          "How do I get help in the lobby?",
+        ],
+      };
+    case "shipIntro":
+    case "shipStep1":
+    case "shipStep2":
+    case "shipStep3":
+    case "shipServiceCompare":
+    case "shipStep4":
+    case "shipStep5":
+    case "shipDrumChuteWhere":
+      return {
+        label: "Ship a Package walkthrough",
+        suggestions: [
+          "What shipping service should I pick?",
+          "How do I weigh my package?",
+          "Where is the Drum Chute?",
+          "What forms of payment does the kiosk take?",
+        ],
+      };
+    case "dropIntro":
+    case "dropFindAPD":
+    case "dropStep1":
+    case "dropStep2":
+    case "dropStep3":
+    case "dropTooBig":
+    case "dropReceiptIssue":
+      return {
+        label: "Drop Off a Prepaid Package",
+        suggestions: [
+          "What if my label won't scan?",
+          "What size packages fit in the APD?",
+          "What if the receipt didn't print?",
+          "Is my package tracked after I drop it?",
+        ],
+      };
+    case "stampsIntro":
+    case "stampsFindSSK":
+    case "stampsStep1":
+    case "stampsStep2":
+    case "stampsStep3":
+      return {
+        label: "Buy Stamps at the SSK",
+        suggestions: [
+          "How much is a Forever stamp?",
+          "Does the kiosk sell books of stamps?",
+          "What designs are available?",
+          "Can I pay with cash?",
+        ],
+      };
+    case "pickupTriage":
+    case "pkgFindLockers":
+    case "pkgEnterCode":
+      return {
+        label: "Pick Up a Package",
+        suggestions: [
+          "Where do I find my pickup code?",
+          "What if my locker won't open?",
+          "How long are packages held in the locker?",
+        ],
+      };
+    case "poBoxFind":
+      return {
+        label: "PO Box pickup",
+        suggestions: [
+          "I lost my PO Box key — what now?",
+          "How do I rent a PO Box?",
+          "What hours can I access my PO Box?",
+        ],
+      };
+    case "heldMailRedirect":
+      return {
+        label: "Held mail redirect",
+        suggestions: [
+          "Why can't I pick up held mail here?",
+          "What do I need to bring to a staffed Post Office?",
+        ],
+      };
+    case "thanks":
+    case "status":
+    case "services":
+    case "problemType":
+    case "drumChute":
+    case "submitting":
+    case "submitted":
+    case "notify":
+      return {
+        label: "Report a problem",
+        suggestions: [
+          "What kinds of problems can I report?",
+          "How long will the fix take?",
+          "Who gets notified about my report?",
+        ],
+      };
+    default:
+      return { suggestions: generic };
+  }
+}
 
 /* ---------- Screens ---------- */
 
