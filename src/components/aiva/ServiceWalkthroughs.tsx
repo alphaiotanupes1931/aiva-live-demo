@@ -225,7 +225,7 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
 export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
     title="Let's buy your stamps"
-    subtitle="I'll guide you to the Self-Service Kiosk in Zone 2. The kiosk prints sheets of stamps and accepts card payment."
+    subtitle="I'll guide you to the Self-Service Kiosk. The kiosk prints sheets of stamps and accepts card payment."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="Take me there"
