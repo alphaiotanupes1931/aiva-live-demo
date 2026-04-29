@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, MapPin } from "lucide-react";
+import { CheckCircle2, MapPin, ChevronLeft } from "lucide-react";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
@@ -20,6 +20,7 @@ type StepLayoutProps = {
   tertiaryLabel?: string;
   onTertiary?: () => void;
   banner?: { text: string };
+  onBack?: () => void;
 };
 
 const StepLayout = ({
@@ -36,6 +37,7 @@ const StepLayout = ({
   tertiaryLabel,
   onTertiary,
   banner,
+  onBack,
 }: StepLayoutProps) => (
   <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
     <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
@@ -63,20 +65,6 @@ const StepLayout = ({
       ) : null}
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onPrimary}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        {primaryLabel}
-      </button>
-      {secondaryLabel && onSecondary && (
-        <button
-          onClick={onSecondary}
-          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-        >
-          {secondaryLabel}
-        </button>
-      )}
       {tertiaryLabel && onTertiary && (
         <button
           onClick={onTertiary}
@@ -85,6 +73,31 @@ const StepLayout = ({
           {tertiaryLabel}
         </button>
       )}
+      {secondaryLabel && onSecondary && (
+        <button
+          onClick={onSecondary}
+          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          {secondaryLabel}
+        </button>
+      )}
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={onPrimary}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          {primaryLabel}
+        </button>
+      </div>
     </div>
   </div>
 );
@@ -99,12 +112,11 @@ export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="Take me there"
     onPrimary={onNext}
-    secondaryLabel="Back"
-    onSecondary={onBack}
+    onBack={onBack}
   />
 );
 
-export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const DropFindAPD = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Find the Automated Parcel Drop"
     subtitle="Look for it near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
@@ -112,20 +124,22 @@ export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; o
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="I found it"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const DropStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const DropStep1 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 3"
     title="Scan your shipping label"
     subtitle="Hold your label barcode up to the scanner. The drop door will open automatically."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const DropStep2 = ({ onNext, onTooBig }: { onNext: () => void; onTooBig: () => void }) => (
+export const DropStep2 = ({ onNext, onTooBig, onBack }: { onNext: () => void; onTooBig: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 3"
     title="Place your package inside"
@@ -134,6 +148,7 @@ export const DropStep2 = ({ onNext, onTooBig }: { onNext: () => void; onTooBig: 
     onPrimary={onNext}
     secondaryLabel="My package doesn't fit"
     onSecondary={onTooBig}
+    onBack={onBack}
   />
 );
 
@@ -178,24 +193,27 @@ export const DropTooBigRedirect = ({
         </div>
       </div>
     </div>
-    <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onDirections}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        Get directions
-      </button>
-      <button
-        onClick={onBack}
-        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-      >
-        Back
-      </button>
+    <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onBack}
+          aria-label="Back"
+          className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={onDirections}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          Get directions
+        </button>
+      </div>
     </div>
   </div>
 );
 
-export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
+export const DropStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; onReport: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 3 of 3"
     title="Find your receipt below"
@@ -204,10 +222,11 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
     onPrimary={onNext}
     secondaryLabel="Receipt didn't print"
     onSecondary={onReport}
+    onBack={onBack}
   />
 );
 
-export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+export const DropDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
   <StepLayout
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
@@ -227,42 +246,44 @@ export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: ()
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="I'm at the kiosk"
     onPrimary={onNext}
-    secondaryLabel="Back"
-    onSecondary={onBack}
+    onBack={onBack}
   />
 );
 
-export const StampsFindSSK = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const StampsFindSSK = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 3"
     title="Tap 'Buy Stamps' on the kiosk"
     subtitle="From the SSK home screen, select the 'Buy Stamps' option to get started."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const StampsStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const StampsStep1 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 3"
     title="Choose your stamps"
     subtitle="Pick the stamp design and quantity you'd like to purchase."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const StampsStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const StampsStep2 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 3 of 3"
     title="Pay for your stamps"
     subtitle="Insert your card or tap to pay. Your stamps will print from the kiosk."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
+export const StampsStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; onReport: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Take your stamps"
     subtitle="Grab your stamps from the printer slot. Don't forget your receipt."
@@ -270,10 +291,11 @@ export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport
     onPrimary={onNext}
     secondaryLabel="Stamps didn't print"
     onSecondary={onReport}
+    onBack={onBack}
   />
 );
 
-export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+export const StampsDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="Stamps purchased"
@@ -289,10 +311,12 @@ export const PickupTriage = ({
   onPackage,
   onPOBox,
   onHeld,
+  onBack,
 }: {
   onPackage: () => void;
   onPOBox: () => void;
   onHeld: () => void;
+  onBack?: () => void;
 }) => (
   <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
     <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
@@ -302,12 +326,6 @@ export const PickupTriage = ({
       </p>
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onPackage}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        A package
-      </button>
       <button
         onClick={onPOBox}
         className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
@@ -320,13 +338,30 @@ export const PickupTriage = ({
       >
         Held mail or a delivery notice
       </button>
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={onPackage}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          A package
+        </button>
+      </div>
     </div>
   </div>
 );
 
 /* Flow 3A — Package pickup */
 
-export const PkgFindLockers = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const PkgFindLockers = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Find the Parcel Lockers"
     subtitle="You'll need the pickup code from your delivery notification."
@@ -334,10 +369,11 @@ export const PkgFindLockers = ({ onNext, onHelp: _onHelp }: { onNext: () => void
     photoAlt="USPS Parcel Lockers"
     primaryLabel="I found them"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const PkgEnterCode = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const PkgEnterCode = ({ onNext, onHelp, onBack }: { onNext: () => void; onHelp: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Enter your pickup code"
     subtitle="Use the keypad on the locker screen. The code is in your USPS delivery notification email or text."
@@ -345,10 +381,11 @@ export const PkgEnterCode = ({ onNext, onHelp }: { onNext: () => void; onHelp: (
     onPrimary={onNext}
     secondaryLabel="I don't have my code"
     onSecondary={onHelp}
+    onBack={onBack}
   />
 );
 
-export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+export const PkgDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="Thanks for using AIVA"
@@ -360,7 +397,7 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
 
 /* Flow 3B — PO Box pickup */
 
-export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const POBoxFind = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Find your PO Box"
     subtitle="Use your PO Box key or combination to unlock your box."
@@ -368,10 +405,11 @@ export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onH
     photoAlt="USPS PO Boxes"
     primaryLabel="I found it"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const POBoxDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+export const POBoxDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="You're all set"
@@ -424,19 +462,22 @@ export const HeldMailRedirect = ({
         </div>
       </div>
     </div>
-    <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onDirections}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        Get directions
-      </button>
-      <button
-        onClick={onBack}
-        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-      >
-        Back
-      </button>
+    <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onBack}
+          aria-label="Back"
+          className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={onDirections}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          Get directions
+        </button>
+      </div>
     </div>
   </div>
 );

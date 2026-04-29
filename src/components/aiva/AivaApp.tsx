@@ -28,7 +28,7 @@ import {
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
-  Lock, Navigation, ChevronLeft,
+  Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
@@ -191,9 +191,9 @@ export const AivaApp = () => {
     <PhoneFrame>
       {showHeader && (
         <Header
-          onBack={history.length > 0 ? back : undefined}
+          onHome={screen !== "greeting" ? () => { setHistory([]); setScreen("greeting"); } : undefined}
           onChat={() => setChatOpen(true)}
-          showBack={history.length > 0}
+          showHome={screen !== "greeting"}
         />
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
@@ -342,29 +342,28 @@ export const AivaApp = () => {
           <ShipIntro onNext={() => goto("shipStep1")} onBack={back} />
         )}
         {screen === "shipStep1" && (
-          <ShipStep1 onNext={() => goto("shipStep2")} onHelp={() => setChatOpen(true)} />
+          <ShipStep1 onNext={() => goto("shipStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep2" && (
-          <ShipStep2 onNext={() => goto("shipStep3")} onHelp={() => setChatOpen(true)} />
+          <ShipStep2 onNext={() => goto("shipStep3")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep3" && (
-          <ShipStep3 onNext={() => goto("shipStep4")} onMore={() => goto("shipServiceCompare")} />
+          <ShipStep3 onNext={() => goto("shipStep4")} onMore={() => goto("shipServiceCompare")} onBack={back} />
         )}
         {screen === "shipServiceCompare" && (
           <ShipServiceCompare onBack={back} />
         )}
         {screen === "shipStep4" && (
-          <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} />
+          <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep5" && (
-          <ShipStep5 onNext={() => goto("shipDone")} />
+          <ShipStep5 onNext={() => goto("shipDone")} onBack={back} />
         )}
         {screen === "shipDrumChuteWhere" && (
           <ShipDrumChuteWhere onBack={back} />
         )}
         {screen === "shipDone" && (
           <ShipDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -398,19 +397,19 @@ export const AivaApp = () => {
           <DropIntro onNext={() => goto("dropFindAPD")} onBack={back} />
         )}
         {screen === "dropFindAPD" && (
-          <DropFindAPD onNext={() => goto("dropStep1")} onHelp={() => setChatOpen(true)} />
+          <DropFindAPD onNext={() => goto("dropStep1")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "dropStep1" && (
-          <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} />
+          <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "dropStep2" && (
-          <DropStep2 onNext={() => goto("dropStep3")} onTooBig={() => goto("dropTooBig")} />
+          <DropStep2 onNext={() => goto("dropStep3")} onTooBig={() => goto("dropTooBig")} onBack={back} />
         )}
         {screen === "dropTooBig" && (
           <DropTooBigRedirect onDirections={() => goto("wayfinding")} onBack={back} />
         )}
         {screen === "dropStep3" && (
-          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("dropReceiptIssue")} />
+          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("dropReceiptIssue")} onBack={back} />
         )}
         {screen === "dropReceiptIssue" && (
           <DropReceiptIssue
@@ -420,7 +419,6 @@ export const AivaApp = () => {
         )}
         {screen === "dropDone" && (
           <DropDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -430,20 +428,19 @@ export const AivaApp = () => {
           <StampsIntro onNext={() => goto("stampsFindSSK")} onBack={back} />
         )}
         {screen === "stampsFindSSK" && (
-          <StampsFindSSK onNext={() => goto("stampsStep1")} onHelp={() => setChatOpen(true)} />
+          <StampsFindSSK onNext={() => goto("stampsStep1")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep1" && (
-          <StampsStep1 onNext={() => goto("stampsStep2")} onHelp={() => setChatOpen(true)} />
+          <StampsStep1 onNext={() => goto("stampsStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep2" && (
-          <StampsStep2 onNext={() => goto("stampsStep3")} onHelp={() => setChatOpen(true)} />
+          <StampsStep2 onNext={() => goto("stampsStep3")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep3" && (
-          <StampsStep3 onNext={() => goto("stampsDone")} onReport={() => goto("thanks")} />
+          <StampsStep3 onNext={() => goto("stampsDone")} onReport={() => goto("thanks")} onBack={back} />
         )}
         {screen === "stampsDone" && (
           <StampsDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -454,26 +451,25 @@ export const AivaApp = () => {
             onPackage={() => goto("pkgFindLockers")}
             onPOBox={() => goto("poBoxFind")}
             onHeld={() => goto("heldMailRedirect")}
+            onBack={back}
           />
         )}
         {screen === "pkgFindLockers" && (
-          <PkgFindLockers onNext={() => goto("pkgEnterCode")} onHelp={() => setChatOpen(true)} />
+          <PkgFindLockers onNext={() => goto("pkgEnterCode")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "pkgEnterCode" && (
-          <PkgEnterCode onNext={() => goto("pkgDone")} onHelp={() => setChatOpen(true)} />
+          <PkgEnterCode onNext={() => goto("pkgDone")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "pkgDone" && (
           <PkgDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
         {screen === "poBoxFind" && (
-          <POBoxFind onNext={() => goto("poBoxDone")} onHelp={() => setChatOpen(true)} />
+          <POBoxFind onNext={() => goto("poBoxDone")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "poBoxDone" && (
           <POBoxDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -597,21 +593,10 @@ export const AivaApp = () => {
         <button
           onClick={() => setChatOpen(true)}
           aria-label="Chat with AIVA"
-          className="absolute bottom-20 right-5 z-40 w-14 h-14 rounded-full bg-aiva-blue-deep text-white shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center ring-4 ring-white/60"
+          className="absolute bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-aiva-blue-deep text-white shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center ring-4 ring-white/60"
         >
           <MessageCircle className="w-6 h-6" />
         </button>
-      )}
-      {showHeader && history.length > 0 && (
-        <div className="shrink-0 bg-[#e5e7eb] border-t border-black/5 px-4 py-2.5 flex items-center" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.625rem)" }}>
-          <button
-            onClick={back}
-            className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border border-aiva-navy/20 hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
-        </div>
       )}
     </PhoneFrame>
   );

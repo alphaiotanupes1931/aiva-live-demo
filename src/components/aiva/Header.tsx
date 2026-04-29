@@ -2,20 +2,20 @@ import { X } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 
 interface HeaderProps {
-  onBack?: () => void;
+  onHome?: () => void;
   onChat?: () => void;
-  showBack?: boolean;
+  showHome?: boolean;
 }
 
-export const Header = ({ onBack, showBack = true }: HeaderProps) => (
+export const Header = ({ onHome, showHome = true }: HeaderProps) => (
   <header
     className="h-14 bg-[#e5e7eb] text-aiva-navy flex items-center justify-between px-3 shrink-0 relative z-10 border-b border-black/5"
     style={{ paddingTop: "env(safe-area-inset-top)" }}
   >
     <button
-      onClick={onBack}
-      disabled={!showBack || !onBack}
-      aria-label="Close"
+      onClick={onHome}
+      disabled={!showHome || !onHome}
+      aria-label="Home"
       className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/5 disabled:opacity-0 transition"
     >
       <X className="w-5 h-5" />
