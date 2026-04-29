@@ -1277,7 +1277,6 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
           <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
           <ul className="space-y-1.5">
             {EQUIP_STATUS.map((e) => {
-              const isSSK = e.name.includes("SSK");
               const photo = EQUIPMENT_PHOTOS[e.name];
               return (
                 <li key={e.name}>
@@ -1301,11 +1300,6 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
                       />
                     )}
                     <span className="flex-1 min-w-0 truncate">{e.name}</span>
-                    {isSSK && (
-                      <span className="inline-flex items-center gap-1 text-aiva-success text-[11px] font-semibold shrink-0">
-                        <span className="w-2 h-2 rounded-full bg-aiva-success" /> Operational
-                      </span>
-                    )}
                   </button>
                 </li>
               );
