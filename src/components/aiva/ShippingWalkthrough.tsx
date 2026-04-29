@@ -1,4 +1,4 @@
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ChevronLeft } from "lucide-react";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
@@ -14,6 +14,7 @@ type StepLayoutProps = {
   secondaryLabel?: string;
   onSecondary?: () => void;
   banner?: { text: string };
+  onBack?: () => void;
 };
 
 const StepLayout = ({
@@ -28,6 +29,7 @@ const StepLayout = ({
   secondaryLabel,
   onSecondary,
   banner,
+  onBack,
 }: StepLayoutProps) => (
   <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
     <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
@@ -55,12 +57,6 @@ const StepLayout = ({
       ) : null}
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onPrimary}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        {primaryLabel}
-      </button>
       {secondaryLabel && onSecondary && (
         <button
           onClick={onSecondary}
@@ -69,6 +65,23 @@ const StepLayout = ({
           {secondaryLabel}
         </button>
       )}
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={onPrimary}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          {primaryLabel}
+        </button>
+      </div>
     </div>
   </div>
 );
@@ -81,32 +94,33 @@ export const ShipIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
     photoAlt="USPS Self-Service Kiosk welcome screen"
     primaryLabel="I'm at the kiosk"
     onPrimary={onNext}
-    secondaryLabel="Back"
-    onSecondary={onBack}
+    onBack={onBack}
   />
 );
 
-export const ShipStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const ShipStep1 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 5"
     title="Place your package on the scale"
     subtitle="The kiosk will weigh your package automatically. Make sure it's centered on the scale."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const ShipStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const ShipStep2 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 5"
     title="Enter package details"
     subtitle="The kiosk will ask for the destination ZIP code and package dimensions. Have your shipping label or recipient address ready."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const ShipStep3 = ({ onNext, onMore }: { onNext: () => void; onMore: () => void }) => (
+export const ShipStep3 = ({ onNext, onMore, onBack }: { onNext: () => void; onMore: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 3 of 5"
     title="Pick a shipping service"
@@ -115,6 +129,7 @@ export const ShipStep3 = ({ onNext, onMore }: { onNext: () => void; onMore: () =
     onPrimary={onNext}
     secondaryLabel="Tell me more about options"
     onSecondary={onMore}
+    onBack={onBack}
   />
 );
 
@@ -150,17 +165,18 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
   </div>
 );
 
-export const ShipStep4 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+export const ShipStep4 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
     subtitle="Insert your card or tap to pay. Then print your label — the kiosk will print your shipping label automatically. Grab it from the printer slot before moving on."
     primaryLabel="Next"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
-export const ShipStep5 = ({ onNext }: { onNext: () => void; onWhere?: () => void }) => (
+export const ShipStep5 = ({ onNext, onBack }: { onNext: () => void; onWhere?: () => void; onBack?: () => void }) => (
   <StepLayout
     stepLabel="Step 5 of 5"
     title="Drop off your package"
@@ -168,6 +184,7 @@ export const ShipStep5 = ({ onNext }: { onNext: () => void; onWhere?: () => void
     photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
+    onBack={onBack}
   />
 );
 
@@ -181,7 +198,7 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
   />
 );
 
-export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+export const ShipDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
   <StepLayout
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
