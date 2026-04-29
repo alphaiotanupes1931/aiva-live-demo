@@ -524,9 +524,12 @@ export const AivaApp = () => {
         {screen === "submitting" && (
           <Submitting onDone={() => goto("submitted")} problem={problem} detail={problemDetail} />
         )}
-        {screen === "submitted" && <Submitted problem={problem} onNext={() => goto("notify")} />}
-        {screen === "notify" && (
-          <Notify onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
+        {screen === "submitted" && (
+          <Submitted
+            problem={problem}
+            onYes={() => goto("nearest")}
+            onNo={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
         )}
         {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
         {screen === "anythingElse" && (
