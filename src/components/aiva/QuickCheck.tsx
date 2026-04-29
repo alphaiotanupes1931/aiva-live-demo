@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertTriangle, Ruler, Globe, CheckCircle2, ChevronDown } from "lucide-react";
+import { AlertTriangle, Ruler, Globe, CheckCircle2, ChevronDown, ChevronLeft } from "lucide-react";
 
 type CheckKey = "hazmat" | "oversized" | "international" | "none";
 
