@@ -59,6 +59,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
         body: {
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
           location: location || "unknown",
+          pageContext: pageContext || undefined,
         },
       });
 
