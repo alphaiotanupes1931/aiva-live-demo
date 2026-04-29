@@ -462,19 +462,22 @@ export const HeldMailRedirect = ({
         </div>
       </div>
     </div>
-    <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-      <button
-        onClick={onDirections}
-        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-      >
-        Get directions
-      </button>
-      <button
-        onClick={onBack}
-        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-      >
-        Back
-      </button>
+    <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onBack}
+          aria-label="Back"
+          className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={onDirections}
+          className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+        >
+          Get directions
+        </button>
+      </div>
     </div>
   </div>
 );
