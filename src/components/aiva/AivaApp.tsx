@@ -5,6 +5,7 @@ import { BotBubble, UserBubble, Typing, ChoiceButton, Card } from "./ChatBits";
 import { Wayfinding } from "./Wayfinding";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { ChatbotModal } from "./ChatbotModal";
+import { InlineChat } from "./InlineChat";
 import {
   ShipIntro, ShipStep1, ShipStep2, ShipStep3, ShipServiceCompare,
   ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
@@ -259,6 +260,7 @@ export const AivaApp = () => {
             onWayfinding={() => goto("findIntent")}
             onReport={() => goto("thanks")}
             onVoice={() => goto("voiceListen")}
+            location={userLocation}
           />
         )}
         {screen === "findIntent" && (
@@ -751,15 +753,15 @@ const LocationEquipmentCard = () => {
 };
 
 const Greeting = ({
-  onWayfinding, onReport, onVoice,
-}: { onWayfinding: () => void; onReport: () => void; onVoice: () => void }) => {
+  onWayfinding, onReport, onVoice: _onVoice, location,
+}: { onWayfinding: () => void; onReport: () => void; onVoice: () => void; location?: string }) => {
   const [showButtons, setShowButtons] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setShowButtons(true), 600);
     return () => clearTimeout(t);
   }, []);
   return (
-    <div className="flex-1 flex flex-col anim-slide-right">
+    <div className="flex-1 flex flex-col anim-slide-right min-h-0">
       <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
         {!showButtons ? <Typing /> : (
           <>
@@ -778,7 +780,7 @@ const Greeting = ({
           </>
         )}
       </div>
-      <ComposerBar onMic={onVoice} />
+      <InlineChat location={location} />
     </div>
   );
 };
