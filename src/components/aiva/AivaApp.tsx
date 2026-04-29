@@ -197,6 +197,16 @@ export const AivaApp = () => {
         />
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
+        {screen === "disclaimer" && (
+          <DisclaimerScreen
+            onContinue={() => {
+              try { localStorage.setItem("aiva-disclaimer", "1"); } catch {}
+              const consented = localStorage.getItem("aiva-consent") === "1";
+              setScreen(consented ? "qr" : "consent");
+              setHistory([]);
+            }}
+          />
+        )}
         {screen === "consent" && (
           <ConsentScreen
             onAgree={() => {
