@@ -85,27 +85,23 @@ export const ShipIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
   />
 );
 
-export const ShipStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const ShipStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 5"
     title="Place your package on the scale"
     subtitle="The kiosk will weigh your package automatically. Make sure it's centered on the scale."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
-export const ShipStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const ShipStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 5"
     title="Enter package details"
     subtitle="The kiosk will ask for the destination ZIP code and package dimensions. Have your shipping label or recipient address ready."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
@@ -153,15 +149,13 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
   </div>
 );
 
-export const ShipStep4 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const ShipStep4 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
     subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 

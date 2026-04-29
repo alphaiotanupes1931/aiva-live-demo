@@ -8,21 +8,25 @@ interface ChatbotModalProps {
   open: boolean;
   onClose: () => void;
   location?: string;
+  pageContext?: string;
+  suggestions?: string[];
 }
 
 type Msg = { role: "assistant" | "user"; content: string };
 
-const SUGGESTED_QUESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   "What are the Post Office hours near me?",
   "How much does it cost to ship a 2 lb package to California?",
 ];
 
-export const ChatbotModal = ({ open, onClose, location }: ChatbotModalProps) => {
+export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions }: ChatbotModalProps) => {
+  const tips = suggestions && suggestions.length > 0 ? suggestions : DEFAULT_SUGGESTIONS;
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
-      content:
-        "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
+      content: pageContext
+        ? `Hi! I'm AIVA. I can see you're on **${pageContext}** — ask me anything about this step or USPS in general.`
+        : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -55,6 +59,7 @@ export const ChatbotModal = ({ open, onClose, location }: ChatbotModalProps) => 
         body: {
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
           location: location || "unknown",
+          pageContext: pageContext || undefined,
         },
       });
 
@@ -141,7 +146,7 @@ export const ChatbotModal = ({ open, onClose, location }: ChatbotModalProps) => 
               <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
                 Try asking
               </div>
-              {SUGGESTED_QUESTIONS.map((q) => (
+              {tips.map((q) => (
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}

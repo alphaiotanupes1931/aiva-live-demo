@@ -114,15 +114,13 @@ export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; o
   />
 );
 
-export const DropStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const DropStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 3"
     title="Scan your shipping label"
     subtitle="Hold your label barcode up to the scanner. The drop door will open automatically."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
@@ -247,27 +245,23 @@ export const StampsFindSSK = ({ onNext, onHelp: _onHelp }: { onNext: () => void;
   />
 );
 
-export const StampsStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const StampsStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 1 of 3"
     title="Select 'Buy Stamps' on the kiosk"
     subtitle="The kiosk prints sheets of stamps (not books). Pick the design and quantity you'd like."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
-export const StampsStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const StampsStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
     stepLabel="Step 2 of 3"
     title="Pay for your stamps"
     subtitle="Insert your card or tap to pay. The kiosk accepts all major cards."
     primaryLabel="Next"
     onPrimary={onNext}
-    secondaryLabel="I need help"
-    onSecondary={onHelp}
   />
 );
 
