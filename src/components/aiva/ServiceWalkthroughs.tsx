@@ -210,10 +210,10 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
 export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
     banner={{ text: "✓ You're all set" }}
+    title="Thanks for using AIVA"
+    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    title="Your package is on its way"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
