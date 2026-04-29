@@ -45,6 +45,7 @@ const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
 };
 
 type Screen =
+  | "disclaimer"
   | "consent"
   | "qr"
   | "newOrReturning"
@@ -116,7 +117,8 @@ interface ChatMsg {
 
 export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
-    if (typeof window === "undefined") return "consent";
+    if (typeof window === "undefined") return "disclaimer";
+    if (localStorage.getItem("aiva-disclaimer") !== "1") return "disclaimer";
     const consented = localStorage.getItem("aiva-consent") === "1";
     return consented ? "qr" : "consent";
   });
@@ -170,6 +172,7 @@ export const AivaApp = () => {
 
   const showHeader =
     screen !== "qr" &&
+    screen !== "disclaimer" &&
     screen !== "consent" &&
     screen !== "newOrReturning" &&
     screen !== "onboarding" &&
@@ -194,6 +197,16 @@ export const AivaApp = () => {
         />
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
+        {screen === "disclaimer" && (
+          <DisclaimerScreen
+            onContinue={() => {
+              try { localStorage.setItem("aiva-disclaimer", "1"); } catch {}
+              const consented = localStorage.getItem("aiva-consent") === "1";
+              setScreen(consented ? "qr" : "consent");
+              setHistory([]);
+            }}
+          />
+        )}
         {screen === "consent" && (
           <ConsentScreen
             onAgree={() => {
@@ -723,6 +736,49 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
 }
 
 /* ---------- Screens ---------- */
+
+const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
+  <div className="flex-1 flex flex-col bg-white text-aiva-navy anim-fade-up overflow-y-auto">
+    <div className="flex-1 flex flex-col justify-center px-7 py-10 gap-7">
+      <img src={uspsLogo} alt="USPS" className="w-28 h-auto object-contain mx-auto" />
+
+      <div className="space-y-3 text-center">
+        <span className="inline-block text-[10px] font-bold tracking-[0.18em] uppercase text-aiva-blue-deep bg-aiva-blue-deep/10 px-3 py-1 rounded-full">
+          Please note
+        </span>
+        <h1 className="text-[22px] font-bold leading-tight tracking-tight">
+          This is a draft prototype
+        </h1>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-aiva-page p-5 space-y-3 text-[13px] leading-relaxed text-foreground/80">
+        <p>
+          This experience uses the existing flows and journey maps that the
+          <span className="font-semibold text-aiva-navy"> LMI Team </span>
+          has created.
+        </p>
+        <p>
+          It is <span className="font-semibold text-aiva-navy">not a finished product</span> and
+          should not be seen as the final design, content, or behavior of AIVA.
+        </p>
+        <p>
+          The purpose is purely <span className="font-semibold text-aiva-navy">representational</span> —
+          to give an idea of the end-to-end experience and to support further
+          gap analysis.
+        </p>
+        <p className="text-foreground/60 italic">Thank you!</p>
+      </div>
+
+      <button
+        onClick={onContinue}
+        className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-7 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+      >
+        I understand &middot; Continue
+        <ArrowRight className="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+);
 
 const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
   const [agreed, setAgreed] = useState(false);
