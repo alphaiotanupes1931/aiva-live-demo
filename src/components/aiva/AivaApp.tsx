@@ -117,7 +117,8 @@ interface ChatMsg {
 
 export const AivaApp = () => {
   const [screen, setScreen] = useState<Screen>(() => {
-    if (typeof window === "undefined") return "consent";
+    if (typeof window === "undefined") return "disclaimer";
+    if (localStorage.getItem("aiva-disclaimer") !== "1") return "disclaimer";
     const consented = localStorage.getItem("aiva-consent") === "1";
     return consented ? "qr" : "consent";
   });
