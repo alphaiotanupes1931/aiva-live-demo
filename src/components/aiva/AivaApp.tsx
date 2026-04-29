@@ -1274,32 +1274,27 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
         <Card>
-          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
-          <ul className="space-y-1.5">
+          <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Equipment at this SOPO</div>
+          <ul className="grid grid-cols-2 gap-2.5">
             {EQUIP_STATUS.map((e) => {
               const photo = EQUIPMENT_PHOTOS[e.name];
+              const src = photo ? photo.photo : photoUnavailableImg;
+              const alt = photo ? photo.alt : "Photo unavailable";
               return (
                 <li key={e.name}>
                   <button
                     onClick={() => onNext(e.name)}
-                    className="w-full flex items-center gap-3 text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                    className="w-full flex flex-col rounded-xl border border-border bg-white overflow-hidden hover:border-aiva-navy/40 active:scale-[0.99] transition text-left"
                   >
-                    {photo ? (
-                      <img
-                        src={photo.photo}
-                        alt={photo.alt}
-                        loading="lazy"
-                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
-                      />
-                    ) : (
-                      <img
-                        src={photoUnavailableImg}
-                        alt="Photo unavailable"
-                        loading="lazy"
-                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
-                      />
-                    )}
-                    <span className="flex-1 min-w-0 truncate">{e.name}</span>
+                    <img
+                      src={src}
+                      alt={alt}
+                      loading="lazy"
+                      className="w-full aspect-[4/3] object-cover block"
+                    />
+                    <span className="px-2.5 py-2 text-[13px] font-medium text-aiva-navy leading-tight">
+                      {e.name}
+                    </span>
                   </button>
                 </li>
               );
