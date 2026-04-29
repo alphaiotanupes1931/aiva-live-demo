@@ -939,7 +939,7 @@ const LocationEquipmentCard = () => {
         <span className="flex items-center gap-2 min-w-0">
           <MapPin className="w-4 h-4 text-aiva-navy shrink-0" />
           <span className="flex flex-col min-w-0">
-            <span className="text-sm font-semibold text-aiva-navy">Available equipment</span>
+            <span className="text-sm font-semibold text-aiva-navy">Available services</span>
             <span className="text-[11px] text-muted-foreground truncate">SOPO near me · 8150 Leesburg Pike Ste 180B, Vienna, VA</span>
           </span>
         </span>
