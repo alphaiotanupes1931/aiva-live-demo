@@ -172,6 +172,7 @@ export const AivaApp = () => {
 
   const showHeader =
     screen !== "qr" &&
+    screen !== "disclaimer" &&
     screen !== "consent" &&
     screen !== "newOrReturning" &&
     screen !== "onboarding" &&
