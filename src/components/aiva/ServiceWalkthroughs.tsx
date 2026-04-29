@@ -94,7 +94,7 @@ const StepLayout = ({
 export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
     title="Let's drop off your prepaid package"
-    subtitle="I'll guide you to the Automated Parcel Drop in Zone 3. You'll scan your label, drop your package, and get a receipt."
+    subtitle="I'll guide you to the Automated Parcel Drop. You'll scan your label, drop your package, and get a receipt."
     photo={apdPhoto}
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="Take me there"
