@@ -33,11 +33,7 @@ type CardProps = {
 };
 
 const CheckCard = ({ icon, label, selected, onToggle, expanded, onExpand, items, expandable }: CardProps) => (
-  <div
-    className={`rounded-2xl bg-white border-2 shadow-sm transition-all ${
-      selected ? "border-aiva-navy" : "border-border"
-    }`}
-  >
+  <div className={`transition-colors ${selected ? "bg-aiva-navy/[0.04]" : "bg-white"}`}>
     <button
       onClick={onToggle}
       className="w-full flex items-center gap-3 p-4 text-left"
