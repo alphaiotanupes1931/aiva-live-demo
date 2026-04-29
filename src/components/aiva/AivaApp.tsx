@@ -1265,6 +1265,7 @@ const EQUIP_STATUS = [
   { name: "Automated Parcel Drop (APD)", ok: true },
   { name: "Parcel Lockers", ok: true },
   { name: "Mail Chute", ok: true },
+  { name: "PO Boxes", ok: true },
 ];
 
 const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
