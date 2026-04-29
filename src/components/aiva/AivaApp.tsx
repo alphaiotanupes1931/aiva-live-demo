@@ -342,29 +342,28 @@ export const AivaApp = () => {
           <ShipIntro onNext={() => goto("shipStep1")} onBack={back} />
         )}
         {screen === "shipStep1" && (
-          <ShipStep1 onNext={() => goto("shipStep2")} onHelp={() => setChatOpen(true)} />
+          <ShipStep1 onNext={() => goto("shipStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep2" && (
-          <ShipStep2 onNext={() => goto("shipStep3")} onHelp={() => setChatOpen(true)} />
+          <ShipStep2 onNext={() => goto("shipStep3")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep3" && (
-          <ShipStep3 onNext={() => goto("shipStep4")} onMore={() => goto("shipServiceCompare")} />
+          <ShipStep3 onNext={() => goto("shipStep4")} onMore={() => goto("shipServiceCompare")} onBack={back} />
         )}
         {screen === "shipServiceCompare" && (
           <ShipServiceCompare onBack={back} />
         )}
         {screen === "shipStep4" && (
-          <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} />
+          <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep5" && (
-          <ShipStep5 onNext={() => goto("shipDone")} />
+          <ShipStep5 onNext={() => goto("shipDone")} onBack={back} />
         )}
         {screen === "shipDrumChuteWhere" && (
           <ShipDrumChuteWhere onBack={back} />
         )}
         {screen === "shipDone" && (
           <ShipDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
