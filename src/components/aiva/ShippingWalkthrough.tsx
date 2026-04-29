@@ -90,7 +90,7 @@ export const ShipStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     stepLabel="Step 1 of 5"
     title="Place your package on the scale"
     subtitle="The kiosk will weigh your package automatically. Make sure it's centered on the scale."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -102,7 +102,7 @@ export const ShipStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     stepLabel="Step 2 of 5"
     title="Enter package details"
     subtitle="The kiosk will ask for the destination ZIP code and package dimensions. Have your shipping label or recipient address ready."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -114,7 +114,7 @@ export const ShipStep3 = ({ onNext, onMore }: { onNext: () => void; onMore: () =
     stepLabel="Step 3 of 5"
     title="Pick a shipping service"
     subtitle="Priority Mail is the most common option — 1–3 day delivery with tracking. Ground Advantage is the most affordable for packages under 70 lbs."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="Tell me more about options"
     onSecondary={onMore}
@@ -147,7 +147,7 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
         onClick={onBack}
         className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
       >
-        Got it
+        Back
       </button>
     </div>
   </div>
@@ -158,7 +158,7 @@ export const ShipStep4 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
     subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -183,7 +183,7 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
     title="Drum Chute"
     subtitle="Head to Zone 3 — the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
     photoUnavailable
-    primaryLabel="Got it"
+    primaryLabel="Back"
     onPrimary={onBack}
   />
 );
