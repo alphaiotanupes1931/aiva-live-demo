@@ -398,19 +398,19 @@ export const AivaApp = () => {
           <DropIntro onNext={() => goto("dropFindAPD")} onBack={back} />
         )}
         {screen === "dropFindAPD" && (
-          <DropFindAPD onNext={() => goto("dropStep1")} onHelp={() => setChatOpen(true)} />
+          <DropFindAPD onNext={() => goto("dropStep1")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "dropStep1" && (
-          <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} />
+          <DropStep1 onNext={() => goto("dropStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "dropStep2" && (
-          <DropStep2 onNext={() => goto("dropStep3")} onTooBig={() => goto("dropTooBig")} />
+          <DropStep2 onNext={() => goto("dropStep3")} onTooBig={() => goto("dropTooBig")} onBack={back} />
         )}
         {screen === "dropTooBig" && (
           <DropTooBigRedirect onDirections={() => goto("wayfinding")} onBack={back} />
         )}
         {screen === "dropStep3" && (
-          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("dropReceiptIssue")} />
+          <DropStep3 onNext={() => goto("dropDone")} onReport={() => goto("dropReceiptIssue")} onBack={back} />
         )}
         {screen === "dropReceiptIssue" && (
           <DropReceiptIssue
@@ -420,7 +420,6 @@ export const AivaApp = () => {
         )}
         {screen === "dropDone" && (
           <DropDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -430,20 +429,19 @@ export const AivaApp = () => {
           <StampsIntro onNext={() => goto("stampsFindSSK")} onBack={back} />
         )}
         {screen === "stampsFindSSK" && (
-          <StampsFindSSK onNext={() => goto("stampsStep1")} onHelp={() => setChatOpen(true)} />
+          <StampsFindSSK onNext={() => goto("stampsStep1")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep1" && (
-          <StampsStep1 onNext={() => goto("stampsStep2")} onHelp={() => setChatOpen(true)} />
+          <StampsStep1 onNext={() => goto("stampsStep2")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep2" && (
-          <StampsStep2 onNext={() => goto("stampsStep3")} onHelp={() => setChatOpen(true)} />
+          <StampsStep2 onNext={() => goto("stampsStep3")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "stampsStep3" && (
-          <StampsStep3 onNext={() => goto("stampsDone")} onReport={() => goto("thanks")} />
+          <StampsStep3 onNext={() => goto("stampsDone")} onReport={() => goto("thanks")} onBack={back} />
         )}
         {screen === "stampsDone" && (
           <StampsDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
@@ -454,26 +452,25 @@ export const AivaApp = () => {
             onPackage={() => goto("pkgFindLockers")}
             onPOBox={() => goto("poBoxFind")}
             onHeld={() => goto("heldMailRedirect")}
+            onBack={back}
           />
         )}
         {screen === "pkgFindLockers" && (
-          <PkgFindLockers onNext={() => goto("pkgEnterCode")} onHelp={() => setChatOpen(true)} />
+          <PkgFindLockers onNext={() => goto("pkgEnterCode")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "pkgEnterCode" && (
-          <PkgEnterCode onNext={() => goto("pkgDone")} onHelp={() => setChatOpen(true)} />
+          <PkgEnterCode onNext={() => goto("pkgDone")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "pkgDone" && (
           <PkgDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
         {screen === "poBoxFind" && (
-          <POBoxFind onNext={() => goto("poBoxDone")} onHelp={() => setChatOpen(true)} />
+          <POBoxFind onNext={() => goto("poBoxDone")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "poBoxDone" && (
           <POBoxDone
-            onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
