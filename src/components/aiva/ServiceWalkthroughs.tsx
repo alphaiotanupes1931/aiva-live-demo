@@ -228,7 +228,7 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
 export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
     title="Let's buy your stamps"
-    subtitle="I'll guide you to the Self-Service Kiosk in Zone 2. You can buy stamps in books or sheets and pay by card."
+    subtitle="I'll guide you to the Self-Service Kiosk in Zone 2. The kiosk prints sheets of stamps and accepts card payment."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="Take me there"
@@ -255,7 +255,7 @@ export const StampsStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: ()
   <StepLayout
     stepLabel="Step 1 of 3"
     title="Select 'Buy Stamps' on the kiosk"
-    subtitle="Choose from books of 20, sheets, or single stamps. The kiosk will show all available options."
+    subtitle="The kiosk prints sheets of stamps (not books). Pick the design and quantity you'd like."
     primaryLabel="Done"
     onPrimary={onNext}
     secondaryLabel="I need help"
