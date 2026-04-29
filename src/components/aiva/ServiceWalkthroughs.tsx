@@ -107,7 +107,7 @@ export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
 export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Automated Parcel Drop"
-    subtitle="Look for this in Zone 3, near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
+    subtitle="Look for it near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
     photo={apdPhoto}
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="I found it"
