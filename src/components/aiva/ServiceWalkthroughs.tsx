@@ -279,7 +279,6 @@ export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport
 
 export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ You're all set" }}
     photoUnavailable={false}
     title="Stamps purchased"
     subtitle="Thanks for using AIVA. Have a great day."
