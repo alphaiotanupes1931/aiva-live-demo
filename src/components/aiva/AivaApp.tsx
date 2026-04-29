@@ -1059,11 +1059,6 @@ const Arrived = ({ service, onWalkthrough, onDone }: { service?: string; onWalkt
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
-        <div className="flex items-center gap-2 rounded-xl bg-aiva-success/10 border border-aiva-success/30 px-3 py-2.5 mb-4">
-          <CheckCircle2 className="w-5 h-5 text-aiva-success shrink-0" />
-          <div className="text-sm font-semibold text-aiva-success">You have arrived</div>
-        </div>
-
         <h1 className="text-xl font-bold text-aiva-navy mb-1">{info.equipment}</h1>
         <p className="text-sm text-muted-foreground mb-4">
           {info.zone} · {info.context}
