@@ -238,7 +238,7 @@ export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: ()
 export const StampsFindSSK = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Self-Service Kiosk"
-    subtitle="Look for this in Zone 2. Tap 'Tap to Get Started' on the screen when you reach it."
+    subtitle="Tap 'Tap to Get Started' on the screen when you reach it."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="I found it"
