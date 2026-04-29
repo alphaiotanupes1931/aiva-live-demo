@@ -177,7 +177,10 @@ export const QuickCheck = ({
             label="My package is going to an international address"
             selected={selected.has("international")}
             onToggle={() => toggle("international")}
-            expandable={false}
+            expanded={expanded.has("international")}
+            onExpand={() => toggleExpand("international")}
+            items={INTERNATIONAL_ITEMS}
+            expandable
           />
           <CheckCard
             icon={
