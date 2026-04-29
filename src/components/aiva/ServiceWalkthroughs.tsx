@@ -374,7 +374,7 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
 export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find your PO Box"
-    subtitle="Head to Zone 4. Use your PO Box key or combination to unlock your box."
+    subtitle="Use your PO Box key or combination to unlock your box."
     photo={poBoxesPhoto}
     photoAlt="USPS PO Boxes"
     primaryLabel="I found it"
