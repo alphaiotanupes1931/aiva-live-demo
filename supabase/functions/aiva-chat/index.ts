@@ -9,14 +9,14 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, location } = await req.json();
+    const { messages, location, pageContext } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompt = `You are AIVA, the USPS Virtual Assistant inside a Self-Operating Post Office kiosk.
 
 The user's current location is: ${location || "unknown"}.
-
+${pageContext ? `\nThe user is currently on this screen: "${pageContext}". Tailor your answer to that context when relevant.\n` : ""}
 Answer USPS questions directly and confidently. Be specific and give real numbers, prices, and times. Do NOT tell the user to "check usps.com" or "visit a branch" — YOU are their assistant, give them the answer.
 
 Examples:
