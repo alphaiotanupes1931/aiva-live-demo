@@ -1613,15 +1613,12 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
   );
 };
 
-const AnythingElse = ({ onAnother, onDone }: { onAnother: () => void; onDone: () => void }) => {
+const AnythingElse = ({ onAnother }: { onAnother: () => void; onDone?: () => void }) => {
   const ready = useTypingDelay(450);
   return (
     <ConvoLayout messages={[{ who: "bot", text: "Is there anything else I can help you with?" }]}>
       {!ready ? <Typing /> : (
-        <div className="space-y-2">
-          <ChoiceButton variant="primary" onClick={onAnother}>Yes</ChoiceButton>
-          <ChoiceButton onClick={onDone}>No, I'm done</ChoiceButton>
-        </div>
+        <ChoiceButton variant="primary" onClick={onAnother}>Yes, help me with something else</ChoiceButton>
       )}
     </ConvoLayout>
   );
