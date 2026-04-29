@@ -1,6 +1,6 @@
 import { CheckCircle2 } from "lucide-react";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
-import photoUnavailable from "@/assets/photo-unavailable.png";
+import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
 type StepLayoutProps = {
   stepLabel?: string;
@@ -50,7 +50,7 @@ const StepLayout = ({
         </div>
       ) : photoUnavailable !== false ? (
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
-          <img src={photoUnavailable} alt="Photo unavailable" loading="lazy" className="w-full h-auto object-cover block" />
+          <img src={photoUnavailableImg} alt="Photo unavailable" loading="lazy" className="w-full h-auto object-cover block" />
         </div>
       ) : null}
     </div>
