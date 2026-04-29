@@ -524,9 +524,12 @@ export const AivaApp = () => {
         {screen === "submitting" && (
           <Submitting onDone={() => goto("submitted")} problem={problem} detail={problemDetail} />
         )}
-        {screen === "submitted" && <Submitted problem={problem} onNext={() => goto("notify")} />}
-        {screen === "notify" && (
-          <Notify onYes={() => goto("nearest")} onNo={() => goto("anythingElse")} />
+        {screen === "submitted" && (
+          <Submitted
+            problem={problem}
+            onYes={() => goto("nearest")}
+            onNo={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+          />
         )}
         {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
         {screen === "anythingElse" && (
@@ -1274,32 +1277,27 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
         <Card>
-          <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Services at this SOPO</div>
-          <ul className="space-y-1.5">
+          <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Equipment at this SOPO</div>
+          <ul className="grid grid-cols-2 gap-2.5">
             {EQUIP_STATUS.map((e) => {
               const photo = EQUIPMENT_PHOTOS[e.name];
+              const src = photo ? photo.photo : photoUnavailableImg;
+              const alt = photo ? photo.alt : "Photo unavailable";
               return (
                 <li key={e.name}>
                   <button
                     onClick={() => onNext(e.name)}
-                    className="w-full flex items-center gap-3 text-sm p-2 -mx-2 rounded-lg hover:bg-muted/50 active:bg-muted transition text-left"
+                    className="w-full flex flex-col rounded-xl border border-border bg-white overflow-hidden hover:border-aiva-navy/40 active:scale-[0.99] transition text-left"
                   >
-                    {photo ? (
-                      <img
-                        src={photo.photo}
-                        alt={photo.alt}
-                        loading="lazy"
-                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
-                      />
-                    ) : (
-                      <img
-                        src={photoUnavailableImg}
-                        alt="Photo unavailable"
-                        loading="lazy"
-                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
-                      />
-                    )}
-                    <span className="flex-1 min-w-0 truncate">{e.name}</span>
+                    <img
+                      src={src}
+                      alt={alt}
+                      loading="lazy"
+                      className="w-full aspect-[4/3] object-cover block"
+                    />
+                    <span className="px-2.5 py-2 text-[13px] font-medium text-aiva-navy leading-tight">
+                      {e.name}
+                    </span>
                   </button>
                 </li>
               );
@@ -1397,7 +1395,15 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
   );
 };
 
-const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }) => {
+const Submitted = ({
+  onYes,
+  onNo,
+  problem,
+}: {
+  onYes: () => void;
+  onNo: () => void;
+  problem?: string;
+}) => {
   const ready = useTypingDelay(700);
   // Strip parenthetical abbreviation, e.g. "Self-Service Kiosk (SSK)" -> "Self-Service Kiosk"
   const cleaned = (problem || "").replace(/\s*\(.*?\)\s*/g, "").trim();
@@ -1421,8 +1427,15 @@ const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }
           The local post office has been notified about {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
       </Card>
-      {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
-      {!ready && <Typing />}
+      {!ready ? <Typing /> : (
+        <>
+          <BotBubble>Do you still need to drop off your package? If so, we can send you to the nearest post office.</BotBubble>
+          <div className="space-y-2">
+            <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
+            <ChoiceButton onClick={onNo}>No</ChoiceButton>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -1548,7 +1561,12 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
       </a>
 
       {step === "info" && (
-        <ChoiceButton variant="primary" onClick={() => setStep("askText")}>Continue</ChoiceButton>
+        <button
+          onClick={() => setStep("askText")}
+          className="w-full text-center text-aiva-navy text-sm font-semibold underline underline-offset-4 py-2 hover:opacity-80 transition"
+        >
+          Text me the address instead
+        </button>
       )}
 
       {step === "askText" && (
