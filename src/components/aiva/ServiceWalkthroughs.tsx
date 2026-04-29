@@ -337,7 +337,7 @@ export const PickupTriage = ({
 export const PkgFindLockers = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Parcel Lockers"
-    subtitle="Head to Zone 4. You'll need the pickup code from your delivery notification."
+    subtitle="You'll need the pickup code from your delivery notification."
     photo={parcelLockersPhoto}
     photoAlt="USPS Parcel Lockers"
     primaryLabel="I found them"
