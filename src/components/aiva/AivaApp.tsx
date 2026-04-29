@@ -176,6 +176,13 @@ export const AivaApp = () => {
     screen !== "confirmInitialLocation" &&
     screen !== "addressEntry";
 
+  // Hide the floating chat button on screens where it would interfere
+  // (onboarding/consent/QR) or where the inline chat is already on screen (greeting).
+  const showChatFab =
+    showHeader && screen !== "greeting" && !chatOpen;
+
+  const ctx = getPageContext(screen, serviceIntent);
+
   return (
     <PhoneFrame>
       {showHeader && (
