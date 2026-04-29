@@ -1213,7 +1213,7 @@ const Arrived = ({ service, onWalkthrough, onDone }: { service?: string; onWalkt
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">{info.equipment}</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          {info.zone} · {info.context}
+          {info.context}
         </p>
 
         <div className="rounded-2xl overflow-hidden bg-white border border-border shadow-sm">
