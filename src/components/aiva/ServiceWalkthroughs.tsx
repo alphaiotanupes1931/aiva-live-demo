@@ -209,7 +209,6 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
 
 export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ You're all set" }}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
@@ -280,7 +279,6 @@ export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport
 
 export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ You're all set" }}
     photoUnavailable={false}
     title="Stamps purchased"
     subtitle="Thanks for using AIVA. Have a great day."
@@ -384,7 +382,6 @@ export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onH
 
 export const POBoxDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ Mail retrieved" }}
     photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."

@@ -183,7 +183,6 @@ export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
 
 export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ You're all set" }}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}

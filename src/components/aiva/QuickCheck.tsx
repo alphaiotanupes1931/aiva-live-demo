@@ -21,6 +21,14 @@ const OVERSIZED_ITEMS = [
   `Tubes longer than 36"`,
 ];
 
+const INTERNATIONAL_ITEMS = [
+  "Any address outside the United States and its territories",
+  "Packages going to APO, FPO, or DPO military addresses",
+  "U.S. territories like Puerto Rico, Guam, and U.S. Virgin Islands are domestic — not international",
+  "International packages require a customs declaration form (PS Form 2976 or 2976-A)",
+  "A postal clerk must verify contents and accept the package — this SOPO can't process them",
+];
+
 type CardProps = {
   icon: React.ReactNode;
   label: string;
@@ -169,7 +177,10 @@ export const QuickCheck = ({
             label="My package is going to an international address"
             selected={selected.has("international")}
             onToggle={() => toggle("international")}
-            expandable={false}
+            expanded={expanded.has("international")}
+            onExpand={() => toggleExpand("international")}
+            items={INTERNATIONAL_ITEMS}
+            expandable
           />
           <CheckCard
             icon={
