@@ -1076,11 +1076,8 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
               <div className="space-y-2.5 pt-2">
                 {ZONE_INFO.map((z) => (
                   <div key={z.zone} className="flex gap-3">
-                    <div className="shrink-0 w-14">
-                      <div className="text-[10px] font-bold uppercase tracking-wide text-aiva-blue-deep">
-                        {z.zone}
-                      </div>
-                      <div className="text-[11px] font-semibold text-aiva-navy leading-tight">
+                    <div className="shrink-0 w-20">
+                      <div className="text-[12px] font-semibold text-aiva-navy leading-tight">
                         {z.name}
                       </div>
                     </div>

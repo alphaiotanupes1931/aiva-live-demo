@@ -198,8 +198,8 @@ export const DropTooBigRedirect = ({
 export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
   <StepLayout
     stepLabel="Step 3 of 3"
-    title="Take your receipt"
-    subtitle="The APD will print a confirmation receipt. Keep it for your records."
+    title="Find your receipt below"
+    subtitle="The APD prints your confirmation receipt from the slot below the screen. Grab it and keep it for your records."
     primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="Receipt didn't print"
