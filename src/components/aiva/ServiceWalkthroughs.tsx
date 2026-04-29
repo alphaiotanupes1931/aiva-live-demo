@@ -356,7 +356,6 @@ export const PkgEnterCode = ({ onNext, onHelp }: { onNext: () => void; onHelp: (
 
 export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
   <StepLayout
-    banner={{ text: "✓ Package retrieved" }}
     photoUnavailable={false}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
