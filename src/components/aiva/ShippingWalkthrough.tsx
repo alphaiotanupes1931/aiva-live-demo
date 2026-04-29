@@ -174,7 +174,7 @@ export const ShipStep5 = ({ onNext }: { onNext: () => void; onWhere?: () => void
 export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
   <StepLayout
     title="Drum Chute"
-    subtitle="Head to Zone 3 — the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
+    subtitle="Head to the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
     photoUnavailable
     primaryLabel="Back"
     onPrimary={onBack}
