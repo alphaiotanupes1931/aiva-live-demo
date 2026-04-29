@@ -191,9 +191,9 @@ export const AivaApp = () => {
     <PhoneFrame>
       {showHeader && (
         <Header
-          onBack={history.length > 0 ? back : undefined}
+          onHome={screen !== "greeting" ? () => { setHistory([]); setScreen("greeting"); } : undefined}
           onChat={() => setChatOpen(true)}
-          showBack={history.length > 0}
+          showHome={screen !== "greeting"}
         />
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
