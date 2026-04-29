@@ -597,7 +597,7 @@ export const AivaApp = () => {
         <button
           onClick={() => setChatOpen(true)}
           aria-label="Chat with AIVA"
-          className="absolute bottom-20 right-5 z-40 w-14 h-14 rounded-full bg-aiva-blue-deep text-white shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center ring-4 ring-white/60"
+          className="absolute bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-aiva-blue-deep text-white shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center ring-4 ring-white/60"
         >
           <MessageCircle className="w-6 h-6" />
         </button>
