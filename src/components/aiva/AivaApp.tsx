@@ -134,7 +134,7 @@ export const AivaApp = () => {
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
   const [chatOpen, setChatOpen] = useState(false);
-  const [quickCheckReason, setQuickCheckReason] = useState<"hazmat" | "oversized" | "both">("hazmat");
+  const [quickCheckReason, setQuickCheckReason] = useState<"hazmat" | "oversized" | "international" | "multiple">("hazmat");
   const [pendingFlow, setPendingFlow] = useState<"ship" | "drop" | null>(null);
 
   const persistLocation = (loc: string) => {
@@ -358,7 +358,7 @@ export const AivaApp = () => {
                 if (pendingFlow === "drop") goto("dropIntro");
                 else if (pendingFlow === "ship") goto("wayfinding");
               } else {
-                setQuickCheckReason(result as "hazmat" | "oversized" | "both");
+                setQuickCheckReason(result as "hazmat" | "oversized" | "international" | "multiple");
                 goto("quickCheckRedirect");
               }
             }}
