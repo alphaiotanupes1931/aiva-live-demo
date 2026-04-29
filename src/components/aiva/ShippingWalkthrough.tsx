@@ -154,22 +154,20 @@ export const ShipStep4 = ({ onNext }: { onNext: () => void; onHelp?: () => void 
   <StepLayout
     stepLabel="Step 4 of 5"
     title="Pay and print your label"
-    subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically."
+    subtitle="Insert your card or tap to pay. Then print your label — the kiosk will print your shipping label automatically. Grab it from the printer slot before moving on."
     primaryLabel="Next"
     onPrimary={onNext}
   />
 );
 
-export const ShipStep5 = ({ onNext, onWhere }: { onNext: () => void; onWhere: () => void }) => (
+export const ShipStep5 = ({ onNext }: { onNext: () => void; onWhere?: () => void }) => (
   <StepLayout
     stepLabel="Step 5 of 5"
     title="Drop off your package"
-    subtitle="Take your labeled package to the Drum Chute in Zone 3 and drop it in. You're almost done."
+    subtitle="Take your labeled package to the Drum Chute or APD if available. You're almost done."
     photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
-    secondaryLabel="Where is the Drum Chute?"
-    onSecondary={onWhere}
   />
 );
 
