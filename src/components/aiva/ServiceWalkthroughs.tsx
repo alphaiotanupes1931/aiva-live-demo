@@ -360,9 +360,9 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
   <StepLayout
     banner={{ text: "✓ Package retrieved" }}
     photoUnavailable={false}
-    title="You've got your package"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Done"
+    title="Thanks for using AIVA"
+    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
+    primaryLabel="Next"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
