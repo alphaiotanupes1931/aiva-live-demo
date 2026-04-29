@@ -27,7 +27,7 @@ import {
 
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
-  ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, Map as MapIcon, ArrowRight,
+  ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
   Lock, Navigation,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
