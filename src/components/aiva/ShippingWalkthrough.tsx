@@ -186,7 +186,7 @@ export const ShipDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    primaryLabel="Next"
+    primaryLabel="Done"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}

@@ -212,7 +212,7 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    primaryLabel="Next"
+    primaryLabel="Done"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
@@ -223,33 +223,32 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
 
 export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
   <StepLayout
-    title="Let's buy your stamps"
-    subtitle="I'll guide you to the Self-Service Kiosk. The kiosk prints sheets of stamps and accepts card payment."
+    title="Let's buy stamps"
+    subtitle="I'll guide you through buying stamps at the Self-Service Kiosk."
     photo={sskKioskPhoto}
     photoAlt="USPS Self-Service Kiosk"
-    primaryLabel="Take me there"
+    primaryLabel="I'm at the kiosk"
     onPrimary={onNext}
     secondaryLabel="Back"
     onSecondary={onBack}
   />
 );
 
-export const StampsFindSSK = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const StampsFindSSK = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
-    title="Find the Self-Service Kiosk"
-    subtitle="Tap 'Tap to Get Started' on the screen when you reach it."
-    photo={sskKioskPhoto}
-    photoAlt="USPS Self-Service Kiosk"
-    primaryLabel="I found it"
+    stepLabel="Step 1 of 3"
+    title="Tap 'Buy Stamps' on the kiosk"
+    subtitle="From the SSK home screen, select the 'Buy Stamps' option to get started."
+    primaryLabel="Next"
     onPrimary={onNext}
   />
 );
 
 export const StampsStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
-    stepLabel="Step 1 of 3"
-    title="Select 'Buy Stamps' on the kiosk"
-    subtitle="The kiosk prints sheets of stamps (not books). Pick the design and quantity you'd like."
+    stepLabel="Step 2 of 3"
+    title="Choose your stamps"
+    subtitle="Pick the stamp design and quantity you'd like to purchase."
     primaryLabel="Next"
     onPrimary={onNext}
   />
@@ -257,9 +256,9 @@ export const StampsStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => voi
 
 export const StampsStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
   <StepLayout
-    stepLabel="Step 2 of 3"
+    stepLabel="Step 3 of 3"
     title="Pay for your stamps"
-    subtitle="Insert your card or tap to pay. The kiosk accepts all major cards."
+    subtitle="Insert your card or tap to pay. Your stamps will print from the kiosk."
     primaryLabel="Next"
     onPrimary={onNext}
   />
@@ -267,12 +266,11 @@ export const StampsStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => voi
 
 export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
   <StepLayout
-    stepLabel="Step 3 of 3"
-    title="Take your stamps and receipt"
-    subtitle="Your stamps and receipt will print from the kiosk. Don't forget to grab both."
-    primaryLabel="Next"
+    title="Take your stamps"
+    subtitle="Grab your stamps from the printer slot. Don't forget your receipt."
+    primaryLabel="I got them"
     onPrimary={onNext}
-    secondaryLabel="Something didn't print"
+    secondaryLabel="Stamps didn't print"
     onSecondary={onReport}
   />
 );
@@ -359,7 +357,7 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
     photoUnavailable={false}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
-    primaryLabel="Next"
+    primaryLabel="Done"
     onPrimary={onDone}
     secondaryLabel="Help me with something else"
     onSecondary={onElse}
