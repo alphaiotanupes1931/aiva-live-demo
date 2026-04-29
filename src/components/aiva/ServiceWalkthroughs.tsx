@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, MapPin } from "lucide-react";
+import { CheckCircle2, MapPin, ChevronLeft } from "lucide-react";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
