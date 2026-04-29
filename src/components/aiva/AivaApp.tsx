@@ -1561,7 +1561,12 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
       </a>
 
       {step === "info" && (
-        <ChoiceButton variant="primary" onClick={() => setStep("askText")}>Continue</ChoiceButton>
+        <button
+          onClick={() => setStep("askText")}
+          className="w-full text-center text-aiva-navy text-sm font-semibold underline underline-offset-4 py-2 hover:opacity-80 transition"
+        >
+          Text me the address instead
+        </button>
       )}
 
       {step === "askText" && (
