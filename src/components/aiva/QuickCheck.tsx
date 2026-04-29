@@ -135,7 +135,7 @@ export const QuickCheck = ({
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           A few items can't be processed at this SOPO. Tap any that apply to your package.
         </p>
-        <div className="space-y-3">
+        <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden divide-y divide-border">
           <CheckCard
             icon={
               <div className="w-10 h-10 rounded-full bg-aiva-error/10 flex items-center justify-center">
