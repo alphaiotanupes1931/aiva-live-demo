@@ -1392,7 +1392,15 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
   );
 };
 
-const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }) => {
+const Submitted = ({
+  onYes,
+  onNo,
+  problem,
+}: {
+  onYes: () => void;
+  onNo: () => void;
+  problem?: string;
+}) => {
   const ready = useTypingDelay(700);
   // Strip parenthetical abbreviation, e.g. "Self-Service Kiosk (SSK)" -> "Self-Service Kiosk"
   const cleaned = (problem || "").replace(/\s*\(.*?\)\s*/g, "").trim();
@@ -1416,8 +1424,15 @@ const Submitted = ({ onNext, problem }: { onNext: () => void; problem?: string }
           The local post office has been notified about {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
       </Card>
-      {ready && <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>}
-      {!ready && <Typing />}
+      {!ready ? <Typing /> : (
+        <>
+          <BotBubble>Do you still need to drop off your package? If so, we can send you to the nearest post office.</BotBubble>
+          <div className="space-y-2">
+            <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
+            <ChoiceButton onClick={onNo}>No</ChoiceButton>
+          </div>
+        </>
+      )}
     </div>
   );
 };
