@@ -33,7 +33,7 @@ import {
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
-import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
+import parcelLockersPhoto from "@/assets/parcel-lockers.png";
 import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
 const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
