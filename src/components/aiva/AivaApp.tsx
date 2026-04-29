@@ -344,7 +344,7 @@ export const AivaApp = () => {
           <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} />
         )}
         {screen === "shipStep5" && (
-          <ShipStep5 onNext={() => goto("shipDone")} onWhere={() => goto("shipDrumChuteWhere")} />
+          <ShipStep5 onNext={() => goto("shipDone")} />
         )}
         {screen === "shipDrumChuteWhere" && (
           <ShipDrumChuteWhere onBack={back} />
