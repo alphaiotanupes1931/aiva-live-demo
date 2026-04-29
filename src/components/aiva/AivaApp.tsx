@@ -1599,8 +1599,8 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
 
       {step === "sent" && (
         <>
-          <div className="flex items-center gap-2 bg-aiva-success-bg border border-aiva-success/30 text-aiva-success rounded-xl p-3 text-sm font-medium">
-            <CheckCircle2 className="w-5 h-5" />
+          <div className="flex items-center gap-2 bg-white border border-border text-aiva-navy rounded-xl p-3 text-sm font-medium">
+            <CheckCircle2 className="w-5 h-5 text-aiva-navy" />
             Address sent to your phone.
           </div>
           <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
