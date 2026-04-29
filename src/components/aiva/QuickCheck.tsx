@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { AlertTriangle, Ruler, CheckCircle2, ChevronDown } from "lucide-react";
+import { AlertTriangle, Ruler, Globe, CheckCircle2, ChevronDown } from "lucide-react";
 
-type CheckKey = "hazmat" | "oversized" | "none";
+type CheckKey = "hazmat" | "oversized" | "international" | "none";
 
 const HAZMAT_ITEMS = [
   "Lithium batteries (loose or in devices)",
@@ -164,6 +164,17 @@ export const QuickCheck = ({
             onExpand={() => toggleExpand("oversized")}
             items={OVERSIZED_ITEMS}
             expandable
+          />
+          <CheckCard
+            icon={
+              <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center">
+                <Globe className="w-5 h-5 text-aiva-blue-deep" />
+              </div>
+            }
+            label="My package is going to an international address"
+            selected={selected.has("international")}
+            onToggle={() => toggle("international")}
+            expandable={false}
           />
           <CheckCard
             icon={
