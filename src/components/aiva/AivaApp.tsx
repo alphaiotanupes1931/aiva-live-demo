@@ -893,9 +893,8 @@ const LocationEquipmentCard = () => {
       {open && (
         <ul className="px-4 pb-3 pt-0 space-y-1.5 anim-fade-up">
           {LOCATION_EQUIPMENT.map((e) => (
-            <li key={e.name} className="flex items-center justify-between text-[13px]">
+            <li key={e.name} className="flex items-center text-[13px]">
               <span className="text-aiva-navy">{e.name}</span>
-              <span className="text-[11px] text-muted-foreground font-medium">{e.zone}</span>
             </li>
           ))}
         </ul>
