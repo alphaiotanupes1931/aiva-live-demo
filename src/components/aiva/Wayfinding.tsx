@@ -79,8 +79,7 @@ export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) =>
         <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
           Use this equipment
         </div>
-        <h1 className="text-xl font-bold text-aiva-navy mb-1">{g.equipment}</h1>
-        <p className="text-sm text-muted-foreground mb-4">{g.zone}</p>
+        <h1 className="text-xl font-bold text-aiva-navy mb-4">{g.equipment}</h1>
 
         {g.signage && (
           <div className="mb-3">
@@ -123,12 +122,6 @@ export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) =>
           className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
         >
           I found it
-        </button>
-        <button
-          onClick={onNotFound}
-          className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-        >
-          I don't see it
         </button>
       </div>
     </div>

@@ -103,7 +103,7 @@ export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
   />
 );
 
-export const DropFindAPD = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const DropFindAPD = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Automated Parcel Drop"
     subtitle="Look for this in Zone 3, near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
@@ -111,8 +111,6 @@ export const DropFindAPD = ({ onNext, onHelp }: { onNext: () => void; onHelp: ()
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="I found it"
     onPrimary={onNext}
-    secondaryLabel="I don't see it"
-    onSecondary={onHelp}
   />
 );
 
@@ -121,7 +119,7 @@ export const DropStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     stepLabel="Step 1 of 3"
     title="Scan your shipping label"
     subtitle="Hold your label barcode up to the scanner. The drop door will open automatically."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -133,7 +131,7 @@ export const DropStep2 = ({ onNext, onTooBig }: { onNext: () => void; onTooBig: 
     stepLabel="Step 2 of 3"
     title="Place your package inside"
     subtitle={`Set your package inside the drop bay. Make sure it fits within 24" x 16" x 12".`}
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="My package doesn't fit"
     onSecondary={onTooBig}
@@ -203,7 +201,7 @@ export const DropStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: 
     stepLabel="Step 3 of 3"
     title="Take your receipt"
     subtitle="The APD will print a confirmation receipt. Keep it for your records."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="Receipt didn't print"
     onSecondary={onReport}
@@ -238,7 +236,7 @@ export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: ()
   />
 );
 
-export const StampsFindSSK = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const StampsFindSSK = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Self-Service Kiosk"
     subtitle="Look for this in Zone 2. Tap 'Tap to Get Started' on the screen when you reach it."
@@ -246,8 +244,6 @@ export const StampsFindSSK = ({ onNext, onHelp }: { onNext: () => void; onHelp: 
     photoAlt="USPS Self-Service Kiosk"
     primaryLabel="I found it"
     onPrimary={onNext}
-    secondaryLabel="I don't see it"
-    onSecondary={onHelp}
   />
 );
 
@@ -256,7 +252,7 @@ export const StampsStep1 = ({ onNext, onHelp }: { onNext: () => void; onHelp: ()
     stepLabel="Step 1 of 3"
     title="Select 'Buy Stamps' on the kiosk"
     subtitle="The kiosk prints sheets of stamps (not books). Pick the design and quantity you'd like."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -268,7 +264,7 @@ export const StampsStep2 = ({ onNext, onHelp }: { onNext: () => void; onHelp: ()
     stepLabel="Step 2 of 3"
     title="Pay for your stamps"
     subtitle="Insert your card or tap to pay. The kiosk accepts all major cards."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I need help"
     onSecondary={onHelp}
@@ -280,7 +276,7 @@ export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport
     stepLabel="Step 3 of 3"
     title="Take your stamps and receipt"
     subtitle="Your stamps and receipt will print from the kiosk. Don't forget to grab both."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="Something didn't print"
     onSecondary={onReport}
@@ -343,7 +339,7 @@ export const PickupTriage = ({
 
 /* Flow 3A — Package pickup */
 
-export const PkgFindLockers = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const PkgFindLockers = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find the Parcel Lockers"
     subtitle="Head to Zone 4. You'll need the pickup code from your delivery notification."
@@ -351,8 +347,6 @@ export const PkgFindLockers = ({ onNext, onHelp }: { onNext: () => void; onHelp:
     photoAlt="USPS Parcel Lockers"
     primaryLabel="I found them"
     onPrimary={onNext}
-    secondaryLabel="I don't see them"
-    onSecondary={onHelp}
   />
 );
 
@@ -360,7 +354,7 @@ export const PkgEnterCode = ({ onNext, onHelp }: { onNext: () => void; onHelp: (
   <StepLayout
     title="Enter your pickup code"
     subtitle="Use the keypad on the locker screen. The code is in your USPS delivery notification email or text."
-    primaryLabel="Done"
+    primaryLabel="Next"
     onPrimary={onNext}
     secondaryLabel="I don't have my code"
     onSecondary={onHelp}
@@ -382,7 +376,7 @@ export const PkgDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => 
 
 /* Flow 3B — PO Box pickup */
 
-export const POBoxFind = ({ onNext, onHelp }: { onNext: () => void; onHelp: () => void }) => (
+export const POBoxFind = ({ onNext, onHelp: _onHelp }: { onNext: () => void; onHelp: () => void }) => (
   <StepLayout
     title="Find your PO Box"
     subtitle="Head to Zone 4. Use your PO Box key or combination to unlock your box."
@@ -390,8 +384,6 @@ export const POBoxFind = ({ onNext, onHelp }: { onNext: () => void; onHelp: () =
     photoAlt="USPS PO Boxes"
     primaryLabel="I found it"
     onPrimary={onNext}
-    secondaryLabel="I don't see my box"
-    onSecondary={onHelp}
   />
 );
 
