@@ -602,17 +602,6 @@ export const AivaApp = () => {
           <MessageCircle className="w-6 h-6" />
         </button>
       )}
-      {showHeader && history.length > 0 && (
-        <div className="shrink-0 bg-[#e5e7eb] border-t border-black/5 px-4 py-2.5 flex items-center" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.625rem)" }}>
-          <button
-            onClick={back}
-            className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border border-aiva-navy/20 hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
-        </div>
-      )}
     </PhoneFrame>
   );
 };
