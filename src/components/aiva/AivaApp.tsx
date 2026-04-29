@@ -34,6 +34,7 @@ import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
+import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
 const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
   "Self-Service Kiosk (SSK)": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
@@ -1292,9 +1293,12 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
                         className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-lg border border-dashed border-border bg-muted/40 shrink-0 flex items-center justify-center text-[9px] text-muted-foreground text-center leading-tight px-1">
-                        Photo unavailable
-                      </div>
+                      <img
+                        src={photoUnavailableImg}
+                        alt="Photo unavailable"
+                        loading="lazy"
+                        className="w-12 h-12 rounded-lg object-cover border border-border shrink-0"
+                      />
                     )}
                     <span className="flex-1 min-w-0 truncate">{e.name}</span>
                     {isSSK && (
@@ -1348,9 +1352,12 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
                     className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
                   />
                 ) : (
-                  <div className="w-14 h-14 rounded-lg border border-dashed border-border bg-muted/40 shrink-0 flex items-center justify-center text-[10px] text-muted-foreground text-center leading-tight px-1">
-                    Photo unavailable
-                  </div>
+                  <img
+                    src={photoUnavailableImg}
+                    alt="Photo unavailable"
+                    loading="lazy"
+                    className="w-14 h-14 rounded-lg object-cover border border-border shrink-0"
+                  />
                 )}
                 <span className="flex-1 text-sm font-semibold text-aiva-navy">{p}</span>
               </button>
