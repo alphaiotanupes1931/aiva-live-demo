@@ -219,6 +219,74 @@ export const DropDone = ({ onDone, onElse }: { onDone: () => void; onElse: () =>
   />
 );
 
+/* ============== FLOW 2: Buy Stamps ============== */
+
+export const StampsIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => (
+  <StepLayout
+    title="Let's buy stamps"
+    subtitle="I'll guide you through buying stamps at the Self-Service Kiosk."
+    photo={sskKioskPhoto}
+    photoAlt="USPS Self-Service Kiosk"
+    primaryLabel="I'm at the kiosk"
+    onPrimary={onNext}
+    secondaryLabel="Back"
+    onSecondary={onBack}
+  />
+);
+
+export const StampsFindSSK = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+  <StepLayout
+    stepLabel="Step 1 of 3"
+    title="Tap 'Buy Stamps' on the kiosk"
+    subtitle="From the SSK home screen, select the 'Buy Stamps' option to get started."
+    primaryLabel="Next"
+    onPrimary={onNext}
+  />
+);
+
+export const StampsStep1 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+  <StepLayout
+    stepLabel="Step 2 of 3"
+    title="Choose your stamps"
+    subtitle="Pick the stamp design and quantity you'd like to purchase."
+    primaryLabel="Next"
+    onPrimary={onNext}
+  />
+);
+
+export const StampsStep2 = ({ onNext }: { onNext: () => void; onHelp?: () => void }) => (
+  <StepLayout
+    stepLabel="Step 3 of 3"
+    title="Pay for your stamps"
+    subtitle="Insert your card or tap to pay. Your stamps will print from the kiosk."
+    primaryLabel="Next"
+    onPrimary={onNext}
+  />
+);
+
+export const StampsStep3 = ({ onNext, onReport }: { onNext: () => void; onReport: () => void }) => (
+  <StepLayout
+    title="Take your stamps"
+    subtitle="Grab your stamps from the printer slot. Don't forget your receipt."
+    primaryLabel="I got them"
+    onPrimary={onNext}
+    secondaryLabel="Stamps didn't print"
+    onSecondary={onReport}
+  />
+);
+
+export const StampsDone = ({ onDone, onElse }: { onDone: () => void; onElse: () => void }) => (
+  <StepLayout
+    photoUnavailable={false}
+    title="Stamps purchased"
+    subtitle="Thanks for using AIVA. Have a great day."
+    primaryLabel="Done"
+    onPrimary={onDone}
+    secondaryLabel="Help me with something else"
+    onSecondary={onElse}
+  />
+);
+
 /* ============== FLOW 3: Pick Up Mail or Package ============== */
 
 export const PickupTriage = ({
