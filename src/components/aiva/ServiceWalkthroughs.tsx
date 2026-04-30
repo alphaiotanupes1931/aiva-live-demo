@@ -299,9 +299,9 @@ export const StampsStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; 
 export const StampsDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="Stamps purchased"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Help me with something else"
+    title="I'll take it from here!"
+    subtitle="Your stamps are ready. Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
