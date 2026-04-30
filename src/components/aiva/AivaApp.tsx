@@ -1127,7 +1127,7 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
   );
 };
 
-const PickupChoice = ({ onSelect }: { onSelect: (intent: string) => void }) => (
+const PickupChoice = ({ onSelect, onBack }: { onSelect: (intent: string) => void; onBack?: () => void }) => (
   <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
     <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
       <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you picking up?</h1>
@@ -1142,12 +1142,23 @@ const PickupChoice = ({ onSelect }: { onSelect: (intent: string) => void }) => (
       >
         A package
       </button>
-      <button
-        onClick={() => onSelect("Access PO Box")}
-        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-      >
-        Mail from my PO Box
-      </button>
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={() => onSelect("Access PO Box")}
+          className="flex-1 h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          Mail from my PO Box
+        </button>
+      </div>
     </div>
   </div>
 );
