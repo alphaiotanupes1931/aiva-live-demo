@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, Loader2, Sparkles } from "lucide-react";
+import { Send, Loader2, Sparkles, RotateCcw } from "lucide-react";
 import { VoiceTextInput } from "./VoiceTextInput";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
