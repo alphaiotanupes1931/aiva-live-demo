@@ -537,7 +537,7 @@ export const DropReceiptIssue = ({
           </div>
         </div>
       </div>
-      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page border-t border-border/50">
+      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page border-t border-border/50 space-y-2">
         <div className="text-[13px] text-muted-foreground text-center mb-2">Still need help?</div>
         <button
           onClick={onReport}
@@ -545,6 +545,17 @@ export const DropReceiptIssue = ({
         >
           Report a problem
         </button>
+        {onBack && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onBack}
+              aria-label="Back"
+              className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
