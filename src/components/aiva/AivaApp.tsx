@@ -1182,7 +1182,7 @@ const ConvoLayout = ({ messages, children }: { messages: ChatMsg[]; children?: R
     ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: "smooth" });
   }, [messages, children]);
   return (
-    <div ref={ref} className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div ref={ref} className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       {messages.map((m, i) =>
         m.who === "bot" ? <BotBubble key={i}>{m.text}</BotBubble> : <UserBubble key={i}>{m.text}</UserBubble>
       )}
