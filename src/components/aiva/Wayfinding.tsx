@@ -118,13 +118,24 @@ export const Wayfinding = ({ service, onFound, onBack }: WayfindingProps) => {
         </div>
       </div>
 
-      <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-        <button
-          onClick={onFound}
-          className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
-        >
-          I found it
-        </button>
+      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page">
+        <div className="flex items-center gap-2">
+          {onBack && (
+            <button
+              onClick={onBack}
+              aria-label="Back"
+              className="shrink-0 h-12 px-4 rounded-full bg-white text-aiva-navy border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99] flex items-center justify-center"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+          <button
+            onClick={onFound}
+            className="flex-1 h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+          >
+            I found it
+          </button>
+        </div>
       </div>
     </div>
   );
