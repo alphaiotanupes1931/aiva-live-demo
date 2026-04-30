@@ -78,14 +78,14 @@ export const Wayfinding = ({ service, onFound, onBack }: WayfindingProps) => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
-        <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
+        <div className="text-[11px] text-muted-foreground font-semibold mb-1">
           Use this equipment
         </div>
         <h1 className="text-xl font-bold text-aiva-navy mb-4">{g.equipment}</h1>
 
         {g.signage && (
           <div className="mb-3">
-            <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">
+            <div className="text-[10px] text-muted-foreground font-semibold mb-1.5">
               Look for this sign
             </div>
             <div className="rounded-lg overflow-hidden border border-border shadow-sm">
@@ -101,7 +101,7 @@ export const Wayfinding = ({ service, onFound, onBack }: WayfindingProps) => {
 
         <div>
           {g.signage && (
-            <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1.5">
+            <div className="text-[10px] text-muted-foreground font-semibold mb-1.5">
               Then find this equipment
             </div>
           )}
