@@ -1462,7 +1462,7 @@ const ARRIVED_INFO: Record<string, { equipment: string; zone: string; context: s
   "Access PO Box": {
     equipment: "PO Box Wall", zone: "Zone 4",
     context: "Use your PO Box key or combination to retrieve your mail.",
-    photo: parcelLockersPhoto, alt: "USPS PO Boxes",
+    photo: poBoxesPhoto, alt: "USPS PO Boxes",
     cta: "Walk me through PO Box access",
   },
 };
