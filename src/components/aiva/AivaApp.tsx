@@ -28,7 +28,7 @@ import {
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
-  Lock, Navigation, ChevronLeft, X,
+  Lock, Navigation, ChevronLeft, X, Home,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
@@ -557,7 +557,7 @@ export const AivaApp = () => {
             onNo={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
-        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
+        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} onHome={() => { setHistory([]); setScreen("greeting"); }} />}
         {screen === "anythingElse" && (
           <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} />
         )}
@@ -1633,7 +1633,7 @@ const Directions = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) =>
   );
 };
 
-const Nearest = ({ onNext }: { onNext: () => void }) => {
+const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }) => {
   // Hard-coded nearest post office
   const PO = {
     name: "Merrifield Post Office",
@@ -1739,6 +1739,15 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
           </div>
           <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
         </>
+      )}
+
+      {onHome && (
+        <button
+          onClick={onHome}
+          className="w-full inline-flex items-center justify-center gap-2 border border-aiva-navy/20 text-aiva-navy px-4 py-3 rounded-full font-semibold text-sm hover:bg-aiva-bot-bg active:scale-[0.99] transition mt-2"
+        >
+          <Home className="w-4 h-4" /> Go home
+        </button>
       )}
     </div>
   );
