@@ -1,3 +1,4 @@
+import { ChevronLeft } from "lucide-react";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/equip-parcel-lockers.jpg";
@@ -10,6 +11,7 @@ interface WayfindingProps {
   service?: string;
   onFound?: () => void;
   onNotFound?: () => void;
+  onBack?: () => void;
 }
 
 type Guidance = {
