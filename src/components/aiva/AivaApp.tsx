@@ -1069,7 +1069,7 @@ const Expandable = ({
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
   return (
     <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
-      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-5 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-20 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">What would you like to do?</h1>
         <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll point you to the right equipment.</p>
         <div className="space-y-2.5">
