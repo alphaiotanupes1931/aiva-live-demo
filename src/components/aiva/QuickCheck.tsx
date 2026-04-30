@@ -151,8 +151,11 @@ export const QuickCheck = ({
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1.5">Quick check before you start</h1>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          A few items can't be processed at this SOPO. Tap any that apply to your package.
+        <p className="text-sm text-muted-foreground leading-relaxed mb-1">
+          A few items can't be processed at this SOPO.
+        </p>
+        <p className="text-xs text-muted-foreground/70 mb-4">
+          👆 Tap each option that applies to your package
         </p>
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden divide-y divide-border">
           <CheckCard
