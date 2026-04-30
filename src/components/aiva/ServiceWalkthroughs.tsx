@@ -226,13 +226,14 @@ export const DropStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; on
   />
 );
 
-export const DropDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const DropDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
@@ -295,13 +296,14 @@ export const StampsStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; 
   />
 );
 
-export const StampsDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const StampsDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="Stamps purchased"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
@@ -385,13 +387,14 @@ export const PkgEnterCode = ({ onNext, onHelp, onBack }: { onNext: () => void; o
   />
 );
 
-export const PkgDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const PkgDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
@@ -409,13 +412,14 @@ export const POBoxFind = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
   />
 );
 
-export const POBoxDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const POBoxDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
@@ -487,9 +491,11 @@ export const HeldMailRedirect = ({
 export const DropReceiptIssue = ({
   onTrack,
   onReport,
+  onBack,
 }: {
   onTrack: () => void;
   onReport: () => void;
+  onBack?: () => void;
 }) => {
   useEffect(() => {
     // Simulate notifying the local post office about the APD printer issue.
@@ -531,7 +537,7 @@ export const DropReceiptIssue = ({
           </div>
         </div>
       </div>
-      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page border-t border-border/50">
+      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page border-t border-border/50 space-y-2">
         <div className="text-[13px] text-muted-foreground text-center mb-2">Still need help?</div>
         <button
           onClick={onReport}
@@ -539,6 +545,17 @@ export const DropReceiptIssue = ({
         >
           Report a problem
         </button>
+        {onBack && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onBack}
+              aria-label="Back"
+              className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

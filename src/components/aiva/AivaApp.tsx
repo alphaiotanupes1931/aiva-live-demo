@@ -187,10 +187,9 @@ export const AivaApp = () => {
 
   // Screens that need a floating back button (because their layout doesn't include one inline).
   const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
-    "findIntent", "pickupChoice", "arrived", "thanks", "status", "voiceProblem",
+    "findIntent", "arrived", "thanks", "status", "voiceProblem",
     "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
-    "shipDone", "dropDone", "dropReceiptIssue", "stampsDone", "pkgDone", "poBoxDone",
     "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
   ];
   const showGlobalBack =
@@ -330,6 +329,7 @@ export const AivaApp = () => {
               setServiceIntent(intent);
               goto("wayfinding");
             }}
+            onBack={back}
           />
         )}
         {screen === "wayfinding" && (
@@ -376,6 +376,7 @@ export const AivaApp = () => {
         {screen === "shipDone" && (
           <ShipDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
@@ -426,11 +427,13 @@ export const AivaApp = () => {
           <DropReceiptIssue
             onTrack={() => setChatOpen(true)}
             onReport={() => goto("thanks")}
+            onBack={back}
           />
         )}
         {screen === "dropDone" && (
           <DropDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
@@ -453,6 +456,7 @@ export const AivaApp = () => {
         {screen === "stampsDone" && (
           <StampsDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
@@ -474,6 +478,7 @@ export const AivaApp = () => {
         {screen === "pkgDone" && (
           <PkgDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
         {screen === "poBoxFind" && (
@@ -482,6 +487,7 @@ export const AivaApp = () => {
         {screen === "poBoxDone" && (
           <POBoxDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
         {screen === "heldMailRedirect" && (
@@ -1122,7 +1128,7 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
   );
 };
 
-const PickupChoice = ({ onSelect }: { onSelect: (intent: string) => void }) => (
+const PickupChoice = ({ onSelect, onBack }: { onSelect: (intent: string) => void; onBack?: () => void }) => (
   <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
     <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
       <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you picking up?</h1>
@@ -1137,12 +1143,23 @@ const PickupChoice = ({ onSelect }: { onSelect: (intent: string) => void }) => (
       >
         A package
       </button>
-      <button
-        onClick={() => onSelect("Access PO Box")}
-        className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
-      >
-        Mail from my PO Box
-      </button>
+      <div className="flex items-center gap-2">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Back"
+            className="shrink-0 inline-flex items-center justify-center h-12 px-4 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={() => onSelect("Access PO Box")}
+          className="flex-1 h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+        >
+          Mail from my PO Box
+        </button>
+      </div>
     </div>
   </div>
 );
@@ -1177,7 +1194,7 @@ const ConvoLayout = ({ messages, children }: { messages: ChatMsg[]; children?: R
     ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: "smooth" });
   }, [messages, children]);
   return (
-    <div ref={ref} className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div ref={ref} className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       {messages.map((m, i) =>
         m.who === "bot" ? <BotBubble key={i}>{m.text}</BotBubble> : <UserBubble key={i}>{m.text}</UserBubble>
       )}
@@ -1481,7 +1498,7 @@ const Submitted = ({
     ? `the ${cleaned}`
     : "the issue you reported";
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       <div className="flex flex-col items-center gap-2 pt-4 anim-fade-up">
         <div className="w-16 h-16 rounded-full bg-aiva-navy/10 flex items-center justify-center">
           <CheckCircle2 className="w-10 h-10 text-aiva-navy" />
@@ -1522,7 +1539,7 @@ const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
 };
 
 const SmsOptIn = ({ phone, setPhone, onSend }: { phone: string; setPhone: (s: string) => void; onSend: () => void }) => (
-  <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+ <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
     <BotBubble>Enter a mobile number and we'll text you when it's fixed.</BotBubble>
     <Card>
       <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
@@ -1587,7 +1604,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       <BotBubble>Here's the nearest staffed post office.</BotBubble>
       <Card>
         <div>
@@ -1700,7 +1717,7 @@ const Csat = ({
   setComment: (s: string) => void;
   onSubmit: () => void;
 }) => (
-  <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-hide anim-slide-right">
+  <div className="flex-1 overflow-y-auto p-5 pb-20 space-y-4 scrollbar-hide anim-slide-right">
     <div className="text-center pt-2">
       <h2 className="font-semibold text-lg">How was this experience?</h2>
       <p className="text-sm text-muted-foreground mt-1">Your feedback helps us improve AIVA.</p>
