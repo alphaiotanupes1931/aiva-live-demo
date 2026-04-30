@@ -100,7 +100,7 @@ export const ShipIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
 
 export const ShipStep1 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
-    stepLabel="Step 1 of 5"
+    stepLabel="Step 1 of 6"
     title="Place your package on the scale"
     subtitle="The kiosk will weigh your package automatically. Make sure it's centered on the scale."
     primaryLabel="Next"
@@ -111,7 +111,7 @@ export const ShipStep1 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
 
 export const ShipStep2 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
-    stepLabel="Step 2 of 5"
+    stepLabel="Step 2 of 6"
     title="Enter package details"
     subtitle="The kiosk will ask for the destination ZIP code and package dimensions. Have your shipping label or recipient address ready."
     primaryLabel="Next"
@@ -122,7 +122,7 @@ export const ShipStep2 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
 
 export const ShipStep3 = ({ onNext, onMore, onBack }: { onNext: () => void; onMore: () => void; onBack?: () => void }) => (
   <StepLayout
-    stepLabel="Step 3 of 5"
+    stepLabel="Step 3 of 6"
     title="Pick a shipping service"
     subtitle="Priority Mail is the most common option — 1–3 day delivery with tracking. Ground Advantage is the most affordable for packages under 70 lbs."
     primaryLabel="Next"
@@ -145,7 +145,6 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
           { name: "Priority Mail Express", desc: "Overnight to most U.S. addresses. Includes tracking and insurance up to $100." },
           { name: "Priority Mail", desc: "1–3 business days. Tracking and insurance up to $100 included. Most popular." },
           { name: "Ground Advantage", desc: "2–5 business days. Most affordable for packages up to 70 lbs." },
-          { name: "Media Mail", desc: "2–8 business days. Books, films, and educational material only." },
         ].map((s) => (
           <div key={s.name} className="bg-white border border-border rounded-xl p-3">
             <div className="text-sm font-semibold text-aiva-navy">{s.name}</div>
@@ -167,9 +166,9 @@ export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
 
 export const ShipStep4 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
-    stepLabel="Step 4 of 5"
+    stepLabel="Step 4 of 6"
     title="Pay and print your label"
-    subtitle="Insert your card or tap to pay. Then print your label — the kiosk will print your shipping label automatically. Grab it from the printer slot before moving on."
+    subtitle="Insert your card or tap to pay. The kiosk will print your shipping label automatically. Grab it from the printer slot."
     primaryLabel="Next"
     onPrimary={onNext}
     onBack={onBack}
@@ -178,9 +177,20 @@ export const ShipStep4 = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
 
 export const ShipStep5 = ({ onNext, onBack }: { onNext: () => void; onWhere?: () => void; onBack?: () => void }) => (
   <StepLayout
-    stepLabel="Step 5 of 5"
+    stepLabel="Step 5 of 6"
+    title="Place the label on your package"
+    subtitle="Peel the backing off the label and place it on the largest flat side of your package. Make sure it's smooth and not covering any seams."
+    primaryLabel="Next"
+    onPrimary={onNext}
+    onBack={onBack}
+  />
+);
+
+export const ShipLabelStep = ({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) => (
+  <StepLayout
+    stepLabel="Step 6 of 6"
     title="Drop off your package"
-    subtitle="Take your labeled package to the Drum Chute or APD if available. You're almost done."
+    subtitle="Take your labeled package to the Package Drum or Automated Parcel Drop. You're almost done!"
     photoUnavailable
     primaryLabel="I dropped it off"
     onPrimary={onNext}
@@ -188,22 +198,12 @@ export const ShipStep5 = ({ onNext, onBack }: { onNext: () => void; onWhere?: ()
   />
 );
 
-export const ShipDrumChuteWhere = ({ onBack }: { onBack: () => void }) => (
-  <StepLayout
-    title="Drum Chute"
-    subtitle="Head to the Send It area. Look for the large round chute mounted on the wall. Drop your labeled package in and you're done."
-    photoUnavailable
-    primaryLabel="Back"
-    onPrimary={onBack}
-  />
-);
-
 export const ShipDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
-    title="Thanks for using AIVA"
-    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
+    title="I'll take it from here!"
+    subtitle="Your package is on its way. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
-    primaryLabel="Help me with something else"
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
