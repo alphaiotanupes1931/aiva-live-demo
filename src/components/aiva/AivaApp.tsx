@@ -1592,7 +1592,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       <BotBubble>Here's the nearest staffed post office.</BotBubble>
       <Card>
         <div>
