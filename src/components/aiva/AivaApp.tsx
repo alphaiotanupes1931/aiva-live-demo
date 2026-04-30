@@ -35,6 +35,9 @@ import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/parcel-lockers.png";
+import poBoxesPhoto from "@/assets/equip-po-boxes.jpg";
+import packageDrumPhoto from "@/assets/equip-drum-chute.jpg";
+import letterDropPhoto from "@/assets/equip-mail-chute.jpg";
 import photoUnavailableImg from "@/assets/photo-unavailable.png";
 
 // Hardcoded location for demo
@@ -45,7 +48,10 @@ const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
   "Self-Service Kiosk": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
   "Automated Parcel Drop (APD)": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
   "Automated Parcel Drop": { photo: apdPhoto, alt: "USPS Automated Parcel Drop" },
-  "Parcel Lockers": { photo: parcelLockersPhoto, alt: "USPS Parcel Lockers" },
+  "Parcel Lockers": { photo: parcelLockersPhoto, alt: "USPS Smart Lockers" },
+  "Package Drum": { photo: packageDrumPhoto, alt: "USPS Package Drum" },
+  "Letter Drop": { photo: letterDropPhoto, alt: "USPS Letter Drop" },
+  "PO Boxes": { photo: poBoxesPhoto, alt: "USPS PO Boxes" },
 };
 
 type Screen =
@@ -1456,7 +1462,7 @@ const ARRIVED_INFO: Record<string, { equipment: string; zone: string; context: s
   "Access PO Box": {
     equipment: "PO Box Wall", zone: "Zone 4",
     context: "Use your PO Box key or combination to retrieve your mail.",
-    photo: parcelLockersPhoto, alt: "USPS PO Boxes",
+    photo: poBoxesPhoto, alt: "USPS PO Boxes",
     cta: "Walk me through PO Box access",
   },
 };
