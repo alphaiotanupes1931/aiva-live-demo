@@ -325,7 +325,7 @@ export const AivaApp = () => {
           <Wayfinding
             service={serviceIntent}
             onFound={() => goto("arrived")}
-            onNotFound={() => goto("thanks")}
+            onBack={back}
           />
         )}
         {screen === "arrived" && (
@@ -1085,7 +1085,7 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
               </div>
             </Expandable>
             <Expandable label="Equipment guide">
-              <div className="space-y-2.5 pt-2 max-h-64 overflow-y-auto pr-1 scrollbar-hide">
+              <div className="space-y-2.5 pt-2">
                 {EQUIPMENT_INFO.map((e) => (
                   <div key={e.name}>
                     <div className="text-[12px] font-semibold text-aiva-navy">{e.name}</div>
