@@ -1527,7 +1527,7 @@ const Notify = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) => {
 };
 
 const SmsOptIn = ({ phone, setPhone, onSend }: { phone: string; setPhone: (s: string) => void; onSend: () => void }) => (
-  <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+ <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
     <BotBubble>Enter a mobile number and we'll text you when it's fixed.</BotBubble>
     <Card>
       <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
