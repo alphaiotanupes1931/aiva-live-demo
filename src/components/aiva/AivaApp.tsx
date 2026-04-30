@@ -688,21 +688,90 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
           "How do I get help in the lobby?",
         ],
       };
+
+    // ---- Ship a package: per-step context ----
     case "shipIntro":
+      return {
+        label: "Ship a package — Getting started",
+        suggestions: [
+          "What do I need to ship a package?",
+          "Where is the Self-Service Kiosk?",
+          "What forms of payment does the kiosk take?",
+        ],
+      };
     case "shipStep1":
+      return {
+        label: "Ship a package — Step 1: Place package on scale",
+        suggestions: [
+          "Where is the scale on the kiosk?",
+          "What if my package is too heavy?",
+          "Does the scale measure dimensions too?",
+        ],
+      };
     case "shipStep2":
+      return {
+        label: "Ship a package — Step 2: Enter package details",
+        suggestions: [
+          "What info do I need to enter?",
+          "Can I ship to a PO Box?",
+          "What's a ZIP+4 code?",
+        ],
+      };
     case "shipStep3":
     case "shipServiceCompare":
+      return {
+        label: "Ship a package — Step 3: Pick a shipping service",
+        suggestions: [
+          "What's the difference between Priority Mail and Ground Advantage?",
+          "Which option is cheapest?",
+          "How long does Priority Mail take?",
+        ],
+      };
     case "shipStep4":
+      return {
+        label: "Ship a package — Step 4: Pay and print label",
+        suggestions: [
+          "What forms of payment are accepted?",
+          "Can I use Apple Pay or Google Pay?",
+          "What if the printer jams?",
+        ],
+      };
     case "shipStep5":
+      return {
+        label: "Ship a package — Step 5: Apply the label",
+        suggestions: [
+          "Where exactly should I place the label?",
+          "What if the label is wrinkled?",
+          "Can I tape over the label?",
+        ],
+      };
     case "shipLabelStep":
       return {
-        label: "Ship a package walkthrough",
+        label: "Ship a package — Step 6: Drop off your package",
         suggestions: [
-          "What shipping service should I pick?",
-          "How do I weigh my package?",
           "Where is the Package Drum?",
-          "What forms of payment does the kiosk take?",
+          "What if my package doesn't fit?",
+          "Is my package tracked after drop-off?",
+        ],
+      };
+
+    // ---- Drop off ----
+    case "dropIntro":
+      return {
+        label: "Drop off — Getting started",
+        suggestions: [
+          "What kind of packages can I drop off?",
+          "Do I need a prepaid label?",
+          "Where is the Automated Parcel Drop?",
+        ],
+      };
+    case "dropFindAPD":
+      return {
+        label: "Drop off — Find the Automated Parcel Drop",
+        suggestions: [
+          "Where is the APD?",
+          "What does it look like?",
+          "What if I can't find it?",
         ],
       };
     case "dropIntro":
