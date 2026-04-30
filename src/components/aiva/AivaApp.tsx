@@ -1486,7 +1486,7 @@ const Submitted = ({
     ? `the ${cleaned}`
     : "the issue you reported";
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide anim-slide-right">
+    <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
       <div className="flex flex-col items-center gap-2 pt-4 anim-fade-up">
         <div className="w-16 h-16 rounded-full bg-aiva-navy/10 flex items-center justify-center">
           <CheckCircle2 className="w-10 h-10 text-aiva-navy" />
