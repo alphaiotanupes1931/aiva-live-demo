@@ -73,10 +73,20 @@ export const InlineChat = ({ location }: InlineChatProps) => {
     <div className="border-t border-border bg-white shrink-0">
       {/* Conversation thread (only renders when there are messages) */}
       {messages.length > 0 && (
-        <div
-          ref={threadRef}
-          className="max-h-[260px] overflow-y-auto px-3 py-3 space-y-2 bg-aiva-page scrollbar-hide"
-        >
+        <div className="flex flex-col bg-aiva-page">
+          <div className="flex items-center justify-end px-3 pt-2">
+            <button
+              onClick={() => { setMessages([]); setInput(""); }}
+              className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-aiva-navy transition"
+            >
+              <RotateCcw className="w-3 h-3" />
+              New chat
+            </button>
+          </div>
+          <div
+            ref={threadRef}
+            className="max-h-[240px] overflow-y-auto px-3 py-2 space-y-2 scrollbar-hide"
+          >
           {messages.map((m, i) => (
             <div
               key={i}
