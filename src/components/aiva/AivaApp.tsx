@@ -598,6 +598,16 @@ export const AivaApp = () => {
         pageContext={ctx.label}
         suggestions={ctx.suggestions}
       />
+      {showGlobalBack && (
+        <button
+          onClick={back}
+          aria-label="Back"
+          className="absolute bottom-5 left-5 z-40 h-12 px-4 rounded-full bg-white text-aiva-navy border-2 border-aiva-navy shadow-lg hover:bg-aiva-navy/5 active:scale-95 transition-all flex items-center justify-center gap-1"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span className="text-sm font-semibold">Back</span>
+        </button>
+      )}
       {showChatFab && (
         <button
           onClick={() => setChatOpen(true)}
