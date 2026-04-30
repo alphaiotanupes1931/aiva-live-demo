@@ -1521,12 +1521,11 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
 const Submitted = ({
   onYes,
   onNo,
-  onReportAnother,
   problem,
 }: {
   onYes: () => void;
   onNo: () => void;
-  onReportAnother: () => void;
+  onReportAnother?: () => void;
   problem?: string;
 }) => {
   const ready = useTypingDelay(700);
@@ -1543,7 +1542,7 @@ const Submitted = ({
         <div className="font-semibold text-base">Report submitted</div>
       </div>
       <Card>
-        <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
+        <div className="text-xs font-semibold text-muted-foreground mb-1">What happens next</div>
         <p className="text-sm text-foreground/80 leading-relaxed">
           The local post office has been notified about {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
@@ -1553,8 +1552,7 @@ const Submitted = ({
           <BotBubble>Do you still need to drop off your package? If so, we can send you to the nearest post office.</BotBubble>
           <div className="space-y-2">
             <ChoiceButton variant="primary" onClick={onYes}>Yes, find nearest post office</ChoiceButton>
-            <ChoiceButton onClick={onReportAnother}>Report another issue</ChoiceButton>
-            <ChoiceButton onClick={onNo}>No, I'm done</ChoiceButton>
+            <ChoiceButton onClick={onNo}>Go home</ChoiceButton>
           </div>
         </>
       )}
