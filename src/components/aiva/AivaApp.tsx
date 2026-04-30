@@ -28,7 +28,7 @@ import {
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
-  Lock, Navigation,
+  Lock, Navigation, ChevronLeft,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
@@ -184,6 +184,15 @@ export const AivaApp = () => {
   // (onboarding/consent/QR) or where the inline chat is already on screen (greeting).
   const showChatFab =
     showHeader && screen !== "greeting" && !chatOpen;
+
+  // Screens that need a floating back button (because their layout doesn't include one inline).
+  const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
+    "findIntent", "pickupChoice", "arrived", "thanks", "status", "voiceProblem",
+    "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
+    "voiceUnclear", "confirmLocation", "nearest",
+  ];
+  const showGlobalBack =
+    showHeader && history.length > 0 && SCREENS_WITH_GLOBAL_BACK.includes(screen);
 
   const ctx = getPageContext(screen, serviceIntent);
 
@@ -589,6 +598,16 @@ export const AivaApp = () => {
         pageContext={ctx.label}
         suggestions={ctx.suggestions}
       />
+      {showGlobalBack && (
+        <button
+          onClick={back}
+          aria-label="Back"
+          className="absolute bottom-5 left-5 z-40 h-12 px-4 rounded-full bg-white text-aiva-navy border-2 border-aiva-navy shadow-lg hover:bg-aiva-navy/5 active:scale-95 transition-all flex items-center justify-center gap-1"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span className="text-sm font-semibold">Back</span>
+        </button>
+      )}
       {showChatFab && (
         <button
           onClick={() => setChatOpen(true)}
