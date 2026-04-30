@@ -329,6 +329,7 @@ export const AivaApp = () => {
               setServiceIntent(intent);
               goto("wayfinding");
             }}
+            onBack={back}
           />
         )}
         {screen === "wayfinding" && (
