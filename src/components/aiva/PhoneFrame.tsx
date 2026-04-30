@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 
 export const PhoneFrame = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#e8eaf0] to-[#f5f5f7] flex items-center justify-center p-0 md:p-6">
-      {/* Mobile: full screen */}
-      <div className="md:hidden w-full h-screen bg-white overflow-hidden flex flex-col">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-gradient-to-br from-[#e8eaf0] to-[#f5f5f7] flex items-center justify-center p-0 md:p-6">
+      {/* Mobile: full screen with safe area support */}
+      <div className="md:hidden w-full h-screen h-[100dvh] bg-white overflow-hidden flex flex-col" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         {children}
       </div>
       {/* Desktop: tablet-style frame */}

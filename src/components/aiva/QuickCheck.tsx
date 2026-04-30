@@ -41,13 +41,33 @@ type CardProps = {
 };
 
 const CheckCard = ({ icon, label, selected, onToggle, expanded, onExpand, items, expandable }: CardProps) => (
-  <div className={`transition-colors ${selected ? "bg-aiva-navy/[0.04]" : "bg-white"}`}>
-    <button
-      onClick={onToggle}
-      className="w-full flex items-center gap-3 p-4 text-left"
-    >
+  <div
+    className={`transition-all cursor-pointer ${
+      selected
+        ? "bg-aiva-navy/[0.06] ring-2 ring-inset ring-aiva-navy"
+        : "bg-white hover:bg-gray-50 active:bg-gray-100"
+    }`}
+    onClick={onToggle}
+    role="button"
+    tabIndex={0}
+  >
+    <div className="w-full flex items-center gap-3 p-4 text-left">
       <div className="shrink-0">{icon}</div>
       <div className="flex-1 text-sm font-semibold text-aiva-navy leading-snug">{label}</div>
+
+      {/* Selection indicator */}
+      <div className={`shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+        selected
+          ? "bg-aiva-navy border-aiva-navy"
+          : "border-gray-300 bg-white"
+      }`}>
+        {selected && (
+          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </div>
+
       {expandable && (
         <button
           onClick={(e) => {
@@ -62,14 +82,9 @@ const CheckCard = ({ icon, label, selected, onToggle, expanded, onExpand, items,
           />
         </button>
       )}
-      {!expandable && selected && (
-        <div className="shrink-0 w-5 h-5 rounded-full bg-aiva-navy flex items-center justify-center">
-          <CheckCircle2 className="w-4 h-4 text-white" />
-        </div>
-      )}
-    </button>
+    </div>
     {expandable && expanded && items && (
-      <div className="px-4 pb-4 pt-0 -mt-1">
+      <div className="px-4 pb-4 pt-0 -mt-1" onClick={(e) => e.stopPropagation()}>
         <ul className="space-y-1.5 border-t border-border pt-3">
           {items.map((item) => (
             <li key={item} className="text-[13px] text-foreground/75 leading-relaxed flex gap-2">
@@ -136,8 +151,11 @@ export const QuickCheck = ({
     <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
       <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1.5">Quick check before you start</h1>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-          A few items can't be processed at this SOPO. Tap any that apply to your package.
+        <p className="text-sm text-muted-foreground leading-relaxed mb-1">
+          A few items can't be processed at this SOPO.
+        </p>
+        <p className="text-xs text-muted-foreground/70 mb-4">
+          👆 Tap each option that applies to your package
         </p>
         <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden divide-y divide-border">
           <CheckCard
