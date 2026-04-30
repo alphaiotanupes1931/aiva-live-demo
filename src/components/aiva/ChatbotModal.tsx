@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, Mic, MicOff, Loader2 } from "lucide-react";
+import { X, Send, Mic, MicOff, Loader2, RotateCcw } from "lucide-react";
 import { useSpeech } from "./useSpeech";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
