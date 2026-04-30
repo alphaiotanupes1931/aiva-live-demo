@@ -48,7 +48,7 @@ const StepLayout = ({
         </div>
       )}
       {stepLabel && (
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">
+        <div className="text-[10px]  text-muted-foreground font-semibold mb-1.5">
           {stepLabel}
         </div>
       )}
@@ -167,7 +167,7 @@ export const DropTooBigRedirect = ({
       </p>
       <div className="bg-white border border-border rounded-2xl p-4 shadow-sm space-y-3">
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+          <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
             Nearest staffed Post Office
           </div>
           <div className="text-sm font-semibold text-aiva-navy leading-snug">
@@ -179,13 +179,13 @@ export const DropTooBigRedirect = ({
         </div>
         <div className="border-t border-border pt-3 grid grid-cols-2 gap-3">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
               Distance
             </div>
             <div className="text-sm font-semibold text-aiva-navy">2.3 mi</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
               Hours today
             </div>
             <div className="text-sm font-semibold text-aiva-navy">9 AM – 5 PM</div>
@@ -440,7 +440,7 @@ export const HeldMailRedirect = ({
       </p>
       <div className="bg-white border border-border rounded-2xl p-4 shadow-sm space-y-3">
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+          <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
             Nearest staffed Post Office
           </div>
           <div className="text-sm font-semibold text-aiva-navy leading-snug">
@@ -452,13 +452,13 @@ export const HeldMailRedirect = ({
         </div>
         <div className="border-t border-border pt-3 grid grid-cols-2 gap-3">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
               Distance
             </div>
             <div className="text-sm font-semibold text-aiva-navy">2.3 mi</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            <div className="text-[10px]  text-muted-foreground font-semibold mb-1">
               Hours today
             </div>
             <div className="text-sm font-semibold text-aiva-navy">9 AM – 5 PM</div>

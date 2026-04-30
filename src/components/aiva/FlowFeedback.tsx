@@ -69,7 +69,7 @@ export const FlowFeedback = ({ flowName, onDone, onReportIssue }: FlowFeedbackPr
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-semibold  text-muted-foreground">
             Tell us more (optional)
           </label>
           <VoiceTextInput
