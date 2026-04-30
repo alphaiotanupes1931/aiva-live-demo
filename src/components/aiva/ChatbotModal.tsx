@@ -123,12 +123,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                setMessages([{
-                  role: "assistant",
-                  content: pageContext
-                    ? `Hi! I'm AIVA. I can see you're on **${pageContext}** — ask me anything about this step or USPS in general.`
-                    : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
-                }]);
+                setMessages([makeGreeting(pageContext)]);
                 setInput("");
               }}
               aria-label="Reset chat"
