@@ -426,6 +426,7 @@ export const AivaApp = () => {
           <DropReceiptIssue
             onTrack={() => setChatOpen(true)}
             onReport={() => goto("thanks")}
+            onBack={back}
           />
         )}
         {screen === "dropDone" && (
