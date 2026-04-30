@@ -72,7 +72,7 @@ const SERVICE_GUIDANCE: Record<string, Guidance> = {
   },
 };
 
-export const Wayfinding = ({ service, onFound, onNotFound }: WayfindingProps) => {
+export const Wayfinding = ({ service, onFound, onBack }: WayfindingProps) => {
   const g = (service && SERVICE_GUIDANCE[service]) || SERVICE_GUIDANCE["Ship a Package"];
 
   return (
