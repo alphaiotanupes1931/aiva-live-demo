@@ -230,13 +230,18 @@ export const AivaApp = () => {
         <div className="bg-white border-b border-border px-4 py-2 shrink-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold text-aiva-navy">{flowProgress.label}</span>
-            <span className="text-[11px] text-muted-foreground">Step {flowProgress.current} of {flowProgress.total}</span>
+            {flowProgress.current > 0 && (
+              <span className="text-[11px] text-muted-foreground">Step {flowProgress.current} of {flowProgress.total}</span>
+            )}
           </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-aiva-blue-deep rounded-full transition-all duration-300"
-              style={{ width: `${(flowProgress.current / flowProgress.total) * 100}%` }}
-            />
+          {flowProgress.current > 0 && (
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-aiva-blue-deep rounded-full transition-all duration-300"
+                style={{ width: `${(flowProgress.current / flowProgress.total) * 100}%` }}
+              />
+            </div>
+          )}
           </div>
         </div>
       )}
