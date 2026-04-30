@@ -793,7 +793,7 @@ const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
       <div className="rounded-2xl border border-border bg-aiva-page p-5 space-y-3 text-[13px] leading-relaxed text-foreground/80">
         <p>
           This experience uses the existing flows and journey maps that the
-          <span className="font-semibold text-aiva-navy"> LMI Team </span>
+          <span className="font-semibold text-aiva-navy"> Retail Modernization Team </span>
           has created.
         </p>
         <p>
