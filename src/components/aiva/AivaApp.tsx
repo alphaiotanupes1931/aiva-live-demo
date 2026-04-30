@@ -190,7 +190,6 @@ export const AivaApp = () => {
     "findIntent", "pickupChoice", "arrived", "thanks", "status", "voiceProblem",
     "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
-    "shipDone", "dropDone", "dropReceiptIssue", "stampsDone", "pkgDone", "poBoxDone",
     "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
   ];
   const showGlobalBack =
