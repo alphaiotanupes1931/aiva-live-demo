@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, Mic, MicOff, Loader2 } from "lucide-react";
+import { X, Send, Mic, MicOff, Loader2, RotateCcw } from "lucide-react";
 import { useSpeech } from "./useSpeech";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -110,13 +110,30 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
               {location ? `Local to ${location}` : "USPS Virtual Assistant"}
             </span>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Close chat"
-            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => {
+                setMessages([{
+                  role: "assistant",
+                  content: pageContext
+                    ? `Hi! I'm AIVA. I can see you're on **${pageContext}** — ask me anything about this step or USPS in general.`
+                    : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
+                }]);
+                setInput("");
+              }}
+              aria-label="Reset chat"
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={onClose}
+              aria-label="Close chat"
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Messages */}
