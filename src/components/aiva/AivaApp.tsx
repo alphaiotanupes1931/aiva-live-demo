@@ -780,7 +780,7 @@ const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
       <img src={uspsLogo} alt="USPS" className="w-28 h-auto object-contain mx-auto" />
 
       <div className="space-y-3 text-center">
-        <span className="inline-block text-[10px] font-bold tracking-[0.18em] uppercase text-aiva-blue-deep bg-aiva-blue-deep/10 px-3 py-1 rounded-full">
+        <span className="inline-block text-[10px] font-bold text-aiva-blue-deep bg-aiva-blue-deep/10 px-3 py-1 rounded-full">
           Please note
         </span>
         <h1 className="text-[22px] font-bold leading-tight tracking-tight">
