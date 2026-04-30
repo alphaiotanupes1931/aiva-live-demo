@@ -432,6 +432,7 @@ export const AivaApp = () => {
         {screen === "dropDone" && (
           <DropDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
