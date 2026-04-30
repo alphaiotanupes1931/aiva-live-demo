@@ -1740,6 +1740,15 @@ const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }
           <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
         </>
       )}
+
+      {onHome && (
+        <button
+          onClick={onHome}
+          className="w-full inline-flex items-center justify-center gap-2 border border-aiva-navy/20 text-aiva-navy px-4 py-3 rounded-full font-semibold text-sm hover:bg-aiva-bot-bg active:scale-[0.99] transition mt-2"
+        >
+          <Home className="w-4 h-4" /> Go home
+        </button>
+      )}
     </div>
   );
 };
