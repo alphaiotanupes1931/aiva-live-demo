@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ThumbsUp, ThumbsDown, Home, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { VoiceTextInput } from "./VoiceTextInput";
 
 interface FlowFeedbackProps {
@@ -8,16 +8,23 @@ interface FlowFeedbackProps {
   onReportIssue?: () => void;
 }
 
-export const FlowFeedback = ({ flowName, onDone, onReportIssue }: FlowFeedbackProps) => {
+export const FlowFeedback = ({ flowName, onDone }: FlowFeedbackProps) => {
   const [rating, setRating] = useState<"up" | "down" | null>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {
-    // In production this would send to backend
     console.log("[AIVA] Feedback:", { flowName, rating, comment });
     setSubmitted(true);
   };
+
+  // Auto-dismiss after showing thank you
+  useEffect(() => {
+    if (submitted) {
+      const t = setTimeout(onDone, 2000);
+      return () => clearTimeout(t);
+    }
+  }, [submitted, onDone]);
 
   if (submitted) {
     return (
@@ -29,12 +36,7 @@ export const FlowFeedback = ({ flowName, onDone, onReportIssue }: FlowFeedbackPr
           <h2 className="text-lg font-bold text-aiva-navy">Thanks for your feedback!</h2>
           <p className="text-sm text-muted-foreground">Your input helps us improve AIVA.</p>
         </div>
-        <button
-          onClick={onDone}
-          className="w-full max-w-xs h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99] inline-flex items-center justify-center gap-2"
-        >
-          <Home className="w-4 h-4" /> Back to home
-        </button>
+        <p className="text-xs text-muted-foreground animate-pulse">Returning home…</p>
       </div>
     );
   }
@@ -69,7 +71,7 @@ export const FlowFeedback = ({ flowName, onDone, onReportIssue }: FlowFeedbackPr
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold  text-muted-foreground">
+          <label className="text-xs font-semibold text-muted-foreground">
             Tell us more (optional)
           </label>
           <VoiceTextInput
@@ -83,15 +85,7 @@ export const FlowFeedback = ({ flowName, onDone, onReportIssue }: FlowFeedbackPr
         </div>
       </div>
 
-      <div className="px-5 pb-5 pt-2 space-y-2 shrink-0 bg-aiva-page">
-        {onReportIssue && (
-          <button
-            onClick={onReportIssue}
-            className="w-full h-12 rounded-full bg-white text-aiva-navy font-semibold text-sm border-2 border-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99] inline-flex items-center justify-center gap-2"
-          >
-            <AlertCircle className="w-4 h-4" /> Report an issue
-          </button>
-        )}
+      <div className="px-5 pb-5 pt-2 shrink-0 bg-aiva-page">
         <button
           onClick={handleSubmit}
           className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
