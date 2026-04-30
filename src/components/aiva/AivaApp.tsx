@@ -8,7 +8,7 @@ import { ChatbotModal } from "./ChatbotModal";
 import { InlineChat } from "./InlineChat";
 import {
   ShipIntro, ShipStep1, ShipStep2, ShipStep3, ShipServiceCompare,
-  ShipStep4, ShipStep5, ShipDrumChuteWhere, ShipDone,
+  ShipStep4, ShipStep5, ShipLabelStep, ShipDone,
 } from "./ShippingWalkthrough";
 import {
   DropIntro, DropFindAPD, DropStep1, DropStep2, DropStep3, DropDone, DropTooBigRedirect, DropReceiptIssue,
@@ -17,6 +17,7 @@ import {
   POBoxFind, POBoxDone, HeldMailRedirect,
 } from "./ServiceWalkthroughs";
 import { QuickCheck, StaffedPORedirect } from "./QuickCheck";
+import { FlowFeedback } from "./FlowFeedback";
 
 import { Onboarding } from "./Onboarding";
 import { NewOrReturning } from "./NewOrReturning";
@@ -28,13 +29,16 @@ import {
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
-  Lock, Navigation, ChevronLeft, X, Home,
+  Lock, Navigation, ChevronLeft, X, Home, Package, Mail, Tag, AlertOctagon,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
 import apdPhoto from "@/assets/equip-apd.jpg";
 import parcelLockersPhoto from "@/assets/parcel-lockers.png";
 import photoUnavailableImg from "@/assets/photo-unavailable.png";
+
+// Hardcoded location for demo
+const DEMO_LOCATION = "Tysons Corner, VA";
 
 const EQUIPMENT_PHOTOS: Record<string, { photo: string; alt: string }> = {
   "Self-Service Kiosk (SSK)": { photo: sskKioskPhoto, alt: "USPS Self-Service Kiosk" },
@@ -50,9 +54,6 @@ type Screen =
   | "qr"
   | "newOrReturning"
   | "onboarding"
-  | "locationPermission"
-  | "confirmInitialLocation"
-  | "addressEntry"
   | "greeting"
   | "findIntent"
   | "wayfinding"
@@ -62,7 +63,7 @@ type Screen =
   | "status"
   | "services"
   | "problemType"
-  | "drumChute"
+  | "packageDrum"
   | "submitting"
   | "submitted"
   | "notify"
@@ -84,7 +85,7 @@ type Screen =
   | "shipServiceCompare"
   | "shipStep4"
   | "shipStep5"
-  | "shipDrumChuteWhere"
+  | "shipLabelStep"
   | "shipDone"
   | "dropIntro"
   | "dropFindAPD"
@@ -108,11 +109,26 @@ type Screen =
   | "pkgDone"
   | "poBoxFind"
   | "poBoxDone"
-  | "heldMailRedirect";
+  | "heldMailRedirect"
+  | "flowFeedback";
 
 interface ChatMsg {
   who: "bot" | "user";
   text: string;
+}
+
+// Flow definitions for progress tracking
+const SHIP_FLOW: Screen[] = ["shipIntro", "shipStep1", "shipStep2", "shipStep3", "shipStep4", "shipStep5", "shipLabelStep"];
+const DROP_FLOW: Screen[] = ["dropIntro", "dropFindAPD", "dropStep1", "dropStep2", "dropStep3"];
+const STAMPS_FLOW: Screen[] = ["stampsIntro", "stampsFindSSK", "stampsStep1", "stampsStep2", "stampsStep3"];
+const PICKUP_FLOW: Screen[] = ["pkgFindLockers", "pkgEnterCode"];
+
+function getFlowProgress(screen: Screen): { current: number; total: number; label: string } | null {
+  if (SHIP_FLOW.includes(screen)) return { current: SHIP_FLOW.indexOf(screen) + 1, total: SHIP_FLOW.length, label: "Ship a package" };
+  if (DROP_FLOW.includes(screen)) return { current: DROP_FLOW.indexOf(screen) + 1, total: DROP_FLOW.length, label: "Drop off package" };
+  if (STAMPS_FLOW.includes(screen)) return { current: STAMPS_FLOW.indexOf(screen) + 1, total: STAMPS_FLOW.length, label: "Buy stamps" };
+  if (PICKUP_FLOW.includes(screen)) return { current: PICKUP_FLOW.indexOf(screen) + 1, total: PICKUP_FLOW.length, label: "Pick up package" };
+  return null;
 }
 
 export const AivaApp = () => {
@@ -125,20 +141,14 @@ export const AivaApp = () => {
   const [comment, setComment] = useState("");
   const [voiceTranscript, setVoiceTranscript] = useState("");
   const [voiceConf, setVoiceConf] = useState(0);
-  const [userLocation, setUserLocation] = useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("aiva-location") || "";
-  });
+  const userLocation = DEMO_LOCATION;
 
   const [serviceIntent, setServiceIntent] = useState<string>("");
   const [chatOpen, setChatOpen] = useState(false);
   const [quickCheckReason, setQuickCheckReason] = useState<"hazmat" | "oversized" | "international" | "multiple">("hazmat");
   const [pendingFlow, setPendingFlow] = useState<"ship" | "drop" | null>(null);
-
-  const persistLocation = (loc: string) => {
-    setUserLocation(loc);
-    try { localStorage.setItem("aiva-location", loc); } catch {}
-  };
+  // Track which flow just completed for feedback routing
+  const [completedFlow, setCompletedFlow] = useState<string>("");
 
 
   const goto = (s: Screen) => {
@@ -165,25 +175,30 @@ export const AivaApp = () => {
     setVoiceConf(0);
   };
 
+  const goHomeFromFeedback = () => {
+    setHistory([]);
+    setScreen("greeting");
+  };
+
+  // Helper to go to feedback then home
+  const gotoFeedback = (flowName: string) => {
+    setCompletedFlow(flowName);
+    goto("flowFeedback");
+  };
+
   const showHeader =
     screen !== "qr" &&
     screen !== "disclaimer" &&
     screen !== "consent" &&
     screen !== "newOrReturning" &&
-    screen !== "onboarding" &&
-    screen !== "locationPermission" &&
-    screen !== "confirmInitialLocation" &&
-    screen !== "addressEntry";
+    screen !== "onboarding";
 
-  // Hide the floating chat button on screens where it would interfere
-  // (onboarding/consent/QR) or where the inline chat is already on screen (greeting).
   const showChatFab =
     showHeader && screen !== "greeting" && !chatOpen;
 
-  // Screens that need a floating back button (because their layout doesn't include one inline).
   const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
     "arrived", "thanks", "status", "voiceProblem",
-    "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
+    "services", "problemType", "packageDrum", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
     "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
   ];
@@ -191,6 +206,7 @@ export const AivaApp = () => {
     showHeader && history.length > 0 && SCREENS_WITH_GLOBAL_BACK.includes(screen);
 
   const ctx = getPageContext(screen, serviceIntent);
+  const flowProgress = getFlowProgress(screen);
 
   return (
     <PhoneFrame>
@@ -200,6 +216,21 @@ export const AivaApp = () => {
           onChat={() => setChatOpen(true)}
           showHome={screen !== "greeting"}
         />
+      )}
+      {/* Flow progress bar */}
+      {flowProgress && (
+        <div className="bg-white border-b border-border px-4 py-2 shrink-0">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold text-aiva-navy">{flowProgress.label}</span>
+            <span className="text-[11px] text-muted-foreground">Step {flowProgress.current} of {flowProgress.total}</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-aiva-blue-deep rounded-full transition-all duration-300"
+              style={{ width: `${(flowProgress.current / flowProgress.total) * 100}%` }}
+            />
+          </div>
+        </div>
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
         {screen === "disclaimer" && (
@@ -231,51 +262,19 @@ export const AivaApp = () => {
         {screen === "newOrReturning" && (
           <NewOrReturning
             onNew={() => goto("onboarding")}
-            onReturning={() => goto("locationPermission")}
+            onReturning={() => {
+              setScreen("greeting");
+              setHistory([]);
+            }}
           />
         )}
         {screen === "onboarding" && (
           <Onboarding
             onDone={() => {
-              setScreen("locationPermission");
+              setScreen("greeting");
               setHistory([]);
             }}
             onSkip={() => {
-              setScreen("locationPermission");
-              setHistory([]);
-            }}
-          />
-        )}
-        {screen === "locationPermission" && (
-          <LocationPermission
-            onGranted={(addr) => {
-              persistLocation(addr);
-              setScreen("greeting");
-              setHistory([]);
-            }}
-            onDenied={() => {
-              setScreen("addressEntry");
-              setHistory([]);
-            }}
-          />
-        )}
-        {screen === "confirmInitialLocation" && (
-          <ConfirmInitialLocation
-            address={userLocation}
-            onConfirm={() => {
-              setScreen("greeting");
-              setHistory([]);
-            }}
-            onChange={() => {
-              setScreen("addressEntry");
-              setHistory([]);
-            }}
-          />
-        )}
-        {screen === "addressEntry" && (
-          <StateCityPicker
-            onSubmit={(addr) => {
-              persistLocation(addr);
               setScreen("greeting");
               setHistory([]);
             }}
@@ -283,9 +282,24 @@ export const AivaApp = () => {
         )}
         {screen === "greeting" && (
           <Greeting
-            onWayfinding={() => goto("findIntent")}
-            onReport={() => goto("thanks")}
-            onVoice={() => goto("voiceListen")}
+            onService={(intent) => {
+              if (intent === "error") {
+                goto("thanks");
+                return;
+              }
+              setServiceIntent(intent);
+              if (intent === "Ship a Package") {
+                setPendingFlow("ship");
+                goto("quickCheck");
+              } else if (intent === "Drop Off a Prepaid Package") {
+                setPendingFlow("drop");
+                goto("quickCheck");
+              } else if (intent === "Buy Stamps") {
+                goto("stampsIntro");
+              } else if (intent === "Pick Up Mail or Package") {
+                goto("pickupTriage");
+              }
+            }}
             location={userLocation}
           />
         )}
@@ -363,19 +377,17 @@ export const AivaApp = () => {
           <ShipStep4 onNext={() => goto("shipStep5")} onHelp={() => setChatOpen(true)} onBack={back} />
         )}
         {screen === "shipStep5" && (
-          <ShipStep5 onNext={() => goto("shipDone")} onBack={back} />
+          <ShipStep5 onNext={() => goto("shipLabelStep")} onBack={back} />
         )}
-        {screen === "shipDrumChuteWhere" && (
-          <ShipDrumChuteWhere onBack={back} />
+        {screen === "shipLabelStep" && (
+          <ShipLabelStep onNext={() => goto("shipDone")} onBack={back} />
         )}
         {screen === "shipDone" && (
           <ShipDone
-            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onElse={() => gotoFeedback("Shipping")}
             onBack={back}
           />
         )}
-
-        {/* Drop Off a Prepaid Package */}
 
         {/* Quick Check screening (Ship + Drop Off only) */}
         {screen === "quickCheck" && (
@@ -427,7 +439,7 @@ export const AivaApp = () => {
         )}
         {screen === "dropDone" && (
           <DropDone
-            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onElse={() => gotoFeedback("Package drop-off")}
             onBack={back}
           />
         )}
@@ -450,7 +462,7 @@ export const AivaApp = () => {
         )}
         {screen === "stampsDone" && (
           <StampsDone
-            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onElse={() => gotoFeedback("Stamps purchase")}
             onBack={back}
           />
         )}
@@ -472,7 +484,7 @@ export const AivaApp = () => {
         )}
         {screen === "pkgDone" && (
           <PkgDone
-            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onElse={() => gotoFeedback("Package pickup")}
             onBack={back}
           />
         )}
@@ -481,7 +493,7 @@ export const AivaApp = () => {
         )}
         {screen === "poBoxDone" && (
           <POBoxDone
-            onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onElse={() => gotoFeedback("PO Box access")}
             onBack={back}
           />
         )}
@@ -492,11 +504,19 @@ export const AivaApp = () => {
           />
         )}
 
+        {screen === "flowFeedback" && (
+          <FlowFeedback
+            flowName={completedFlow}
+            onDone={goHomeFromFeedback}
+            onReportIssue={() => goto("thanks")}
+          />
+        )}
+
         {screen === "confirmLocation" && (
           <ConfirmLocation
             address={userLocation}
             onConfirm={() => goto("thanks")}
-            onDeny={() => goto("addressEntry")}
+            onDeny={() => goto("greeting")}
           />
         )}
         {screen === "thanks" && <Thanks onNext={() => goto("status")} />}
@@ -505,7 +525,7 @@ export const AivaApp = () => {
             onNext={(equipment) => {
               if (!equipment) { goto("services"); return; }
               setProblem(equipment);
-              if (equipment.includes("Drum Chute")) goto("drumChute");
+              if (equipment.includes("Package Drum")) goto("packageDrum");
               else goto("voiceProblem");
             }}
           />
@@ -529,13 +549,13 @@ export const AivaApp = () => {
           <ProblemType
             onPick={(p) => {
               setProblem(p);
-              if (p === "Drum Chute") goto("drumChute");
+              if (p === "Package Drum") goto("packageDrum");
               else goto("submitting");
             }}
           />
         )}
-        {screen === "drumChute" && (
-          <DrumChute
+        {screen === "packageDrum" && (
+          <PackageDrumIssue
             onPick={(d) => {
               setProblemDetail(d);
               goto("submitting");
@@ -549,10 +569,11 @@ export const AivaApp = () => {
           <Submitted
             problem={problem}
             onYes={() => goto("nearest")}
-            onNo={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onNo={() => gotoFeedback("Error reporting")}
+            onReportAnother={() => goto("thanks")}
           />
         )}
-        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} onHome={() => { setHistory([]); setScreen("greeting"); }} />}
+        {screen === "nearest" && <Nearest onNext={() => gotoFeedback("Error reporting")} />}
         {screen === "anythingElse" && (
           <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} />
         )}
@@ -664,13 +685,13 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
     case "shipServiceCompare":
     case "shipStep4":
     case "shipStep5":
-    case "shipDrumChuteWhere":
+    case "shipLabelStep":
       return {
-        label: "Ship a Package walkthrough",
+        label: "Ship a package walkthrough",
         suggestions: [
           "What shipping service should I pick?",
           "How do I weigh my package?",
-          "Where is the Drum Chute?",
+          "Where is the Package Drum?",
           "What forms of payment does the kiosk take?",
         ],
       };
@@ -682,7 +703,7 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
     case "dropTooBig":
     case "dropReceiptIssue":
       return {
-        label: "Drop Off a Prepaid Package",
+        label: "Drop off a prepaid package",
         suggestions: [
           "What if my label won't scan?",
           "What size packages fit in the APD?",
@@ -696,7 +717,7 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
     case "stampsStep2":
     case "stampsStep3":
       return {
-        label: "Buy Stamps at the SSK",
+        label: "Buy stamps at the SSK",
         suggestions: [
           "How much is a Forever stamp?",
           "Does the kiosk sell books of stamps?",
@@ -708,7 +729,7 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
     case "pkgFindLockers":
     case "pkgEnterCode":
       return {
-        label: "Pick Up a Package",
+        label: "Pick up a package",
         suggestions: [
           "Where do I find my pickup code?",
           "What if my locker won't open?",
@@ -736,7 +757,7 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
     case "status":
     case "services":
     case "problemType":
-    case "drumChute":
+    case "packageDrum":
     case "submitting":
     case "submitted":
     case "notify":
@@ -791,7 +812,7 @@ const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
         onClick={onContinue}
         className="w-full inline-flex items-center justify-center gap-2 bg-aiva-blue-deep text-white px-7 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
       >
-        I understand &middot; Continue
+        I understand · Continue
         <ArrowRight className="w-4 h-4" />
       </button>
     </div>
@@ -845,7 +866,7 @@ const ConsentScreen = ({ onAgree }: { onAgree: () => void }) => {
           disabled={!agreed}
           className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg"
         >
-          Agree & Continue
+          Agree & continue
         </button>
       </div>
       <p className="text-[10px] text-muted-foreground tracking-wide text-center">
@@ -904,106 +925,91 @@ const QrLanding = ({ onScan }: { onScan: () => void }) => (
 
 const LOCATION_EQUIPMENT = [
   { name: "Self-Service Kiosk", zone: "Zone 2" },
-  { name: "Drum Chute", zone: "Zone 3" },
+  { name: "Package Drum", zone: "Zone 3" },
   { name: "Automated Parcel Drop", zone: "Zone 3" },
-  { name: "Mail Chute", zone: "Zone 3" },
+  { name: "Letter Drop", zone: "Zone 3" },
   { name: "Parcel Lockers", zone: "Zone 4" },
   { name: "PO Boxes", zone: "Zone 4" },
 ];
 
-const LocationEquipmentCard = () => {
-  const [location, setLocation] = useState<string>(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("aiva-location") || "";
-  });
-  const [entry, setEntry] = useState("");
-  const [open, setOpen] = useState(false);
-
-  if (!location) {
-    return (
-      <div className="bg-white border border-aiva-navy/15 rounded-xl p-3.5">
-        <div className="flex items-center gap-2 mb-1.5">
-          <MapPin className="w-4 h-4 text-aiva-navy" />
-          <span className="text-sm font-semibold text-aiva-navy">See equipment at your Post Office</span>
-        </div>
-        <p className="text-[12px] text-muted-foreground mb-2.5 leading-relaxed">
-          Enter your location to view available equipment.
-        </p>
-        <div className="flex gap-2">
-          <input
-            value={entry}
-            onChange={(e) => setEntry(e.target.value)}
-            placeholder="ZIP or city"
-            className="flex-1 h-9 px-3 rounded-full border border-aiva-navy/20 text-[13px] outline-none focus:border-aiva-navy/50 bg-aiva-page"
-          />
-          <button
-            onClick={() => {
-              if (!entry.trim()) return;
-              try { localStorage.setItem("aiva-location", entry.trim()); } catch {}
-              setLocation(entry.trim());
-            }}
-            className="h-9 px-4 rounded-full bg-aiva-navy text-white text-[13px] font-semibold disabled:opacity-40"
-            disabled={!entry.trim()}
-          >
-            View
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white border border-aiva-navy/15 rounded-xl overflow-hidden">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-aiva-bot-bg/40 transition"
-      >
-        <span className="flex items-center gap-2 min-w-0">
-          <MapPin className="w-4 h-4 text-aiva-navy shrink-0" />
-          <span className="flex flex-col min-w-0">
-            <span className="text-sm font-semibold text-aiva-navy">Available services</span>
-            <span className="text-[11px] text-muted-foreground truncate">SOPO near me · 8150 Leesburg Pike Ste 180B, Vienna, VA</span>
-          </span>
-        </span>
-        <span className={`text-aiva-navy/60 transition-transform shrink-0 ml-2 ${open ? "rotate-180" : ""}`} aria-hidden>▾</span>
-      </button>
-      {open && (
-        <ul className="px-4 pb-3 pt-0 space-y-1.5 anim-fade-up">
-          {LOCATION_EQUIPMENT.map((e) => (
-            <li key={e.name} className="flex items-center text-[13px]">
-              <span className="text-aiva-navy">{e.name}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
+const SERVICES = [
+  { id: "Ship a Package", label: "Shipping", icon: Package, desc: "Weigh, label, and pay for your package" },
+  { id: "Drop Off a Prepaid Package", label: "Mail / package drop", icon: Mail, desc: "Drop off a prepaid or stamped item" },
+  { id: "Buy Stamps", label: "Purchase stamps or shipping label", icon: Tag, desc: "Buy stamps or print a label at the kiosk" },
+  { id: "Pick Up Mail or Package", label: "Pick up mail or package", icon: MapPin, desc: "Retrieve from lockers or PO Box" },
+];
 
 const Greeting = ({
-  onWayfinding, onReport, onVoice: _onVoice, location,
-}: { onWayfinding: () => void; onReport: () => void; onVoice: () => void; location?: string }) => {
-  const [showButtons, setShowButtons] = useState(false);
+  onService, location,
+}: { onService: (intent: string) => void; location?: string }) => {
+  const [showContent, setShowContent] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setShowButtons(true), 600);
+    const t = setTimeout(() => setShowContent(true), 400);
     return () => clearTimeout(t);
   }, []);
   return (
-    <div className="flex-1 flex flex-col anim-slide-right min-h-0">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
-        {!showButtons ? <Typing /> : (
+    <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 space-y-4 scrollbar-hide">
+        {!showContent ? <Typing /> : (
           <>
-            <BotBubble>Hi, I'm AIVA. How can I help you today?</BotBubble>
-            <div className="space-y-2 pt-2">
-              <ChoiceButton onClick={onWayfinding}>
-                <span className="inline-flex items-center gap-2"><MapIcon className="w-4 h-4" /> Help me find something</span>
-              </ChoiceButton>
-              <ChoiceButton onClick={onReport}>
-                <span className="inline-flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Report a problem</span>
-              </ChoiceButton>
+            {/* Welcome header */}
+            <div className="anim-fade-up">
+              <div className="flex items-center gap-2 mb-1">
+                <MapPin className="w-4 h-4 text-aiva-blue-deep" />
+                <span className="text-[12px] text-muted-foreground font-medium">{location || "Tysons Corner, VA"}</span>
+              </div>
+              <h1 className="text-xl font-bold text-aiva-navy leading-tight">
+                Welcome to Tysons SOPO
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                How can I help you today? Tap a service below to get started, or ask me anything.
+              </p>
             </div>
-            <div className="pt-3">
-              <LocationEquipmentCard />
+
+            {/* Service buttons */}
+            <div className="space-y-2 anim-fade-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+              {SERVICES.map((svc) => {
+                const Icon = svc.icon;
+                return (
+                  <button
+                    key={svc.id}
+                    onClick={() => onService(svc.id)}
+                    className="w-full flex items-center gap-3 bg-white border border-aiva-navy/15 rounded-xl p-3 text-left hover:border-aiva-navy/40 hover:bg-aiva-bot-bg/30 active:scale-[0.99] transition"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-aiva-blue-deep" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-aiva-navy">{svc.label}</div>
+                      <div className="text-[12px] text-muted-foreground leading-snug">{svc.desc}</div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-aiva-navy/40 shrink-0" />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Error reporting */}
+            <button
+              onClick={() => onService("error")}
+              className="w-full flex items-center gap-3 bg-white border border-aiva-navy/15 rounded-xl p-3 text-left hover:border-aiva-navy/40 hover:bg-aiva-bot-bg/30 active:scale-[0.99] transition anim-fade-up"
+              style={{ animationDelay: "0.25s", animationFillMode: "both" }}
+            >
+              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                <AlertOctagon className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-aiva-navy">Report a problem</div>
+                <div className="text-[12px] text-muted-foreground leading-snug">Something not working? Let us know</div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-aiva-navy/40 shrink-0" />
+            </button>
+
+            {/* Contextual help hint */}
+            <div className="bg-aiva-bot-bg/60 border border-border rounded-xl px-3.5 py-2.5 anim-fade-up" style={{ animationDelay: "0.35s", animationFillMode: "both" }}>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                💡 Tap below for additional help — ask me about hours, shipping prices, tracking, or anything else.
+              </p>
             </div>
           </>
         )}
@@ -1023,15 +1029,15 @@ const FIND_INTENTS = [
 const ZONE_INFO = [
   { zone: "Zone 1", name: "Prep", desc: "Package preparation area — pack, label, and tape your items before sending." },
   { zone: "Zone 2", name: "Purchase", desc: "Self-Service Kiosk (SSK) — buy stamps, weigh and pay for shipping, print labels." },
-  { zone: "Zone 3", name: "Send It", desc: "Drop-off zone — Drum Chute, Automated Parcel Drop (APD), and Mail Chute." },
-  { zone: "Zone 4", name: "Pick Up", desc: "Parcel Lockers and PO Boxes — collect packages and mail." },
+  { zone: "Zone 3", name: "Send it", desc: "Drop-off zone — Package Drum, Automated Parcel Drop (APD), and Letter Drop." },
+  { zone: "Zone 4", name: "Pick up", desc: "Parcel Lockers and PO Boxes — collect packages and mail." },
 ];
 
 const EQUIPMENT_INFO = [
   { name: "Self-Service Kiosk (SSK)", desc: "Touchscreen kiosk for buying stamps, weighing packages, printing shipping labels, and paying — no clerk needed." },
-  { name: "Drum Chute", desc: "Rotating drum drop for letters and small flat-rate packages already labeled and paid." },
+  { name: "Package Drum", desc: "Rotating drum drop for packages already labeled and paid." },
   { name: "Automated Parcel Drop (APD)", desc: "Scans your prepaid label and accepts packages up to a set size — no waiting in line." },
-  { name: "Mail Chute", desc: "Standard slot for letters and stamped envelopes." },
+  { name: "Letter Drop", desc: "Standard slot for letters and stamped envelopes." },
   { name: "Parcel Lockers", desc: "Secure lockers where USPS leaves packages for pickup using a key or code from your delivery notice." },
   { name: "PO Boxes", desc: "Your private locked mailbox for receiving mail at the Post Office address." },
 ];
@@ -1113,7 +1119,7 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
     <div className="relative flex-1 flex flex-col anim-slide-right bg-aiva-page">
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-20 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">What would you like to do?</h1>
-        <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll point you to the right equipment.</p>
+        <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll take it from here.</p>
         <div className="space-y-2.5">
           {FIND_INTENTS.map((intent) => (
             <button
@@ -1175,7 +1181,7 @@ const PickupChoice = ({ onSelect, onBack }: { onSelect: (intent: string) => void
     <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4 scrollbar-hide">
       <h1 className="text-xl font-bold text-aiva-navy mb-1">What are you picking up?</h1>
       <p className="text-sm text-muted-foreground mb-5">
-        I'll point you to the right equipment.
+        I'll take it from here.
       </p>
     </div>
     <div className="px-5 pb-5 pt-2 space-y-2 shrink-0">
@@ -1258,8 +1264,7 @@ const ConfirmLocation = ({
   address, onConfirm, onDeny,
 }: { address: string; onConfirm: () => void; onDeny: () => void }) => {
   const ready = useTypingDelay(500);
-  // Parse a friendly two-line address. Fall back gracefully.
-  const lines = (address || "8150 Leesburg Pike, Vienna, VA 22182").split(",").map((s) => s.trim());
+  const lines = (address || "Tysons Corner, VA").split(",").map((s) => s.trim());
   const line1 = lines[0] || address;
   const line2 = lines.slice(1).join(", ");
 
@@ -1268,18 +1273,7 @@ const ConfirmLocation = ({
       {!ready ? <Typing /> : (
         <>
           <Card>
-            <div className="rounded-xl overflow-hidden border border-border">
-              <iframe
-                title="Your location"
-                src={`https://www.google.com/maps?q=${encodeURIComponent(`${line1}${line2 ? ", " + line2 : ""}`)}&output=embed`}
-                width="100%"
-                height="170"
-                style={{ border: 0, display: "block" }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-            <div className="flex items-start gap-3 pt-3">
+            <div className="flex items-start gap-3 pt-1">
               <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5 text-aiva-blue-deep" />
               </div>
@@ -1289,7 +1283,7 @@ const ConfirmLocation = ({
                   <div className="text-xs text-muted-foreground mt-0.5">{line2}</div>
                 )}
                 <div className="text-[11px] text-aiva-success font-medium mt-1 inline-flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-aiva-success" /> Location detected
+                  <span className="w-1.5 h-1.5 rounded-full bg-aiva-success" /> Location set
                 </div>
               </div>
             </div>
@@ -1393,10 +1387,10 @@ const Thanks = ({ onNext }: { onNext: () => void }) => {
 
 const EQUIP_STATUS = [
   { name: "Self-Service Kiosk (SSK)", ok: true },
-  { name: "Drum Chute", ok: true },
+  { name: "Package Drum", ok: true },
   { name: "Automated Parcel Drop (APD)", ok: true },
   { name: "Parcel Lockers", ok: true },
-  { name: "Mail Chute", ok: true },
+  { name: "Letter Drop", ok: true },
   { name: "PO Boxes", ok: true },
 ];
 
@@ -1409,7 +1403,7 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
           <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Equipment at this SOPO</div>
           <ul className="grid grid-cols-2 gap-2.5">
             {EQUIP_STATUS.map((e) => {
-              const photo = EQUIPMENT_PHOTOS[e.name];
+              const photo = EQUIPMENT_PHOTOS[e.name] || EQUIPMENT_PHOTOS[e.name.replace(/\s*\(.*?\)/, "")];
               const src = photo ? photo.photo : photoUnavailableImg;
               const alt = photo ? photo.alt : "Photo unavailable";
               return (
@@ -1442,20 +1436,20 @@ const Services = ({ onReport }: { onReport: () => void }) => {
   const ready = useTypingDelay(500);
   return (
     <ConvoLayout messages={[{ who: "bot", text: "What services can I help with today?" }]}>
-      {!ready ? <Typing /> : <ChoiceButton variant="primary" onClick={onReport}>Report a Problem</ChoiceButton>}
+      {!ready ? <Typing /> : <ChoiceButton variant="primary" onClick={onReport}>Report a problem</ChoiceButton>}
     </ConvoLayout>
   );
 };
 
-const PROBLEMS = ["Self-Service Kiosk (SSK)", "Drum Chute", "Automated Parcel Drop (APD)", "Parcel Lockers", "Mail Chute", "Something else"];
+const PROBLEMS = ["Self-Service Kiosk (SSK)", "Package Drum", "Automated Parcel Drop (APD)", "Parcel Lockers", "Letter Drop", "Something else"];
 const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
   const ready = useTypingDelay(500);
   return (
-    <ConvoLayout messages={[{ who: "bot", text: "What kind of problem are you having?" }]}>
+    <ConvoLayout messages={[{ who: "bot", text: "What equipment are you having trouble with?" }]}>
       {!ready ? <Typing /> : (
         <div className="space-y-2">
           {PROBLEMS.map((p) => {
-            const photo = EQUIPMENT_PHOTOS[p];
+            const photo = EQUIPMENT_PHOTOS[p] || EQUIPMENT_PHOTOS[p.replace(/\s*\(.*?\)/, "")];
             if (p === "Something else") {
               return <ChoiceButton key={p} onClick={() => onPick(p)}>{p}</ChoiceButton>;
             }
@@ -1490,19 +1484,19 @@ const ProblemType = ({ onPick }: { onPick: (p: string) => void }) => {
   );
 };
 
-const DRUM = ["It's full", "It's jammed", "Won't open", "Something else"];
-const DrumChute = ({ onPick }: { onPick: (d: string) => void }) => {
+const PACKAGE_DRUM_ISSUES = ["It's full", "It's jammed", "Won't open", "Something else"];
+const PackageDrumIssue = ({ onPick }: { onPick: (d: string) => void }) => {
   const ready = useTypingDelay(500);
   return (
     <ConvoLayout
       messages={[
-        { who: "user", text: "Drum Chute" },
-        ...(ready ? [{ who: "bot" as const, text: "Got it, the Drum Chute. What's happening with it?" }] : []),
+        { who: "user", text: "Package Drum" },
+        ...(ready ? [{ who: "bot" as const, text: "Got it, the Package Drum. What's happening with it?" }] : []),
       ]}
     >
       {!ready ? <Typing /> : (
         <div className="space-y-2">
-          {DRUM.map((d) => (
+          {PACKAGE_DRUM_ISSUES.map((d) => (
             <ChoiceButton key={d} onClick={() => onPick(d)}>{d}</ChoiceButton>
           ))}
         </div>
@@ -1527,14 +1521,15 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
 const Submitted = ({
   onYes,
   onNo,
+  onReportAnother,
   problem,
 }: {
   onYes: () => void;
   onNo: () => void;
+  onReportAnother: () => void;
   problem?: string;
 }) => {
   const ready = useTypingDelay(700);
-  // Strip parenthetical abbreviation, e.g. "Self-Service Kiosk (SSK)" -> "Self-Service Kiosk"
   const cleaned = (problem || "").replace(/\s*\(.*?\)\s*/g, "").trim();
   const equipmentLabel = cleaned && cleaned.toLowerCase() !== "something else"
     ? `the ${cleaned}`
@@ -1557,8 +1552,9 @@ const Submitted = ({
         <>
           <BotBubble>Do you still need to drop off your package? If so, we can send you to the nearest post office.</BotBubble>
           <div className="space-y-2">
-            <ChoiceButton variant="primary" onClick={onYes}>Yes</ChoiceButton>
-            <ChoiceButton onClick={onNo}>No</ChoiceButton>
+            <ChoiceButton variant="primary" onClick={onYes}>Yes, find nearest post office</ChoiceButton>
+            <ChoiceButton onClick={onReportAnother}>Report another issue</ChoiceButton>
+            <ChoiceButton onClick={onNo}>No, I'm done</ChoiceButton>
           </div>
         </>
       )}
@@ -1628,19 +1624,17 @@ const Directions = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) =>
   );
 };
 
-const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }) => {
-  // Hard-coded nearest post office
+const Nearest = ({ onNext }: { onNext: () => void }) => {
   const PO = {
-    name: "Merrifield Post Office",
-    address: "8409 Lee Hwy",
-    city: "Merrifield, VA 22116",
-    hours: "9 AM – 8 PM",
-    driveMinutes: 8,
-    miles: 3.2,
+    name: "Tysons Post Office",
+    address: "8100 Boone Blvd",
+    city: "Tysons, VA 22182",
+    hours: "9 AM – 5 PM",
+    driveMinutes: 5,
+    miles: 1.8,
   };
   const fullAddress = `${PO.address}, ${PO.city}`;
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
-  const embedUrl = `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
 
   const [step, setStep] = useState<"info" | "askText" | "phone" | "sent">("info");
   const [phone, setPhone] = useState("");
@@ -1663,17 +1657,6 @@ const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }
             <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Open today</div>
             <div className="font-semibold text-aiva-success mt-0.5">{PO.hours}</div>
           </div>
-        </div>
-        <div className="mt-3 rounded-xl overflow-hidden border border-border">
-          <iframe
-            title="Map to Merrifield Post Office"
-            src={embedUrl}
-            width="100%"
-            height="180"
-            style={{ border: 0, display: "block" }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
         </div>
       </Card>
 
@@ -1732,17 +1715,8 @@ const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }
             <CheckCircle2 className="w-5 h-5 text-aiva-navy" />
             Address sent to your phone.
           </div>
-          <ChoiceButton variant="primary" onClick={onNext}>Continue</ChoiceButton>
+          <ChoiceButton variant="primary" onClick={onNext}>I'm done</ChoiceButton>
         </>
-      )}
-
-      {onHome && (
-        <button
-          onClick={onHome}
-          className="w-full inline-flex items-center justify-center gap-2 border border-aiva-navy/20 text-aiva-navy px-4 py-3 rounded-full font-semibold text-sm hover:bg-aiva-bot-bg active:scale-[0.99] transition mt-2"
-        >
-          <Home className="w-4 h-4" /> Go home
-        </button>
       )}
     </div>
   );
@@ -1890,7 +1864,6 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
   const finalRef = useRef<string>("");
   const interimRef = useRef<string>("");
 
-  // Detect support on mount but DO NOT auto-start (gesture required)
   useEffect(() => {
     const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     setSupported(!!Ctor);
@@ -1899,7 +1872,6 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
     };
   }, []);
 
-  // Synchronous start inside the click handler — preserves the gesture chain
   const startListening = () => {
     setError(null);
     const Ctor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -1930,7 +1902,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
         if (conf) setConfidence(conf);
       };
       rec.onerror = (e: any) => {
-        if (e.error === "no-speech") return; // keep listening
+        if (e.error === "no-speech") return;
         if (e.error === "not-allowed" || e.error === "service-not-allowed") {
           setError("Microphone permission was denied. Please allow access in your browser.");
         } else {
@@ -1940,37 +1912,19 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
       };
       rec.onend = () => {
         setListening(false);
-        const final = (finalRef.current + " " + interimRef.current).trim();
-        if (final) {
-          setManualText((prev) => (prev ? prev.trimEnd() + " " : "") + final);
-          finalRef.current = "";
-          interimRef.current = "";
-          setTranscript("");
-          setInterim("");
-        }
       };
 
-      finalRef.current = "";
-      setTranscript("");
-      setInterim("");
-      setConfidence(0);
       recRef.current = rec;
       rec.start();
       setListening(true);
-    } catch (err: any) {
-      setError(err?.message || "Could not start microphone.");
-      setListening(false);
+    } catch (err) {
+      setError("Could not start microphone.");
     }
   };
 
-  const onMicTap = async () => {
+  const onMicTap = () => {
     if (!hasSeenMicExplainer()) {
       setShowExplainer(true);
-      return;
-    }
-    const ok = await ensureMicPermission();
-    if (!ok) {
-      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
       return;
     }
     startListening();
@@ -1980,23 +1934,13 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
     markMicExplainerSeen();
     setShowExplainer(false);
     const ok = await ensureMicPermission();
-    if (!ok) {
-      setError("Microphone permission denied. Enable it in your browser settings to use voice.");
-      return;
-    }
-    startListening();
-  };
-
-  const stopAndContinue = () => {
-    try { recRef.current?.stop(); } catch {}
-    setListening(false);
-    const final = (finalRef.current + " " + interim).trim();
-    onStop(final || transcript || "I'd like to report a problem", confidence || 0.92);
+    if (ok) startListening();
+    else setError("Microphone permission was denied.");
   };
 
   if (!supported) {
     return (
-      <div className="flex-1 flex flex-col p-5 gap-4 anim-fade-up">
+      <div className="flex-1 flex flex-col gap-3 p-5 bg-gradient-to-b from-white to-aiva-page anim-fade-up overflow-y-auto">
         <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 text-sm">
           Voice input isn't supported in this browser. Try Chrome or Safari, or type below.
         </div>
@@ -2034,19 +1978,9 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
           placeholder="Type your problem here…"
           className="w-full border border-border rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-aiva-blue/40 resize-none bg-white"
         />
-        <ChoiceButton
-          variant="primary"
-          onClick={() => {
-            const text = manualText.trim() || transcript.trim();
-            if (!text) return;
-            onStop(text, 1);
-          }}
-        >
-          Submit
-        </ChoiceButton>
       </div>
 
-      {/* Secondary: voice to text */}
+      {/* Voice to text */}
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground pt-1">
         <div className="flex-1 h-px bg-border" />
         <span>or use voice to text</span>
@@ -2095,6 +2029,18 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
           {interim && <span className="text-muted-foreground italic"> {interim}</span>}
         </div>
       )}
+
+      {/* Submit button below voice */}
+      <ChoiceButton
+        variant="primary"
+        onClick={() => {
+          const text = manualText.trim() || transcript.trim();
+          if (!text) return;
+          onStop(text, 1);
+        }}
+      >
+        Submit report
+      </ChoiceButton>
 
       <div className="w-full flex items-start gap-2 text-[11px] text-muted-foreground bg-aiva-bot-bg/60 border border-border rounded-lg px-3 py-2">
         <Lock aria-hidden className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
@@ -2147,110 +2093,16 @@ const VoiceConfirm = ({
   );
 };
 
-/* ------- Location permission & manual address ------- */
+/* ------- Location permission (simplified - just goes to greeting) ------- */
 
 const LocationPermission = ({
   onGranted, onDenied,
 }: { onGranted: (address: string) => void; onDenied: () => void }) => {
-  const [requesting, setRequesting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const requestLocation = () => {
-    setError(null);
-    if (!("geolocation" in navigator)) {
-      setError("Location services aren't available in this browser.");
-      onDenied();
-      return;
-    }
-    setRequesting(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        let friendly = "";
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
-            { headers: { "Accept": "application/json" } },
-          );
-          if (res.ok) {
-            const data = await res.json();
-            const a = data.address || {};
-            const street = [a.house_number, a.road].filter(Boolean).join(" ");
-            const city = a.city || a.town || a.village || a.hamlet || a.suburb || "";
-            const state = a.state || "";
-            const postcode = a.postcode || "";
-            const cityLine = [city, [state, postcode].filter(Boolean).join(" ")].filter(Boolean).join(", ");
-            friendly = [street, cityLine].filter(Boolean).join(", ") || data.display_name || "";
-          }
-        } catch {
-          // ignore — fall through to coordinate fallback
-        }
-        if (!friendly) {
-          friendly = `Lat ${lat.toFixed(4)}, Lon ${lon.toFixed(4)}`;
-        }
-        setRequesting(false);
-        onGranted(friendly);
-      },
-      (err) => {
-        setRequesting(false);
-        if (err.code === err.PERMISSION_DENIED) {
-          onDenied();
-        } else {
-          setError("We couldn't get your location. You can enter it manually.");
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
-    );
-  };
-
-  return (
-    <div className="flex-1 flex flex-col p-6 bg-white text-aiva-navy anim-fade-up overflow-y-auto">
-      <div className="flex-1 flex flex-col justify-center gap-5 py-6">
-        <div className="w-20 h-20 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center mx-auto">
-          <Navigation className="w-10 h-10 text-aiva-blue-deep" />
-        </div>
-        <div className="text-center space-y-2">
-          <h1 className="text-xl font-bold tracking-tight">Share your location</h1>
-          <p className="text-[13px] text-foreground/70 leading-relaxed max-w-[280px] mx-auto">
-            AIVA uses your location to find the nearest Self-Operating Post Office and route you to it.
-          </p>
-        </div>
-
-        <div className="bg-aiva-bot-bg rounded-xl p-4 text-[12px] leading-relaxed space-y-2 text-foreground/80">
-          <div className="flex items-start gap-2">
-            <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0 text-aiva-blue-deep" />
-            <span>
-              Your location is used only for this session. It's never stored on our servers or shared with third parties.
-            </span>
-          </div>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-xs">{error}</div>
-        )}
-
-        <div className="space-y-2">
-          <button
-            onClick={requestLocation}
-            disabled={requesting}
-            className="w-full bg-aiva-blue-deep text-white px-6 py-3.5 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {requesting ? "Requesting…" : "Allow location access"}
-          </button>
-          <button
-            onClick={onDenied}
-            className="w-full bg-white border border-border text-foreground px-6 py-3 rounded-full font-medium text-sm hover:bg-aiva-bot-bg transition"
-          >
-            Enter address manually
-          </button>
-        </div>
-      </div>
-      <p className="text-[10px] text-muted-foreground tracking-wide text-center">
-        Demo only · Not a real USPS service
-      </p>
-    </div>
-  );
+  // Auto-grant with Tysons since we're hardcoding
+  useEffect(() => {
+    onGranted(DEMO_LOCATION);
+  }, []);
+  return null;
 };
 
 const AddressEntry = ({ onSubmit }: { onSubmit: (address: string) => void }) => {
@@ -2314,18 +2166,7 @@ const ConfirmInitialLocation = ({
         </div>
 
         <Card>
-          <div className="rounded-xl overflow-hidden border border-border">
-            <iframe
-              title="Detected location"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(`${line1}${line2 ? ", " + line2 : ""}`)}&output=embed`}
-              width="100%"
-              height="170"
-              style={{ border: 0, display: "block" }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-          <div className="flex items-start gap-3 pt-3">
+          <div className="flex items-start gap-3 pt-1">
             <div className="w-10 h-10 rounded-full bg-aiva-blue-deep/10 flex items-center justify-center shrink-0">
               <MapPin className="w-5 h-5 text-aiva-blue-deep" />
             </div>
