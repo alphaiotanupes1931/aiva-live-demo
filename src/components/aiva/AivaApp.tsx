@@ -28,7 +28,7 @@ import {
 import {
   MapPin, CheckCircle2, AlertCircle, Mic, Send, Smartphone,
   ThumbsUp, ThumbsDown, Loader2, Square, MessageSquare, MessageCircle, Map as MapIcon, ArrowRight,
-  Lock, Navigation, ChevronLeft,
+  Lock, Navigation, ChevronLeft, X,
 } from "lucide-react";
 import uspsLogo from "@/assets/usps-logo.png";
 import sskKioskPhoto from "@/assets/ssk-kiosk.jpg";
@@ -187,7 +187,7 @@ export const AivaApp = () => {
 
   // Screens that need a floating back button (because their layout doesn't include one inline).
   const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
-    "findIntent", "arrived", "thanks", "status", "voiceProblem",
+    "arrived", "thanks", "status", "voiceProblem",
     "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
     "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
@@ -1072,9 +1072,50 @@ const Expandable = ({
   );
 };
 
+const EquipmentGuideSheet = ({ onClose }: { onClose: () => void }) => (
+  <div className="absolute inset-0 z-50 flex flex-col bg-aiva-page" role="dialog" aria-modal="true" aria-label="Equipment guide">
+    <div className="flex items-start justify-between gap-4 border-b border-border bg-white/95 px-5 py-4 backdrop-blur-sm">
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Resource</div>
+        <h2 className="text-xl font-bold text-aiva-navy">Equipment guide</h2>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+          Quick explanations of the equipment available in this Post Office.
+        </p>
+      </div>
+      <button
+        onClick={onClose}
+        aria-label="Close equipment guide"
+        className="shrink-0 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-aiva-navy bg-white text-aiva-navy hover:bg-aiva-navy/5 transition active:scale-[0.99]"
+      >
+        <X className="w-5 h-5" />
+      </button>
+    </div>
+
+    <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 scrollbar-hide">
+      {EQUIPMENT_INFO.map((equipment) => (
+        <div key={equipment.name} className="rounded-2xl border border-aiva-navy/15 bg-white px-4 py-3 shadow-sm">
+          <div className="text-sm font-semibold text-aiva-navy">{equipment.name}</div>
+          <div className="mt-1 text-[13px] leading-relaxed text-foreground/75">{equipment.desc}</div>
+        </div>
+      ))}
+    </div>
+
+    <div className="border-t border-border bg-aiva-page px-5 pb-5 pt-3">
+      <button
+        onClick={onClose}
+        className="w-full h-12 rounded-full bg-aiva-navy text-white font-semibold text-sm hover:bg-aiva-navy/90 transition active:scale-[0.99]"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+);
+
 const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
+  const [showEquipmentGuide, setShowEquipmentGuide] = useState(false);
+
   return (
-    <div className="flex-1 flex flex-col anim-slide-right bg-aiva-page">
+    <div className="relative flex-1 flex flex-col anim-slide-right bg-aiva-page">
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-20 scrollbar-hide">
         <h1 className="text-xl font-bold text-aiva-navy mb-1">What would you like to do?</h1>
         <p className="text-sm text-muted-foreground mb-5">Pick a service and I'll point you to the right equipment.</p>
@@ -1111,19 +1152,25 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
                 ))}
               </div>
             </Expandable>
-            <Expandable label="Equipment guide">
-              <div className="space-y-2.5 pt-2">
-                {EQUIPMENT_INFO.map((e) => (
-                  <div key={e.name}>
-                    <div className="text-[12px] font-semibold text-aiva-navy">{e.name}</div>
-                    <div className="text-[12px] text-foreground/75 leading-relaxed">{e.desc}</div>
+            <button
+              onClick={() => setShowEquipmentGuide(true)}
+              className="w-full rounded-xl border border-aiva-navy/15 bg-white px-4 py-3 text-left hover:bg-aiva-bot-bg/40 transition"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-aiva-navy">Equipment guide</div>
+                  <div className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
+                    Open a cleaner full-screen list of the equipment in this location.
                   </div>
-                ))}
+                </div>
+                <ArrowRight className="w-4 h-4 shrink-0 text-aiva-navy/60" />
               </div>
-            </Expandable>
+            </button>
           </div>
         </div>
       </div>
+
+      {showEquipmentGuide && <EquipmentGuideSheet onClose={() => setShowEquipmentGuide(false)} />}
     </div>
   );
 };
