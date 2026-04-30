@@ -40,7 +40,7 @@ const StepLayout = ({
         </div>
       )}
       {stepLabel && (
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">
+        <div className="text-[10px]  text-muted-foreground font-semibold mb-1.5">
           {stepLabel}
         </div>
       )}
@@ -136,7 +136,7 @@ export const ShipStep3 = ({ onNext, onMore, onBack }: { onNext: () => void; onMo
 export const ShipServiceCompare = ({ onBack }: { onBack: () => void }) => (
   <div className="flex flex-col flex-1 overflow-hidden bg-aiva-page anim-slide-right">
     <div className="flex-1 overflow-y-auto px-5 pt-4 pb-4 scrollbar-hide">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">
+      <div className="text-[10px]  text-muted-foreground font-semibold mb-1.5">
         Shipping options
       </div>
       <h1 className="text-xl font-bold text-aiva-navy mb-3">Compare services</h1>
@@ -200,8 +200,8 @@ export const ShipLabelStep = ({ onNext, onBack }: { onNext: () => void; onBack?:
 
 export const ShipDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
-    title="I'll take it from here!"
-    subtitle="Your package is on its way. Scan your QR code to track your package and stay updated on its delivery status."
+    title="Scan your QR code"
+    subtitle="Use your phone to scan the QR code on the receipt. This will let you track your package and get delivery updates."
     photoUnavailable={false}
     primaryLabel="Done"
     onPrimary={onElse}

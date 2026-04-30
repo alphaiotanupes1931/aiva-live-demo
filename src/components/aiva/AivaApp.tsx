@@ -508,7 +508,6 @@ export const AivaApp = () => {
           <FlowFeedback
             flowName={completedFlow}
             onDone={goHomeFromFeedback}
-            onReportIssue={() => goto("thanks")}
           />
         )}
 
@@ -570,7 +569,6 @@ export const AivaApp = () => {
             problem={problem}
             onYes={() => goto("nearest")}
             onNo={() => gotoFeedback("Error reporting")}
-            onReportAnother={() => goto("thanks")}
           />
         )}
         {screen === "nearest" && <Nearest onNext={() => gotoFeedback("Error reporting")} />}
@@ -782,7 +780,7 @@ const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
       <img src={uspsLogo} alt="USPS" className="w-28 h-auto object-contain mx-auto" />
 
       <div className="space-y-3 text-center">
-        <span className="inline-block text-[10px] font-bold tracking-[0.18em] uppercase text-aiva-blue-deep bg-aiva-blue-deep/10 px-3 py-1 rounded-full">
+        <span className="inline-block text-[10px] font-bold text-aiva-blue-deep bg-aiva-blue-deep/10 px-3 py-1 rounded-full">
           Please note
         </span>
         <h1 className="text-[22px] font-bold leading-tight tracking-tight">
@@ -1077,7 +1075,7 @@ const EquipmentGuideSheet = ({ onClose }: { onClose: () => void }) => (
   <div className="absolute inset-0 z-50 flex flex-col bg-aiva-page" role="dialog" aria-modal="true" aria-label="Equipment guide">
     <div className="flex items-start justify-between gap-4 border-b border-border bg-white/95 px-5 py-4 backdrop-blur-sm">
       <div className="min-w-0">
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Resource</div>
+        <div className="text-[10px]  text-muted-foreground font-semibold mb-1">Resource</div>
         <h2 className="text-xl font-bold text-aiva-navy">Equipment guide</h2>
         <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
           Quick explanations of the equipment available in this Post Office.
@@ -1133,7 +1131,7 @@ const FindIntent = ({ onSelect }: { onSelect: (intent: string) => void }) => {
         </div>
 
         <div className="mt-6">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2 px-1">
+          <div className="text-[10px]  text-muted-foreground font-semibold mb-2 px-1">
             Resources
           </div>
           <div className="space-y-2">
@@ -1400,7 +1398,7 @@ const StatusScreen = ({ onNext }: { onNext: (equipment?: string) => void }) => {
     <ConvoLayout messages={[{ who: "bot", text: "Here's the current status of your location. Select the equipment you're having an issue with." }]}>
       {!ready ? <Typing /> : (
         <Card>
-          <div className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Equipment at this SOPO</div>
+          <div className="text-xs font-semibold text-muted-foreground mb-3 ">Equipment at this SOPO</div>
           <ul className="grid grid-cols-2 gap-2.5">
             {EQUIP_STATUS.map((e) => {
               const photo = EQUIPMENT_PHOTOS[e.name] || EQUIPMENT_PHOTOS[e.name.replace(/\s*\(.*?\)/, "")];
@@ -1521,12 +1519,11 @@ const Submitting = ({ onDone, problem, detail }: { onDone: () => void; problem: 
 const Submitted = ({
   onYes,
   onNo,
-  onReportAnother,
   problem,
 }: {
   onYes: () => void;
   onNo: () => void;
-  onReportAnother: () => void;
+  onReportAnother?: () => void;
   problem?: string;
 }) => {
   const ready = useTypingDelay(700);
@@ -1543,7 +1540,7 @@ const Submitted = ({
         <div className="font-semibold text-base">Report submitted</div>
       </div>
       <Card>
-        <div className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">What happens next</div>
+        <div className="text-xs font-semibold text-muted-foreground mb-1">What happens next</div>
         <p className="text-sm text-foreground/80 leading-relaxed">
           The local post office has been notified about {equipmentLabel}. You don't need to do anything else — your report is in the queue.
         </p>
@@ -1553,8 +1550,7 @@ const Submitted = ({
           <BotBubble>Do you still need to drop off your package? If so, we can send you to the nearest post office.</BotBubble>
           <div className="space-y-2">
             <ChoiceButton variant="primary" onClick={onYes}>Yes, find nearest post office</ChoiceButton>
-            <ChoiceButton onClick={onReportAnother}>Report another issue</ChoiceButton>
-            <ChoiceButton onClick={onNo}>No, I'm done</ChoiceButton>
+            <ChoiceButton onClick={onNo}>Go home</ChoiceButton>
           </div>
         </>
       )}
@@ -1580,7 +1576,7 @@ const SmsOptIn = ({ phone, setPhone, onSend }: { phone: string; setPhone: (s: st
  <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 scrollbar-hide anim-slide-right">
     <BotBubble>Enter a mobile number and we'll text you when it's fixed.</BotBubble>
     <Card>
-      <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
+      <label className="text-xs font-semibold  text-muted-foreground">Mobile number</label>
       <div className="flex items-center gap-2 mt-2 border border-border rounded-lg px-3 py-2">
         <Smartphone className="w-4 h-4 text-muted-foreground" />
         <input
@@ -1650,11 +1646,11 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
           <div className="rounded-xl bg-aiva-bot-bg px-2.5 py-2">
-            <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Drive</div>
+            <div className="text-muted-foreground  text-[9px] font-semibold">Drive</div>
             <div className="font-semibold text-foreground mt-0.5">{PO.driveMinutes} min · {PO.miles} mi</div>
           </div>
           <div className="rounded-xl bg-aiva-bot-bg px-2.5 py-2">
-            <div className="text-muted-foreground uppercase tracking-wide text-[9px] font-semibold">Open today</div>
+            <div className="text-muted-foreground  text-[9px] font-semibold">Open today</div>
             <div className="font-semibold text-aiva-success mt-0.5">{PO.hours}</div>
           </div>
         </div>
@@ -1690,7 +1686,7 @@ const Nearest = ({ onNext }: { onNext: () => void }) => {
 
       {step === "phone" && (
         <Card>
-          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mobile number</label>
+          <label className="text-xs font-semibold  text-muted-foreground">Mobile number</label>
           <div className="flex items-center gap-2 mt-2 border border-border rounded-lg px-3 py-2">
             <Smartphone className="w-4 h-4 text-muted-foreground" />
             <input
@@ -1766,7 +1762,7 @@ const Csat = ({
       })}
     </div>
     <div>
-      <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <label className="text-xs font-semibold  text-muted-foreground">
         Add a comment (optional)
       </label>
       <div className="mt-2">
@@ -1968,7 +1964,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
 
       {/* Primary: type your problem */}
       <div className="w-full space-y-2">
-        <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        <label className="text-[11px] font-semibold  text-muted-foreground">
           Describe the problem
         </label>
         <textarea
@@ -1981,7 +1977,7 @@ const VoiceListen = ({ onStop, prompt }: { onStop: (transcript: string, conf: nu
       </div>
 
       {/* Voice to text */}
-      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground pt-1">
+      <div className="flex items-center gap-2 text-[11px]  text-muted-foreground pt-1">
         <div className="flex-1 h-px bg-border" />
         <span>or use voice to text</span>
         <div className="flex-1 h-px bg-border" />
@@ -2122,7 +2118,7 @@ const AddressEntry = ({ onSubmit }: { onSubmit: (address: string) => void }) => 
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-semibold  text-muted-foreground">
             Street address
           </label>
           <VoiceTextInput
