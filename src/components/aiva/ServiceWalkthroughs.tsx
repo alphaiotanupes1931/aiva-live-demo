@@ -228,10 +228,10 @@ export const DropStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; on
 
 export const DropDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
-    title="Thanks for using AIVA"
-    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
+    title="I'll take it from here!"
+    subtitle="Your package has been dropped off. Scan your QR code to track it."
     photoUnavailable={false}
-    primaryLabel="Help me with something else"
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
