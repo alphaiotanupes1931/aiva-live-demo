@@ -415,9 +415,9 @@ export const POBoxFind = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
 export const POBoxDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="You're all set"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Help me with something else"
+    title="You're all set!"
+    subtitle="Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
