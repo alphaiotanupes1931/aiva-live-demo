@@ -160,7 +160,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
 
           {showSuggestions && (
             <div className="pt-2 space-y-1.5">
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+              <div className="text-[10px] text-muted-foreground font-semibold">
                 Try asking
               </div>
               {tips.map((q) => (

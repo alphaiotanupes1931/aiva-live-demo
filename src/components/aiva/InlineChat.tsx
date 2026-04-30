@@ -112,7 +112,7 @@ export const InlineChat = ({ location }: InlineChatProps) => {
       {/* Suggested hot buttons */}
       {showSuggestions && (
         <div className="px-3 pt-3 pb-1">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-2">
+          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold mb-2">
             <Sparkles className="w-3 h-3" />
             Try asking
           </div>
