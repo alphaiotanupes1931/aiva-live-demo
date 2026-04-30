@@ -118,12 +118,20 @@ interface ChatMsg {
 }
 
 // Flow definitions for progress tracking
-const SHIP_FLOW: Screen[] = ["shipIntro", "shipStep1", "shipStep2", "shipStep3", "shipStep4", "shipStep5", "shipLabelStep"];
-const DROP_FLOW: Screen[] = ["dropIntro", "dropFindAPD", "dropStep1", "dropStep2", "dropStep3"];
-const STAMPS_FLOW: Screen[] = ["stampsIntro", "stampsFindSSK", "stampsStep1", "stampsStep2", "stampsStep3"];
+const SHIP_FLOW: Screen[] = ["shipStep1", "shipStep2", "shipStep3", "shipStep4", "shipStep5", "shipLabelStep"];
+const DROP_FLOW: Screen[] = ["dropFindAPD", "dropStep1", "dropStep2", "dropStep3"];
+const STAMPS_FLOW: Screen[] = ["stampsFindSSK", "stampsStep1", "stampsStep2", "stampsStep3"];
 const PICKUP_FLOW: Screen[] = ["pkgFindLockers", "pkgEnterCode"];
 
+// Intro screens show the flow label but no step number
+const INTRO_SCREENS: Record<string, string> = {
+  shipIntro: "Ship a package",
+  dropIntro: "Drop off package",
+  stampsIntro: "Buy stamps",
+};
+
 function getFlowProgress(screen: Screen): { current: number; total: number; label: string } | null {
+  if (INTRO_SCREENS[screen]) return { current: 0, total: 0, label: INTRO_SCREENS[screen] };
   if (SHIP_FLOW.includes(screen)) return { current: SHIP_FLOW.indexOf(screen) + 1, total: SHIP_FLOW.length, label: "Ship a package" };
   if (DROP_FLOW.includes(screen)) return { current: DROP_FLOW.indexOf(screen) + 1, total: DROP_FLOW.length, label: "Drop off package" };
   if (STAMPS_FLOW.includes(screen)) return { current: STAMPS_FLOW.indexOf(screen) + 1, total: STAMPS_FLOW.length, label: "Buy stamps" };
