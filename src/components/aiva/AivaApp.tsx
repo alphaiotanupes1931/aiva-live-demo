@@ -325,7 +325,7 @@ export const AivaApp = () => {
           <Wayfinding
             service={serviceIntent}
             onFound={() => goto("arrived")}
-            onNotFound={() => goto("thanks")}
+            onBack={back}
           />
         )}
         {screen === "arrived" && (
