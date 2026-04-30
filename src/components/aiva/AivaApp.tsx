@@ -477,6 +477,7 @@ export const AivaApp = () => {
         {screen === "pkgDone" && (
           <PkgDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
         {screen === "poBoxFind" && (
