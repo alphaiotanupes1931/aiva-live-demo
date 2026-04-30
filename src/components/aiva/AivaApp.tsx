@@ -570,7 +570,6 @@ export const AivaApp = () => {
             problem={problem}
             onYes={() => goto("nearest")}
             onNo={() => gotoFeedback("Error reporting")}
-            onReportAnother={() => goto("thanks")}
           />
         )}
         {screen === "nearest" && <Nearest onNext={() => gotoFeedback("Error reporting")} />}
