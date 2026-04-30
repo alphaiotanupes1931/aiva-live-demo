@@ -412,13 +412,14 @@ export const POBoxFind = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
   />
 );
 
-export const POBoxDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const POBoxDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
     title="You're all set"
     subtitle="Thanks for using AIVA. Have a great day."
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
