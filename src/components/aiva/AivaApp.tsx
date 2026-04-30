@@ -190,7 +190,7 @@ export const AivaApp = () => {
     "findIntent", "arrived", "thanks", "status", "voiceProblem",
     "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
-    "submitted", "anythingElse", "notify", "sms", "smsSent", "directions",
+    "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
   ];
   const showGlobalBack =
     showHeader && history.length > 0 && SCREENS_WITH_GLOBAL_BACK.includes(screen);
