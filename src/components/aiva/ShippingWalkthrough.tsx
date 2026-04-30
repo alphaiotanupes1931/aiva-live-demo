@@ -200,8 +200,8 @@ export const ShipLabelStep = ({ onNext, onBack }: { onNext: () => void; onBack?:
 
 export const ShipDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
-    title="I'll take it from here!"
-    subtitle="Your package is on its way. Scan your QR code to track your package and stay updated on its delivery status."
+    title="Scan your QR code"
+    subtitle="Use your phone to scan the QR code on the receipt. This will let you track your package and get delivery updates."
     photoUnavailable={false}
     primaryLabel="Done"
     onPrimary={onElse}
