@@ -187,10 +187,10 @@ export const AivaApp = () => {
 
   // Screens that need a floating back button (because their layout doesn't include one inline).
   const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
-    "findIntent", "pickupChoice", "arrived", "thanks", "status", "voiceProblem",
+    "findIntent", "arrived", "thanks", "status", "voiceProblem",
     "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
     "voiceUnclear", "confirmLocation", "nearest",
-    "submitted", "anythingElse", "csat", "notify", "sms", "smsSent", "directions",
+    "submitted", "anythingElse", "notify", "sms", "smsSent", "directions",
   ];
   const showGlobalBack =
     showHeader && history.length > 0 && SCREENS_WITH_GLOBAL_BACK.includes(screen);
