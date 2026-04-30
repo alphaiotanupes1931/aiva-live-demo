@@ -226,13 +226,14 @@ export const DropStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; on
   />
 );
 
-export const DropDone = ({ onElse }: { onDone?: () => void; onElse: () => void }) => (
+export const DropDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Thanks for using AIVA"
     subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
     photoUnavailable={false}
     primaryLabel="Help me with something else"
     onPrimary={onElse}
+    onBack={onBack}
   />
 );
 
