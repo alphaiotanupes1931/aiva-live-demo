@@ -491,9 +491,11 @@ export const HeldMailRedirect = ({
 export const DropReceiptIssue = ({
   onTrack,
   onReport,
+  onBack,
 }: {
   onTrack: () => void;
   onReport: () => void;
+  onBack?: () => void;
 }) => {
   useEffect(() => {
     // Simulate notifying the local post office about the APD printer issue.
