@@ -185,6 +185,15 @@ export const AivaApp = () => {
   const showChatFab =
     showHeader && screen !== "greeting" && !chatOpen;
 
+  // Screens that need a floating back button (because their layout doesn't include one inline).
+  const SCREENS_WITH_GLOBAL_BACK: Screen[] = [
+    "findIntent", "pickupChoice", "arrived", "thanks", "status", "voiceProblem",
+    "services", "problemType", "drumChute", "voiceListen", "voiceConfirm",
+    "voiceUnclear", "confirmLocation", "nearest",
+  ];
+  const showGlobalBack =
+    showHeader && history.length > 0 && SCREENS_WITH_GLOBAL_BACK.includes(screen);
+
   const ctx = getPageContext(screen, serviceIntent);
 
   return (
