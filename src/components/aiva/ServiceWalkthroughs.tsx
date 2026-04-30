@@ -390,9 +390,9 @@ export const PkgEnterCode = ({ onNext, onHelp, onBack }: { onNext: () => void; o
 export const PkgDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="Thanks for using AIVA"
-    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
-    primaryLabel="Help me with something else"
+    title="I'll take it from here!"
+    subtitle="You've got your package. Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
