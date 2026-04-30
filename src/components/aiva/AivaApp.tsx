@@ -1633,7 +1633,7 @@ const Directions = ({ onYes, onNo }: { onYes: () => void; onNo: () => void }) =>
   );
 };
 
-const Nearest = ({ onNext }: { onNext: () => void }) => {
+const Nearest = ({ onNext, onHome }: { onNext: () => void; onHome?: () => void }) => {
   // Hard-coded nearest post office
   const PO = {
     name: "Merrifield Post Office",
