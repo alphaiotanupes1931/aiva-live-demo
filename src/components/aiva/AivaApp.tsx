@@ -376,6 +376,7 @@ export const AivaApp = () => {
         {screen === "shipDone" && (
           <ShipDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
