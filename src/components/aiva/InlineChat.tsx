@@ -105,6 +105,7 @@ export const InlineChat = ({ location }: InlineChatProps) => {
               AIVA is typing…
             </div>
           )}
+          </div>
         </div>
       )}
 
