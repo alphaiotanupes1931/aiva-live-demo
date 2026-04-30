@@ -486,6 +486,7 @@ export const AivaApp = () => {
         {screen === "poBoxDone" && (
           <POBoxDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
         {screen === "heldMailRedirect" && (
