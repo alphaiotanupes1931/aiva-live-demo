@@ -21,14 +21,24 @@ const DEFAULT_SUGGESTIONS = [
 
 export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions }: ChatbotModalProps) => {
   const tips = suggestions && suggestions.length > 0 ? suggestions : DEFAULT_SUGGESTIONS;
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      content: pageContext
-        ? `Hi! I'm AIVA. I can see you're on **${pageContext}** — ask me anything about this step or USPS in general.`
-        : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
-    },
-  ]);
+
+  const makeGreeting = (ctx?: string): Msg => ({
+    role: "assistant",
+    content: ctx
+      ? `Hi! I'm AIVA. I can see you're on **${ctx}**. Ask me anything about this step or USPS in general.`
+      : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
+  });
+
+  const [messages, setMessages] = useState<Msg[]>([makeGreeting(pageContext)]);
+  const prevContextRef = useRef(pageContext);
+
+  // Reset greeting when the user opens chat on a different step
+  useEffect(() => {
+    if (open && pageContext !== prevContextRef.current) {
+      setMessages([makeGreeting(pageContext)]);
+      prevContextRef.current = pageContext;
+    }
+  }, [open, pageContext]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -113,12 +123,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
           <div className="flex items-center gap-1">
             <button
               onClick={() => {
-                setMessages([{
-                  role: "assistant",
-                  content: pageContext
-                    ? `Hi! I'm AIVA. I can see you're on **${pageContext}** — ask me anything about this step or USPS in general.`
-                    : "Hi! I'm AIVA. Ask me anything about USPS — hours, shipping prices, tracking, PO Boxes — and I'll give you a real answer based on your location.",
-                }]);
+                setMessages([makeGreeting(pageContext)]);
                 setInput("");
               }}
               aria-label="Reset chat"
@@ -160,7 +165,7 @@ export const ChatbotModal = ({ open, onClose, location, pageContext, suggestions
 
           {showSuggestions && (
             <div className="pt-2 space-y-1.5">
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+              <div className="text-[10px] text-muted-foreground font-semibold">
                 Try asking
               </div>
               {tips.map((q) => (

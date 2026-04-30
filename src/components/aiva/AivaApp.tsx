@@ -118,12 +118,20 @@ interface ChatMsg {
 }
 
 // Flow definitions for progress tracking
-const SHIP_FLOW: Screen[] = ["shipIntro", "shipStep1", "shipStep2", "shipStep3", "shipStep4", "shipStep5", "shipLabelStep"];
-const DROP_FLOW: Screen[] = ["dropIntro", "dropFindAPD", "dropStep1", "dropStep2", "dropStep3"];
-const STAMPS_FLOW: Screen[] = ["stampsIntro", "stampsFindSSK", "stampsStep1", "stampsStep2", "stampsStep3"];
+const SHIP_FLOW: Screen[] = ["shipStep1", "shipStep2", "shipStep3", "shipStep4", "shipStep5", "shipLabelStep"];
+const DROP_FLOW: Screen[] = ["dropFindAPD", "dropStep1", "dropStep2", "dropStep3"];
+const STAMPS_FLOW: Screen[] = ["stampsFindSSK", "stampsStep1", "stampsStep2", "stampsStep3"];
 const PICKUP_FLOW: Screen[] = ["pkgFindLockers", "pkgEnterCode"];
 
+// Intro screens show the flow label but no step number
+const INTRO_SCREENS: Record<string, string> = {
+  shipIntro: "Ship a package",
+  dropIntro: "Drop off package",
+  stampsIntro: "Buy stamps",
+};
+
 function getFlowProgress(screen: Screen): { current: number; total: number; label: string } | null {
+  if (INTRO_SCREENS[screen]) return { current: 0, total: 0, label: INTRO_SCREENS[screen] };
   if (SHIP_FLOW.includes(screen)) return { current: SHIP_FLOW.indexOf(screen) + 1, total: SHIP_FLOW.length, label: "Ship a package" };
   if (DROP_FLOW.includes(screen)) return { current: DROP_FLOW.indexOf(screen) + 1, total: DROP_FLOW.length, label: "Drop off package" };
   if (STAMPS_FLOW.includes(screen)) return { current: STAMPS_FLOW.indexOf(screen) + 1, total: STAMPS_FLOW.length, label: "Buy stamps" };
@@ -222,14 +230,18 @@ export const AivaApp = () => {
         <div className="bg-white border-b border-border px-4 py-2 shrink-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold text-aiva-navy">{flowProgress.label}</span>
-            <span className="text-[11px] text-muted-foreground">Step {flowProgress.current} of {flowProgress.total}</span>
+            {flowProgress.current > 0 && (
+              <span className="text-[11px] text-muted-foreground">Step {flowProgress.current} of {flowProgress.total}</span>
+            )}
           </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-aiva-blue-deep rounded-full transition-all duration-300"
-              style={{ width: `${(flowProgress.current / flowProgress.total) * 100}%` }}
-            />
-          </div>
+          {flowProgress.current > 0 && (
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-aiva-blue-deep rounded-full transition-all duration-300"
+                style={{ width: `${(flowProgress.current / flowProgress.total) * 100}%` }}
+              />
+            </div>
+          )}
         </div>
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
@@ -676,51 +688,171 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
           "How do I get help in the lobby?",
         ],
       };
+
+    // ---- Ship a package: per-step context ----
     case "shipIntro":
-    case "shipStep1":
-    case "shipStep2":
-    case "shipStep3":
-    case "shipServiceCompare":
-    case "shipStep4":
-    case "shipStep5":
-    case "shipLabelStep":
       return {
-        label: "Ship a package walkthrough",
+        label: "Ship a package — Getting started",
         suggestions: [
-          "What shipping service should I pick?",
-          "How do I weigh my package?",
-          "Where is the Package Drum?",
+          "What do I need to ship a package?",
+          "Where is the Self-Service Kiosk?",
           "What forms of payment does the kiosk take?",
         ],
       };
+    case "shipStep1":
+      return {
+        label: "Ship a package — Step 1: Place package on scale",
+        suggestions: [
+          "Where is the scale on the kiosk?",
+          "What if my package is too heavy?",
+          "Does the scale measure dimensions too?",
+        ],
+      };
+    case "shipStep2":
+      return {
+        label: "Ship a package — Step 2: Enter package details",
+        suggestions: [
+          "What info do I need to enter?",
+          "Can I ship to a PO Box?",
+          "What's a ZIP+4 code?",
+        ],
+      };
+    case "shipStep3":
+    case "shipServiceCompare":
+      return {
+        label: "Ship a package — Step 3: Pick a shipping service",
+        suggestions: [
+          "What's the difference between Priority Mail and Ground Advantage?",
+          "Which option is cheapest?",
+          "How long does Priority Mail take?",
+        ],
+      };
+    case "shipStep4":
+      return {
+        label: "Ship a package — Step 4: Pay and print label",
+        suggestions: [
+          "What forms of payment are accepted?",
+          "Can I use Apple Pay or Google Pay?",
+          "What if the printer jams?",
+        ],
+      };
+    case "shipStep5":
+      return {
+        label: "Ship a package — Step 5: Apply the label",
+        suggestions: [
+          "Where exactly should I place the label?",
+          "What if the label is wrinkled?",
+          "Can I tape over the label?",
+        ],
+      };
+    case "shipLabelStep":
+      return {
+        label: "Ship a package — Step 6: Drop off your package",
+        suggestions: [
+          "Where is the Package Drum?",
+          "What if my package doesn't fit?",
+          "Is my package tracked after drop-off?",
+        ],
+      };
+
+    // ---- Drop off ----
     case "dropIntro":
+      return {
+        label: "Drop off — Getting started",
+        suggestions: [
+          "What kind of packages can I drop off?",
+          "Do I need a prepaid label?",
+          "Where is the Automated Parcel Drop?",
+        ],
+      };
     case "dropFindAPD":
+      return {
+        label: "Drop off — Find the Automated Parcel Drop",
+        suggestions: [
+          "Where is the APD?",
+          "What does it look like?",
+          "What if I can't find it?",
+        ],
+      };
     case "dropStep1":
+      return {
+        label: "Drop off — Step 2: Scan your label",
+        suggestions: [
+          "What if my label won't scan?",
+          "Where is the barcode on my label?",
+          "Can I type in the tracking number instead?",
+        ],
+      };
     case "dropStep2":
+      return {
+        label: "Drop off — Step 3: Place package in the APD",
+        suggestions: [
+          "What size packages fit in the APD?",
+          "What if my package doesn't fit?",
+          "Which way should I place it?",
+        ],
+      };
     case "dropStep3":
+      return {
+        label: "Drop off — Step 4: Confirm and get receipt",
+        suggestions: [
+          "What if the receipt didn't print?",
+          "Is my package tracked after I drop it?",
+          "How do I get a digital receipt?",
+        ],
+      };
     case "dropTooBig":
     case "dropReceiptIssue":
       return {
-        label: "Drop off a prepaid package",
+        label: "Drop off — Issue",
         suggestions: [
-          "What if my label won't scan?",
-          "What size packages fit in the APD?",
+          "Where's the nearest staffed Post Office?",
           "What if the receipt didn't print?",
-          "Is my package tracked after I drop it?",
         ],
       };
+
+    // ---- Stamps ----
     case "stampsIntro":
-    case "stampsFindSSK":
-    case "stampsStep1":
-    case "stampsStep2":
-    case "stampsStep3":
       return {
-        label: "Buy stamps at the SSK",
+        label: "Buy stamps — Getting started",
         suggestions: [
           "How much is a Forever stamp?",
-          "Does the kiosk sell books of stamps?",
-          "What designs are available?",
+          "Where is the Self-Service Kiosk?",
           "Can I pay with cash?",
+        ],
+      };
+    case "stampsFindSSK":
+      return {
+        label: "Buy stamps — Find the kiosk",
+        suggestions: [
+          "Where is the Self-Service Kiosk?",
+          "What does it look like?",
+        ],
+      };
+    case "stampsStep1":
+      return {
+        label: "Buy stamps — Step 2: Select stamp type",
+        suggestions: [
+          "What stamp designs are available?",
+          "Does the kiosk sell books of stamps?",
+          "What's the difference between Forever and regular stamps?",
+        ],
+      };
+    case "stampsStep2":
+      return {
+        label: "Buy stamps — Step 3: Choose quantity",
+        suggestions: [
+          "What quantities can I buy?",
+          "Is it cheaper to buy a roll?",
+        ],
+      };
+    case "stampsStep3":
+      return {
+        label: "Buy stamps — Step 4: Pay and collect",
+        suggestions: [
+          "What forms of payment are accepted?",
+          "Can I use Apple Pay?",
+          "Where do the stamps come out?",
         ],
       };
     case "pickupTriage":

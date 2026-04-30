@@ -101,7 +101,7 @@ export const StateCityPicker = ({ onSubmit }: StateCityPickerProps) => {
           <ChevronLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
-          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
+          <div className="text-[11px] text-muted-foreground font-semibold">
             Step {step === "state" ? "1" : "2"} of 2
           </div>
           <div className="text-base font-bold">
