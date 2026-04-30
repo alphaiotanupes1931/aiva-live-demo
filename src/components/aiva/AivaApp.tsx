@@ -255,11 +255,11 @@ export const AivaApp = () => {
           <LocationPermission
             onGranted={(addr) => {
               persistLocation(addr);
-              setScreen("confirmInitialLocation");
+              setScreen("greeting");
               setHistory([]);
             }}
             onDenied={() => {
-              setScreen("confirmInitialLocation");
+              setScreen("addressEntry");
               setHistory([]);
             }}
           />
