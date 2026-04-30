@@ -455,6 +455,7 @@ export const AivaApp = () => {
         {screen === "stampsDone" && (
           <StampsDone
             onElse={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
+            onBack={back}
           />
         )}
 
