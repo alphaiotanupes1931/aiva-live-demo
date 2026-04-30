@@ -242,7 +242,6 @@ export const AivaApp = () => {
               />
             </div>
           )}
-          </div>
         </div>
       )}
       <div className="relative flex-1 overflow-hidden flex flex-col bg-white">
