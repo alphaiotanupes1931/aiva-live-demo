@@ -119,7 +119,7 @@ export const DropIntro = ({ onNext, onBack }: { onNext: () => void; onBack: () =
 export const DropFindAPD = ({ onNext, onBack }: { onNext: () => void; onHelp?: () => void; onBack?: () => void }) => (
   <StepLayout
     title="Find the Automated Parcel Drop"
-    subtitle="Look for it near the Drum Chute. It has a red SCAN » DROP » RECEIPT header."
+    subtitle="Look for it near the Package Drum. It has a red Scan » Drop » Receipt header."
     photo={apdPhoto}
     photoAlt="USPS Automated Parcel Drop"
     primaryLabel="I found it"
@@ -228,10 +228,10 @@ export const DropStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; on
 
 export const DropDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
-    title="Thanks for using AIVA"
-    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
+    title="I'll take it from here!"
+    subtitle="Your package has been dropped off. Scan your QR code to track it."
     photoUnavailable={false}
-    primaryLabel="Help me with something else"
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
@@ -299,9 +299,9 @@ export const StampsStep3 = ({ onNext, onReport, onBack }: { onNext: () => void; 
 export const StampsDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="Stamps purchased"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Help me with something else"
+    title="I'll take it from here!"
+    subtitle="Your stamps are ready. Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
@@ -390,9 +390,9 @@ export const PkgEnterCode = ({ onNext, onHelp, onBack }: { onNext: () => void; o
 export const PkgDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="Thanks for using AIVA"
-    subtitle="Have a great day. Scan your QR code to track your package and stay updated on its delivery status."
-    primaryLabel="Help me with something else"
+    title="I'll take it from here!"
+    subtitle="You've got your package. Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
@@ -415,9 +415,9 @@ export const POBoxFind = ({ onNext, onBack }: { onNext: () => void; onHelp?: () 
 export const POBoxDone = ({ onElse, onBack }: { onDone?: () => void; onElse: () => void; onBack?: () => void }) => (
   <StepLayout
     photoUnavailable={false}
-    title="You're all set"
-    subtitle="Thanks for using AIVA. Have a great day."
-    primaryLabel="Help me with something else"
+    title="You're all set!"
+    subtitle="Have a great day."
+    primaryLabel="Done"
     onPrimary={onElse}
     onBack={onBack}
   />
