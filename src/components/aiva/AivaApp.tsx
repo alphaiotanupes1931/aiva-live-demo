@@ -774,34 +774,85 @@ function getPageContext(screen: Screen, serviceIntent: string): { label?: string
           "What if I can't find it?",
         ],
       };
-    case "dropIntro":
-    case "dropFindAPD":
     case "dropStep1":
+      return {
+        label: "Drop off — Step 2: Scan your label",
+        suggestions: [
+          "What if my label won't scan?",
+          "Where is the barcode on my label?",
+          "Can I type in the tracking number instead?",
+        ],
+      };
     case "dropStep2":
+      return {
+        label: "Drop off — Step 3: Place package in the APD",
+        suggestions: [
+          "What size packages fit in the APD?",
+          "What if my package doesn't fit?",
+          "Which way should I place it?",
+        ],
+      };
     case "dropStep3":
+      return {
+        label: "Drop off — Step 4: Confirm and get receipt",
+        suggestions: [
+          "What if the receipt didn't print?",
+          "Is my package tracked after I drop it?",
+          "How do I get a digital receipt?",
+        ],
+      };
     case "dropTooBig":
     case "dropReceiptIssue":
       return {
-        label: "Drop off a prepaid package",
+        label: "Drop off — Issue",
         suggestions: [
-          "What if my label won't scan?",
-          "What size packages fit in the APD?",
+          "Where's the nearest staffed Post Office?",
           "What if the receipt didn't print?",
-          "Is my package tracked after I drop it?",
         ],
       };
+
+    // ---- Stamps ----
     case "stampsIntro":
-    case "stampsFindSSK":
-    case "stampsStep1":
-    case "stampsStep2":
-    case "stampsStep3":
       return {
-        label: "Buy stamps at the SSK",
+        label: "Buy stamps — Getting started",
         suggestions: [
           "How much is a Forever stamp?",
-          "Does the kiosk sell books of stamps?",
-          "What designs are available?",
+          "Where is the Self-Service Kiosk?",
           "Can I pay with cash?",
+        ],
+      };
+    case "stampsFindSSK":
+      return {
+        label: "Buy stamps — Find the kiosk",
+        suggestions: [
+          "Where is the Self-Service Kiosk?",
+          "What does it look like?",
+        ],
+      };
+    case "stampsStep1":
+      return {
+        label: "Buy stamps — Step 2: Select stamp type",
+        suggestions: [
+          "What stamp designs are available?",
+          "Does the kiosk sell books of stamps?",
+          "What's the difference between Forever and regular stamps?",
+        ],
+      };
+    case "stampsStep2":
+      return {
+        label: "Buy stamps — Step 3: Choose quantity",
+        suggestions: [
+          "What quantities can I buy?",
+          "Is it cheaper to buy a roll?",
+        ],
+      };
+    case "stampsStep3":
+      return {
+        label: "Buy stamps — Step 4: Pay and collect",
+        suggestions: [
+          "What forms of payment are accepted?",
+          "Can I use Apple Pay?",
+          "Where do the stamps come out?",
         ],
       };
     case "pickupTriage":
