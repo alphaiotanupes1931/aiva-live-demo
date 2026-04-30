@@ -557,7 +557,7 @@ export const AivaApp = () => {
             onNo={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }}
           />
         )}
-        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} />}
+        {screen === "nearest" && <Nearest onNext={() => goto("anythingElse")} onHome={() => { setHistory([]); setScreen("greeting"); }} />}
         {screen === "anythingElse" && (
           <AnythingElse onAnother={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} onDone={() => { restart(); setTimeout(() => setScreen("greeting"), 0); }} />
         )}
