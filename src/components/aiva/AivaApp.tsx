@@ -508,7 +508,6 @@ export const AivaApp = () => {
           <FlowFeedback
             flowName={completedFlow}
             onDone={goHomeFromFeedback}
-            onReportIssue={() => goto("thanks")}
           />
         )}
 
