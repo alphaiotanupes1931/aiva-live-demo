@@ -928,9 +928,8 @@ const DisclaimerScreen = ({ onContinue }: { onContinue: () => void }) => (
 
       <div className="rounded-2xl border border-border bg-aiva-page p-5 space-y-3 text-[13px] leading-relaxed text-foreground/80">
         <p>
-          This experience uses the existing flows and journey maps that the
-          <span className="font-semibold text-aiva-navy"> Retail Modernization Team </span>
-          has created.
+          This is <span className="font-semibold text-aiva-navy">not an official USPS product</span>.
+          It is an independent prototype created for demonstration and feedback purposes only.
         </p>
         <p>
           It is <span className="font-semibold text-aiva-navy">not a finished product</span> and
